@@ -152,10 +152,16 @@
         <script src="{{ asset('/js/mobileClickRound.js') }} "></script>  
         @endrole
         {{-- @role('admini') --}}
-        <div>
-            <h1>De inschrijvingen zijn op dit moment gesloten.</h1>
+        <div class="p-6 text-center">
+            <h1 class="text-2xl font-semibold mb-4">
+                De inschrijvingen zijn op dit moment gesloten.
+            </h1>
+            <p class="text-lg">
+                Heb jij je nog niet ingeschreven? Neem dan contact op met je LOB'er.
+            </p>
         </div>
         {{-- @endrole --}}
-    </body>
-    </html>
-</x-app-layout>
+        </body>
+        </html>
+        </x-app-layout>
+        
