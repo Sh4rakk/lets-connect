@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('workshops', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 256)->nullable();
+            $table->string('name')->nullable();
             $table->string('full_description', 9999)->nullable();
-            $table->string('image_url', 256)->nullable();
+            $table->string('image_url')->nullable();
             // $table->string('room_name', 20);
             $table->integer('capacity')->nullable();
-            $table->string('location', 16)->nullable();
+            $table->string('location')->nullable();
             $table->timestamps();
         });
     }

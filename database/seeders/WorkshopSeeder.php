@@ -52,7 +52,7 @@ class WorkshopSeeder extends Seeder
                 $maxPersonen = 0;
             }
 
-            if (preg_match('/((?<=Deze.workshop.vindt.plaats.in:.)\S+)/imu', $completeOmschrijving, $matches2)) {
+            if (preg_match('/((?<=Deze.workshop.vindt.plaats.in:.).*)/miu', $completeOmschrijving, $matches2)) {
                 $locatie = $matches2[1];
             } else {
                 $locatie = null;

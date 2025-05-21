@@ -50,7 +50,7 @@
 <div class="container">
     <h1 style="text-align: center; font-size: 28px; margin-bottom: 40px;">Workshop Boekingen</h1>
 
-    @foreach($workshopmoments as $wsm)
+    {{-- @foreach($workshopmoments as $wsm)
         <div class="section">
             <h2>{{ $wsm->workshop->name }} — {{ $wsm->moment->time }}</h2>
 
@@ -78,7 +78,7 @@
             @endif
         </div>
         <div style="page-break-after: always;"></div>
-    @endforeach
+    @endforeach --}}
 <!DOCTYPE html>
 <html lang="nl">
 <head>
