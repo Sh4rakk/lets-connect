@@ -28,6 +28,7 @@
         <script src="{{ asset('/js/infoPopup.js') }}"></script>
     </head>
     <body>
+        @role('admini')
         <!-- Tutorial -->
         <div class="tutorial-overlay" id="tutorial-overlay" style="display: none;">
             <div class="tutorial-step" id="tutorial-step">
@@ -149,6 +150,12 @@
         <script src="{{ asset('/js/dragAndDrop.js') }}"></script>
         <script src="{{ asset('/js/sameWorkshop.js') }}"></script>  
         <script src="{{ asset('/js/mobileClickRound.js') }} "></script>  
+        @endrole
+        {{-- @role('admini') --}}
+        <div>
+            <h1>De inschrijvingen zijn op dit moment gesloten.</h1>
+        </div>
+        {{-- @endrole --}}
     </body>
     </html>
 </x-app-layout>
