@@ -26,10 +26,27 @@ let tutorialLength = tutorialSteps.length - 1;
 
 document.addEventListener("DOMContentLoaded", () => {
     var cookieSatus = cookieState();
-    
+
     if(!cookieSatus) {
         startTutorial();
-        document.cookie = "render=loaded"
+        document.cookie = "render=loaded";
+    }
+
+
+    if (nextButton && !document.getElementById('skipButton')) {
+        const skipButton = document.createElement('button');
+        skipButton.id = 'skipButton';
+        skipButton.type = 'button';
+        skipButton.textContent = 'Overslaan';
+
+        skipButton.className = nextButton.className || '';
+
+        nextButton.parentNode.insertBefore(skipButton, nextButton.nextSibling);
+
+        skipButton.addEventListener('click', skipTutorial);
+    } else {
+        const existingSkip = document.getElementById('skipButton');
+        if (existingSkip) existingSkip.addEventListener('click', skipTutorial);
     }
 });
 
@@ -99,7 +116,7 @@ function nextStep() {
     document.getElementById('tutorial-text').textContent = tutorialSteps[currentStepIndex].text;
 
     // styling buttons
-    if (currentStepIndex) { // if index is not zero. (true - false if value < 0), 
+    if (currentStepIndex) { // if index is not zero. (true - false if value < 0),
         prevButton.style.display = "flex";
         tutButtons.style.justifyContent = "space-between";
     }
@@ -292,7 +309,7 @@ function fourthStep() {
     defaultStyling() // resets previous styling.
 
     nextButton.disabled = true;
-    
+
     nextButton.classList.add("disabledStyle")
 
     let roundOneX = sendRoundX();
@@ -319,4 +336,27 @@ function cookieState() {
         cookieSatus = false;
     }
     return cookieSatus;
+}
+
+function skipTutorial() {
+
+    if (tutOverlay) {
+        tutOverlay.style.display = "none";
+    }
+
+    defaultStyling();
+    currentStepIndex = 0;
+
+    document.cookie = "render=loaded; path=/";
+
+    try { observerI && observerI.disconnect(); } catch(e) {}
+    try { observerDrag && observerDrag.disconnect(); } catch(e) {}
+    try { observerX && observerX.disconnect(); } catch(e) {}
+
+    if (nextButton) {
+        nextButton.disabled = false;
+        if (nextButton.classList.contains('disabledStyle')) {
+            nextButton.classList.remove('disabledStyle');
+        }
+    }
 }
