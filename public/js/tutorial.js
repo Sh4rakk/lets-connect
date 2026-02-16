@@ -38,15 +38,23 @@ document.addEventListener("DOMContentLoaded", () => {
         skipButton.id = 'skipButton';
         skipButton.type = 'button';
         skipButton.textContent = 'Overslaan';
-
         skipButton.className = nextButton.className || '';
 
         nextButton.parentNode.insertBefore(skipButton, nextButton.nextSibling);
 
         skipButton.addEventListener('click', skipTutorial);
-    } else {
-        const existingSkip = document.getElementById('skipButton');
-        if (existingSkip) existingSkip.addEventListener('click', skipTutorial);
+
+        const originalNextHandler = nextButton.onclick || nextButton._originalClick;
+
+        nextButton.addEventListener('click', function removeSkipOnce() {
+            const skip = document.getElementById('skipButton');
+            if (skip) {
+                skip.remove();
+            }
+
+            nextButton.removeEventListener('click', removeSkipOnce);
+        }, { once: true });
+
     }
 });
 
