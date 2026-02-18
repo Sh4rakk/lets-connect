@@ -46,9 +46,10 @@ Route::get('/workshop', function () {
 
 Route::get('/wdashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin']);
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->name('workshop-moment.showbookings');
+Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->name('workshop-moment.showfilteredbookings');
 
 /*Route::get('/bookings', function () {
-    
+
     //return Bookings::with('student','workshopMoment')->get();
     return json_encode(Bookings::with(['student', 'workshopMoment.workshop', 'workshopMoment.moment'])->get());
 });*/
