@@ -1,5 +1,14 @@
+<x-app-layout>
+
+<x-slot name="leftHeader">
+    <x-secondary-anchor :href="route('dashboard')">Terug naar studenten overzicht</x-secondary-anchor>
+</x-slot>
+
+<x-slot name="header">
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Workshop Overzicht</h2>
+</x-slot>
+
 <div class="container mx-auto p-6 max-w-5xl">
-    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Workshop Overzicht</h1>
 
     @php
         $workshopsByName = $workshopmoments->groupBy('workshop.name');
@@ -33,7 +42,7 @@
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->room_name }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->capacity }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ count($wm->bookings) }}</td>
-                                     
+
                                     <td class="px-6 py-4 border-b text-sm">
                                         @if (count($wm->bookings) < $wm->workshop->capacity)
                                             <span class="text-green-600 font-semibold">✅ Nog plek</span>
@@ -41,7 +50,7 @@
                                             <span class="text-red-600 font-semibold">❌ Vol</span>
                                         @endif
                                     </td>
-                                     
+
                                     <td class="px-6 py-4 border-b text-sm">
                                         <a href="{{ route('workshop-moment.showbookings', ['wsm' => $wm]) }}"
                                            class="text-blue-600 font-semibold hover:underline">
@@ -57,7 +66,8 @@
         </div>
     @endforeach
 </div>
-
 <!-- Laad de JavaScript en CSS -->
 <link rel="stylesheet" href="{{ asset('css/wdashboard.css') }}">
 <script src="{{ asset('js/accordion.js') }}"></script>
+
+</x-app-layout>\

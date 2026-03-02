@@ -1,8 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            <a href="https://xerte.deltion.nl/play.php?template_id=8708#programma" target="_blank" style="display: flex"><p class="deltion-blue">Let's</p><pre> </pre><p class="deltion-orange">Connect</p></a> 
-        </h2>
+        <x-slot name="leftHeader">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                <a href="https://xerte.deltion.nl/play.php?template_id=8708#programma" target="_blank" style="display: flex"><p class="deltion-blue">Let's</p><pre> </pre><p class="deltion-orange">Connect</p></a>
+            </h2>
+        </x-slot>
     </x-slot>
 
     <!DOCTYPE html>
@@ -13,7 +15,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link href="{{ asset('/css/dashboard.css') }}" rel="stylesheet">
-        <script src="{{ asset('/js/confirmPopup.js') }}"></script>  
+        <script src="{{ asset('/js/confirmPopup.js') }}"></script>
         <script src="{{ asset('/js/errorPopup.js') }}"></script>
         <script src="{{ asset('/js/infoPopup.js') }}"></script>
         <script src="{{ asset('/js/register.js') }}"></script>
@@ -44,7 +46,7 @@
         @elseif (session('status') == 'failed')
         <x-success-msg message="{{ session('message') }}" color="red" />
         @endif
-        
+
         <!-- Main Content -->
         <div class="main">
             <div class="rounds">
@@ -72,14 +74,14 @@
             </div>
             <div class="workshops" ondrop="drop(event, this)" ondragover="allowDrop(event)" draggable="true" id="4">
                 @foreach ($workshops as $workshop)
-                    <div class='workshop' id='workshop{{ $workshop->id - 1 }}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(event)'> 
-                        <div class='info' onclick='info(event)' id='info{{ $workshop->id - 1 }}' tabindex='0'>i</div> 
+                    <div class='workshop' id='workshop{{ $workshop->id - 1 }}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(event)'>
+                        <div class='info' onclick='info(event)' id='info{{ $workshop->id - 1 }}' tabindex='0'>i</div>
                         <div class='popup' id='popup{{ $workshop->id - 1 }}' draggable='false'>
-                            <button class='close' onclick='closePopup({{ $workshop->id - 1 }})'>x</button> 
-                            <a href='https://xerte.deltion.nl/play.php?template_id=8708#programma' class='popup-header' target='_blank'>Klik <span class='highlight'>hier</span> voor meer informatie</a>  
+                            <button class='close' onclick='closePopup({{ $workshop->id - 1 }})'>x</button>
+                            <a href='https://xerte.deltion.nl/play.php?template_id=8708#programma' class='popup-header' target='_blank'>Klik <span class='highlight'>hier</span> voor meer informatie</a>
                             <div class='description'>
                                 <div class='descriptionText'>{{ $workshop->full_description }} </div>
-                                <div class='descriptionImage'><img src='{{ $workshop->image_url }}'></div> 
+                                <div class='descriptionImage'><img src='{{ $workshop->image_url }}'></div>
                             </div>
                          </div>
                         <div class='title showText' id='title{{ $workshop->id - 1 }}' workshop='{{ $workshop->name }}'>{{$workshop->name }}  </div>
@@ -105,14 +107,14 @@
                         </div>
                     </form>
                 </div>
-            </div> 
+            </div>
         <div class="flex">
             <button id="save-button" style="display: none;" onclick="showSavePopup()">Opslaan</button>
-        </div> 
+        </div>
         <!-- loading script after html has loaded because of getElementById -->
         <script src="{{ asset('/js/capacityWorkshops.js') }}"></script>
         <script src="{{ asset('/js/tutorial.js') }}"></script>
-        <script src="{{ asset('/js/dragAndDrop.js') }}"></script>  
+        <script src="{{ asset('/js/dragAndDrop.js') }}"></script>
     </body>
     </html>
 </x-app-layout>
