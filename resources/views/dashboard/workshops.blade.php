@@ -1,5 +1,29 @@
 <div class="container mx-auto p-6 max-w-5xl">
-    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Workshop Overzicht</h1>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-center flex-1 text-gray-800">Workshop Overzicht</h1>
+        
+        @php
+            $signupsOpen = \App\Models\Setting::where('key', 'signups_open')->first();
+            $isOpen = $signupsOpen && $signupsOpen->value == '1';
+        @endphp
+
+        <form action="{{ url('/toggle-signups') }}" method="POST" class="ml-4">
+            @csrf
+            <button type="submit" class="px-4 py-2 rounded-lg font-semibold text-white transition-all @if($isOpen) bg-green-600 hover:bg-green-700 @else bg-red-600 hover:bg-red-700 @endif">
+                @if($isOpen)
+                    ✅ Registrations Open
+                @else
+                    ❌ Registrations Closed
+                @endif
+            </button>
+        </form>
+    </div>
+
+    @if (session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+            {{ session('success') }}
+        </div>
+    @endif
 
     @php
         $workshopsByName = $workshopmoments->groupBy('workshop.name');

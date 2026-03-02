@@ -1,4 +1,4 @@
-<x-guest-layout>
+    <x-guest-layout>
     <link href="{{ asset('/css/form.css') }}" rel="stylesheet">
     
     <!-- Logo -->
@@ -11,6 +11,12 @@
 
     <!-- Registratieformulier -->
     <div class="register-container">
+        @if (session('error'))
+            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('register') }}" class="register-form">
             @csrf
             <div class="forms">

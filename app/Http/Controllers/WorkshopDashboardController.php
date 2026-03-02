@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\WorkshopMoment;
 use App\Models\Workshop;
+use App\Models\Setting;
 
 class WorkshopDashboardController extends Controller
 {
@@ -62,4 +63,16 @@ class WorkshopDashboardController extends Controller
     //     // Return the dummy data as a JSON response
     //     return response()->json($dummyData);
     // }
+
+    public function toggleSignups()
+    {
+        $setting = Setting::where('key', 'signups_open')->first();
+        
+        if ($setting) {
+            $setting->value = $setting->value == '1' ? '0' : '1';
+            $setting->save();
+        }
+
+        return back()->with('success', 'Signups toggled successfully.');
+    }
 }
