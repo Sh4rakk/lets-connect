@@ -70,4 +70,4 @@
 <link rel="stylesheet" href="{{ asset('css/wdashboard.css') }}">
 <script src="{{ asset('js/accordion.js') }}"></script>
 
-</x-app-layout>\
+</x-app-layout>
