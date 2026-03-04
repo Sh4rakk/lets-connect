@@ -44,7 +44,7 @@ Route::get('/workshop', function () {
     return json_encode(Workshop::all());
 });
 
-Route::get('/wdashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin']);
+Route::get('/wdashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('adminDashboard');
 Route::post('/toggle-signups', [WorkshopDashboardController::class, 'toggleSignups'])->middleware(['role:admin']);
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->name('workshop-moment.showbookings');
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->name('workshop-moment.showfilteredbookings');

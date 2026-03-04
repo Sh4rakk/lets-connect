@@ -1,7 +1,17 @@
+<x-app-layout>
+
+<x-slot name="leftHeader">
+    <x-secondary-anchor :href="route('dashboard')">Terug naar studenten overzicht</x-secondary-anchor>
+</x-slot>
+
+<x-slot name="header">
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Workshop Overzicht</h2>
+</x-slot>
+
 <div class="container mx-auto p-6 max-w-5xl">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-center flex-1 text-gray-800">Workshop Overzicht</h1>
-        
+
         @php
             $signupsOpen = \App\Models\Setting::where('key', 'signups_open')->first();
             $isOpen = $signupsOpen && $signupsOpen->value == '1';
@@ -68,7 +78,7 @@
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->room_name }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->capacity }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ count($wm->bookings) }}</td>
-                                     
+
                                     <td class="px-6 py-4 border-b text-sm">
                                         @if (count($wm->bookings) < $wm->workshop->capacity)
                                             <span class="text-green-600 font-semibold">✅ Nog plek</span>
@@ -76,7 +86,7 @@
                                             <span class="text-red-600 font-semibold">❌ Vol</span>
                                         @endif
                                     </td>
-                                     
+
                                     <td class="px-6 py-4 border-b text-sm">
                                         @if($isAdmin)
                                             <a href="{{ route('workshop-moment.showbookings', ['wsm' => $wm]) }}"
@@ -101,7 +111,8 @@
         </div>
     @endforeach
 </div>
-
 <!-- Laad de JavaScript en CSS -->
 <link rel="stylesheet" href="{{ asset('css/wdashboard.css') }}">
 <script src="{{ asset('js/accordion.js') }}"></script>
+
+</x-app-layout>

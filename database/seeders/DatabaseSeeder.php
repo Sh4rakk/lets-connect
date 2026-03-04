@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         Moment::insert(['id' => '1', 'time' => '13:00 - 13:45']);
         Moment::insert(['id' => '2', 'time' => '13:45 - 14:30']);
         Moment::insert(['id' => '3', 'time' => '15:00 - 15:45']);
-    
+
         $index = 0;
         foreach (Workshop::all() as $workshop)
         {
@@ -65,21 +65,7 @@ class DatabaseSeeder extends Seeder
             }
             $index++;
         }
-    
-        //foreach hiervoor maken
-        Bookings::insert([
-            'wm_id' => '1',
-            'student_id' => '1',
-        ]);
 
-        Bookings::insert([
-            'wm_id' => '2',
-            'student_id' => '1',
-        ]);
-
-        Bookings::insert([
-            'wm_id' => '3',
-            'student_id' => '1',
-        ]);
-    } 
+        Bookings::factory()->count(50)->create();
+    }
 }
