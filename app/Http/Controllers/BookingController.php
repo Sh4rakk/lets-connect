@@ -6,12 +6,23 @@ use Illuminate\Http\Request;
 use App\Models\Workshop;
 use App\Models\WorkshopMoment;
 use App\Models\Bookings;
+use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
     public function bookWorkshop(Request $request)
     {
+        $signupsOpen = Setting::where('key', 'signups_open')->first();
+        $isOpen = $signupsOpen && $signupsOpen->value == '1';
+
+        if (!$isOpen) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Registrations are currently closed. You cannot book workshops at this time.'
+            ], 403);
+        }
+
         // Retrieve workshop names from the request (e.g., save1, save2, save3, etc.)
         $workshopNames = $request->only(['save1', 'save2', 'save3']);
         

@@ -1,6 +1,16 @@
     <x-guest-layout>
     <link href="{{ asset('/css/form.css') }}" rel="stylesheet">
     
+    @if (session('error'))
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+            <div style="background: white; border-radius: 12px; padding: 40px; max-width: 500px; text-align: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+                <div style="font-size: 48px; margin-bottom: 20px;">🔒</div>
+                <h2 style="font-size: 28px; font-weight: bold; color: #1f2937; margin-bottom: 16px;">Sorry, registreren is momenteel gesloten!</h2>
+                <p style="font-size: 16px; color: #6b7280; margin-bottom: 24px; line-height: 1.6;">Registraties zijn tijdelijk gesloten</p>
+                <a href="{{ route('login') }}" style="display: inline-block; background: #3b82f6; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.3s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">Go to Login</a>
+            </div>
+        </div>
+    @else
     <!-- Logo -->
     <div class="logo">
         <img src="https://xerte.deltion.nl/USER-FILES/3183-cmartens-site/media/Deltion_College_CMYK_145x57.png" alt="Deltion Logo" class="deltion-logo">
@@ -11,12 +21,6 @@
 
     <!-- Registratieformulier -->
     <div class="register-container">
-        @if (session('error'))
-            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
-                {{ session('error') }}
-            </div>
-        @endif
-
         <form method="POST" action="{{ route('register') }}" class="register-form">
             @csrf
             <div class="forms">
@@ -97,4 +101,5 @@
 
     <script src="{{ asset('/js/register.js') }}"></script>
     <script src="{{ asset('/js/registerConfirm.js') }}"></script>
+    @endif
 </x-guest-layout>

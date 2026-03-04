@@ -73,6 +73,6 @@ class WorkshopDashboardController extends Controller
             $setting->save();
         }
 
-        return back()->with('success', 'Signups toggled successfully.');
+        return back()->with('success', 'Inschrijvingen status gewijzigd.');
     }
 }

@@ -9,12 +9,11 @@
 
         <form action="{{ url('/toggle-signups') }}" method="POST" class="ml-4">
             @csrf
-            <button type="submit" class="px-4 py-2 rounded-lg font-semibold text-white transition-all @if($isOpen) bg-green-600 hover:bg-green-700 @else bg-red-600 hover:bg-red-700 @endif">
-                @if($isOpen)
-                    ✅ Registrations Open
-                @else
-                    ❌ Registrations Closed
-                @endif
+            <button
+                type="submit"
+                class="px-8 py-3 font-bold text-white rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl
+                    {{ $isOpen ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700' }}">
+                {{ $isOpen ? 'Registraties Open' : 'Registraties Gesloten' }}
             </button>
         </form>
     </div>
@@ -27,19 +26,31 @@
 
     @php
         $workshopsByName = $workshopmoments->groupBy('workshop.name');
+        $isAdmin = Auth::user() && Auth::user()->hasRole('admin');
+        $shouldLock = !$isOpen && !$isAdmin;
     @endphp
 
     @foreach ($workshopsByName as $workshopName => $workshopMoments)
-        <div class="border border-black-300 rounded-lg mb-2">
-            <button class="w-full text-left p-6 bg-blue-600 text-white font-semibold flex justify-between items-center transition-all duration-300 accordion-btn"
-                    onclick="toggleAccordion(this)">
+        <div class="border border-black-300 rounded-lg mb-2 @if($shouldLock) relative opacity-75 @endif" @if($shouldLock) style="position: relative;" @endif>
+            @if($shouldLock)
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                    <div style="background: white; padding: 20px 40px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 8px;" draggable="false">🔒</div>
+                        <p style="font-weight: 600; color: #374151;">Registraties zijn gesloten</p>
+                    </div>
+                </div>
+            @endif
+
+            <button class="w-full text-left p-6 @if(!$shouldLock) bg-blue-600 @else bg-gray-400 @endif text-white font-semibold flex justify-between items-center transition-all duration-300 accordion-btn @if($shouldLock) cursor-not-allowed @endif"
+                    onclick="@if(!$shouldLock) toggleAccordion(this) @endif"
+                    @if($shouldLock) disabled @endif>
                 <span>{{ $workshopName }}</span>
                 <span class="transition-transform transform">+</span>
             </button>
 
             <div class="hidden p-6 border-t border-black-300 bg-white accordion-content">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full table-auto">
+                    <table class="min-w-full table-auto @if($shouldLock) opacity-50 @endif">
                         <thead class="bg-gray-100">
                             <tr>
                                 <th class="px-6 py-4 text-left border-b text-sm font-semibold text-gray-600"> Tijd</th>
@@ -52,7 +63,7 @@
                         </thead>
                         <tbody>
                             @foreach ($workshopMoments as $wm)
-                                <tr class="hover:bg-gray-50">
+                                <tr class="@if(!$shouldLock) hover:bg-gray-50 @endif">
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->moment->time }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->room_name }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->capacity }}</td>
@@ -67,10 +78,19 @@
                                     </td>
                                      
                                     <td class="px-6 py-4 border-b text-sm">
-                                        <a href="{{ route('workshop-moment.showbookings', ['wsm' => $wm]) }}"
-                                           class="text-blue-600 font-semibold hover:underline">
-                                            🔗 Bekijk
-                                        </a>
+                                        @if($isAdmin)
+                                            <a href="{{ route('workshop-moment.showbookings', ['wsm' => $wm]) }}"
+                                               class="text-blue-600 font-semibold hover:underline">
+                                                🔗 Bekijk
+                                            </a>
+                                        @elseif($isOpen)
+                                            <a href="{{ route('workshop-moment.showbookings', ['wsm' => $wm]) }}"
+                                               class="text-blue-600 font-semibold hover:underline">
+                                                🔗 Bekijk
+                                            </a>
+                                        @else
+                                            <span class="text-gray-400 font-semibold">🔒 Locked</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

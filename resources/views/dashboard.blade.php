@@ -44,6 +44,11 @@
         @elseif (session('status') == 'failed')
         <x-success-msg message="{{ session('message') }}" color="red" />
         @endif
+
+        @php
+            $signupsOpen = \App\Models\Setting::where('key', 'signups_open')->first();
+            $registrationsClosed = !($signupsOpen && $signupsOpen->value == '1');
+        @endphp
         
         <!-- Main Content -->
         <div class="main">
@@ -72,7 +77,10 @@
             </div>
             <div class="workshops" ondrop="drop(event, this)" ondragover="allowDrop(event)" draggable="true" id="4">
                 @foreach ($workshops as $workshop)
-                    <div class='workshop' id='workshop{{ $workshop->id - 1 }}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(event)'> 
+                    <div class='workshop' id='workshop{{ $workshop->id - 1 }}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(event)' style='@if($registrationsClosed)opacity: 0.5; position: relative;@endif'> 
+                        @if($registrationsClosed)
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; z-index: 10;">🔒</div>
+                        @endif 
                         <div class='info' onclick='info(event)' id='info{{ $workshop->id - 1 }}' tabindex='0'>i</div> 
                         <div class='popup' id='popup{{ $workshop->id - 1 }}' draggable='false'>
                             <button class='close' onclick='closePopup({{ $workshop->id - 1 }})'>x</button> 
@@ -112,7 +120,17 @@
         <!-- loading script after html has loaded because of getElementById -->
         <script src="{{ asset('/js/capacityWorkshops.js') }}"></script>
         <script src="{{ asset('/js/tutorial.js') }}"></script>
-        <script src="{{ asset('/js/dragAndDrop.js') }}"></script>  
+        <script src="{{ asset('/js/dragAndDrop.js') }}"></script>
+
+        <script>
+            const registrationsClosed = @json($registrationsClosed);
+            
+            if (registrationsClosed) {
+                document.querySelectorAll('.workshop').forEach(workshop => {
+                    workshop.draggable = false;
+                });
+            }
+        </script>  
     </body>
     </html>
 </x-app-layout>
