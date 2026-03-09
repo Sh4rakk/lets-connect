@@ -5,6 +5,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\WorkshopDashboardController;
+use App\Http\Controllers\UserExportController;
 use App\Http\Middleware\Success;
 use App\Http\Controllers\MailController;
 use App\Mail\SendMail;
@@ -59,5 +60,8 @@ Route::get('/moments', function () {
     //return Bookings::with('student','workshopMoment')->get();
     return json_encode(Moment::get());
 });
+
+Route::get('/export-users', [UserExportController::class, 'export'])
+    ->name('users.export');
 
 require __DIR__.'/auth.php';

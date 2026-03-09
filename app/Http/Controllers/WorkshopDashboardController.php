@@ -70,11 +70,18 @@ class WorkshopDashboardController extends Controller
 
     public function toggleSignups()
     {
+        \Log::info('Toggle signups called');
         $setting = Setting::where('key', 'signups_open')->first();
+        
+        \Log::info('Current setting:', ['setting' => $setting ? $setting->toArray() : 'null']);
         
         if ($setting) {
             $setting->value = $setting->value == '1' ? '0' : '1';
             $setting->save();
+            \Log::info('Setting updated to:', ['value' => $setting->value]);
+        } else {
+            \Log::warning('Setting not found, creating new one');
+            Setting::create(['key' => 'signups_open', 'value' => '1']);
         }
 
         return back()->with('success', 'Inschrijvingen status gewijzigd.');

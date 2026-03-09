@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(LaratrustSeeder::class);
+        $this->call(SettingsSeeder::class);
         $this->call(WorkshopSeeder::class);
         User::insert([
             'name' => 'admin',
