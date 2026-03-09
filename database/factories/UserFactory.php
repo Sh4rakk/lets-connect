@@ -24,6 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => fake()->uuid(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'class' => fake()->randomElement(['SD2A', 'SD2B', 'SD2C']),

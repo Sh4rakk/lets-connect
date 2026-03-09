@@ -7,9 +7,9 @@ use App\Models\User;
 use App\Models\Moment;
 use App\Models\Workshop;
 use App\Models\WorkshopMoment;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,50 +20,44 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(LaratrustSeeder::class);
         $this->call(WorkshopSeeder::class);
+
+        $adminId = Str::uuid()->toString();
         User::insert([
+            'id' => $adminId,
             'name' => 'admin',
             'email' => 'admin@example.com',
             'class' => 'SD2A'
         ]);
 
+        $userId = Str::uuid()->toString();
         DB::table('users')->insert([
+            'id' => $userId,
             'name' => 'user',
             'email' => 'user@example.com',
             'class' => 'SD2A'
         ]);
 
-        User::find(1)->addRole('admin');
-        User::find(2)->addRole('user');
+        User::find($adminId)->addRole('admin');
+        User::find($userId)->addRole('user');
 
-        Moment::insert(['id' => '1', 'time' => '13:00 - 13:45']);
-        Moment::insert(['id' => '2', 'time' => '13:45 - 14:30']);
-        Moment::insert(['id' => '3', 'time' => '15:00 - 15:45']);
+        Moment::insert(['time' => '13:00 - 13:45']);
+        Moment::insert(['time' => '13:45 - 14:30']);
+        Moment::insert(['time' => '15:00 - 15:45']);
 
-        $index = 0;
         foreach (Workshop::all() as $workshop)
         {
-
-            if($index > 2)
-            {
-                WorkshopMoment::insert([
-                    'moment_id' => '1',
-                    'workshop_id' => $workshop->id,
-                ]);
-                WorkshopMoment::insert([
-                    'moment_id' => '2',
-                    'workshop_id' => $workshop->id,
-                ]);
-                WorkshopMoment::insert([
-                    'moment_id' => '3',
-                    'workshop_id' => $workshop->id,
-                ]);
-            } else {
-                WorkshopMoment::insert([
-                    'moment_id' => $workshop->id,
-                    'workshop_id' => $workshop->id,
-                ]);
-            }
-            $index++;
+            WorkshopMoment::insert([
+                'moment_id' => 1,
+                'workshop_id' => $workshop->id,
+            ]);
+            WorkshopMoment::insert([
+                'moment_id' => 2,
+                'workshop_id' => $workshop->id,
+            ]);
+            WorkshopMoment::insert([
+                'moment_id' => 3,
+                'workshop_id' => $workshop->id,
+            ]);
         }
 
         Bookings::factory()->count(50)->create();

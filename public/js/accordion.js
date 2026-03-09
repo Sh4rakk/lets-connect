@@ -5,20 +5,20 @@ function toggleAccordion(button) {
     document.querySelectorAll('.accordion-content').forEach(div => div.style.display = 'none');
     document.querySelectorAll('.accordion-btn span:last-child').forEach(span => span.textContent = '+');
     document.querySelectorAll('.accordion-btn').forEach(btn => {
-        btn.classList.remove('bg-orange-600', 'text-white');
-        btn.classList.add('bg-blue-600', 'text-white');
+        btn.classList.remove('bg-orange-900', 'text-white');
+        btn.classList.add('bg-blue-900', 'text-white');
     });
 
     if (!isOpen) {
         content.style.display = "block";
         button.querySelector('span:last-child').textContent = '-';
-        button.classList.remove('bg-blue-600');
-        button.classList.add('bg-orange-600', 'text-white');
+        button.classList.remove('bg-blue-900');
+        button.classList.add('bg-orange-900', 'text-white');
     }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.accordion-content').forEach(div => div.style.display = 'none');
     document.querySelectorAll('.accordion-btn span:last-child').forEach(span => span.textContent = '+');
-    document.querySelectorAll('.accordion-btn').forEach(btn => btn.classList.add('bg-blue-600', 'text-white'));
+    document.querySelectorAll('.accordion-btn').forEach(btn => btn.classList.add('bg-blue-900', 'text-white'));
 });

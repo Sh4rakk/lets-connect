@@ -26,8 +26,8 @@
             bottom: 0%;
             left: 50%;
             transform: translateX(-50%);
-            width: 100%; 
-            z-index: 0;  
+            width: 100%;
+            z-index: 0;
         }
 
 
@@ -38,13 +38,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);  
-            box-shadow: 0 0 60px 30px rgba(0, 0, 0, 0.9);  
-            z-index: -1;  
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 60px 30px rgba(0, 0, 0, 0.9);
+            z-index: -1;
         }
 
         .message-box {
-            background-color: #010174;  
+            background-color: #010174;
             color: white;
             padding: 40px;
             border-radius: 10px;
@@ -52,9 +52,9 @@
             max-width: 45%;
             margin: 20px auto;
             position: relative;
-            z-index: 1;  
+            z-index: 1;
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
@@ -63,7 +63,7 @@
         .message-box pre {
             font-size: 20px;
             font-weight: bold;
-            margin: 10px 0;  
+            margin: 10px 0;
         }
 
         .countdown {
@@ -96,11 +96,11 @@
         </div>
     </div>
 
-   
+
     <img class="background-container" src="{{ asset('/images/24213_SAVETHEDATE_LETS_CONNECT_01.jpg') }}">
 
     <script>
-        let countdown = 5;  
+        let countdown = 5;
         const timerElement = document.getElementById('timer');
 
         const interval = setInterval(() => {
@@ -111,7 +111,7 @@
                 clearInterval(interval);
 
                 setTimeout(() => {
-                    window.location.href = 'http://localhost/letsconnect/public/dashboard';  
+                    window.location.href = '{{ route('dashboard') }}';
                 }, 1000);
             }
         }, 1000);

@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class WorkshopSeeder extends Seeder
 {
@@ -29,13 +30,16 @@ class WorkshopSeeder extends Seeder
         $arrayIds = [];
         // Insert data into the database
         foreach ($workshops["Titles"] as $workshop) {
+            // Generate a UUID for the workshop
+            $workshopId = Str::uuid()->toString();
             // Insert workshop into the 'workshops' table
-            $stmt = $pdo->prepare("INSERT INTO workshops (name) VALUES (:name)");
+            $stmt = $pdo->prepare("INSERT INTO workshops (id, name, created_at, updated_at) VALUES (:id, :name, NOW(), NOW())");
             $stmt->execute([
+                'id' => $workshopId,
                 'name' => $workshop
-                
+
             ]);
-            array_push($arrayIds, $pdo->lastInsertId());
+            array_push($arrayIds, $workshopId);
         }
 
         $i = 0;

@@ -48,8 +48,9 @@ async function insertData() {
     });
 
     // Iterate over capacityText elements
-    capacityText.forEach((element, index) => {
-        let workshopId = index + 1; // Assuming workshop IDs start from 1 and align sequentially
+    capacityText.forEach((element) => {
+        let workshopId = element.id.replace('capacityText', '');
+
         if (workshopMap[workshopId]) {
             let rounds = workshopMap[workshopId];
 

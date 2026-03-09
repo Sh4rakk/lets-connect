@@ -3,6 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Profile') }}
         </h2>
+        <h1 class="text-2xl font-bold text-center text-gray-800">{{$wsm->workshop->name}} {{$wsm->moment->time}}</h1>
     </x-slot>
 
     <div class="py-12">

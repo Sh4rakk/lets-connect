@@ -5,6 +5,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\WorkshopDashboardController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\Success;
 use App\Http\Controllers\MailController;
 use App\Mail\SendMail;
@@ -44,7 +45,16 @@ Route::get('/workshop', function () {
     return json_encode(Workshop::all());
 });
 
-Route::get('/wdashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('adminDashboard');
+Route::get('/admin-dashboard', function () {
+    return view('dashboard.selection');
+})->middleware(['role:admin'])->name('selectionDashboard');
+
+Route::get('/students-overview', [UserController::class, 'index'])->middleware(['role:admin'])->name('students-overview');
+Route::get('/edit-student/{id}', [UserController::class, 'edit'])->middleware(['role:admin'])->name('edit-student');
+Route::patch('/edit-student/{id}/bookings', [UserController::class, 'updateBookings'])->middleware(['role:admin'])->name('edit-student.bookings.update');
+
+
+Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('workshop-dashboard');
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->name('workshop-moment.showbookings');
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->name('workshop-moment.showfilteredbookings');
 

@@ -20,7 +20,7 @@ class BookingsFactory extends Factory
     public function definition(): array
     {
         return [
-            'wm_id' => rand(1, 5),
+            'wm_id' => WorkshopMoment::inRandomOrder()->first()?->id ?? WorkshopMoment::factory(),
             'student_id' => User::factory(),
         ];
     }
