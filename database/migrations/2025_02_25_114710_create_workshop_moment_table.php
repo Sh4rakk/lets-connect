@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('moment_id');
             $table->uuid('workshop_id');
-            $table->foreign('moment_id')->references('id')->on('moments')->onDelete('set null');
-            $table->foreign('workshop_id')->references('id')->on('workshops')->onDelete('set null');
+            $table->foreign('moment_id')->references('id')->on('moments')->onDelete('cascade');
+            $table->foreign('workshop_id')->references('id')->on('workshops')->onDelete('cascade');
             $table->timestamps();
         });
     }

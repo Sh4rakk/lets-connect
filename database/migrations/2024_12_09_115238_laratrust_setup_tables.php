@@ -39,7 +39,7 @@ class LaratrustSetupTables extends Migration
 
             $table->foreign('role_id')->references('id')->on('roles')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->primary(['user_id', 'role_id', 'user_type']);
         });
@@ -52,7 +52,7 @@ class LaratrustSetupTables extends Migration
 
             $table->foreign('permission_id')->references('id')->on('permissions')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->primary(['user_id', 'permission_id', 'user_type']);
         });

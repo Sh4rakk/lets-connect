@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('wm_id');
             $table->uuid('student_id');
             $table->foreign('wm_id')->references('id')->on('workshop_moments');
-            $table->foreign('student_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
