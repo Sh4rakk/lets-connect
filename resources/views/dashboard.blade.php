@@ -80,21 +80,21 @@
                 </div>
                 <div class="workshops" ondrop="drop(event, this)" ondragover="allowDrop(event)" draggable="true" id="4">
                     @foreach ($workshops as $workshop)
-                        <div class='workshop' id='workshop{{ $workshop->id - 1 }}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(event)' style='@if($registrationsClosed)opacity: 0.5; position: relative;@endif'>
+                        <div class='workshop' id='workshop{{ $workshop->id}}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(event)' style='@if($registrationsClosed)opacity: 0.5; position: relative;@endif'>
                             @if($registrationsClosed)
                                 <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; z-index: 10;">🔒</div>
                             @endif
-                            <div class='info' onclick='info(event)' id='info{{ $workshop->id - 1 }}' tabindex='0'>i</div>
-                            <div class='popup' id='popup{{ $workshop->id - 1 }}' draggable='false'>
-                                <button class='close' onclick='closePopup({{ $workshop->id - 1 }})'>x</button>
+                            <div class='info' onclick='info(event)' id='info{{ $workshop->id}}' tabindex='0'>i</div>
+                            <div class='popup' id='popup{{ $workshop->id}}' draggable='false'>
+                                <button class='close' onclick='closePopup({{ $workshop->id}})'>x</button>
                                 <a href='https://xerte.deltion.nl/play.php?template_id=8708#programma' class='popup-header' target='_blank'>Klik <span class='highlight'>hier</span> voor meer informatie</a>
                                 <div class='description'>
                                     <div class='descriptionText'>{{ $workshop->full_description }} </div>
                                     <div class='descriptionImage'><img src='{{ $workshop->image_url }}'></div>
                                 </div>
                             </div>
-                            <div class='title showText' id='title{{ $workshop->id - 1 }}' workshop='{{ $workshop->name }}'>{{$workshop->name }}  </div>
-                            <div class="capacityText title hiddenText" id="capacityText{{ $workshop->id -1}}"></div>
+                            <div class='title showText' id='title{{ $workshop->id}}' workshop='{{ $workshop->name }}'>{{$workshop->name }}  </div>
+                            <div class="capacityText title hiddenText" id="capacityText{{ $workshop->id}}"></div>
                             <div class="locationWorkshop">Deze workshop vind plaats in: <div id="location">#</div></div>
                         </div>
                     @endforeach
@@ -191,7 +191,7 @@
             <div class="space-y-3 mb-6">
                 @foreach ($workshops as $workshop)
                     <div class="bg-white border-2 border-gray-300 rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:shadow-md transition"
-                         onclick="selectWorkshopMobile({{ $workshop->id - 1 }}, '{{ addslashes($workshop->name) }}')">
+                         onclick="selectWorkshopMobile({{ $workshop->id}}, '{{ addslashes($workshop->name) }}')">
                         <div class="flex items-start gap-3">
                             <img src="{{ $workshop->image_url }}" alt="{{ $workshop->name }}" class="w-16 h-16 object-cover rounded">
                             <div class="flex-1">
@@ -301,7 +301,6 @@
                     if (!selectedRounds[1] || !selectedRounds[2] || !selectedRounds[3]) {
                         document.getElementById('mobileSavePopup').classList.add('hidden');
                         document.getElementById('error-message-mobile').textContent = "Selecteer eerst een workshop voor alle rondes.";
-                        document.getElementById('error-popup-mobile').classList.remove('hidden');
                         return;
                     }
 
