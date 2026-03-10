@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('wm_id');
-            $table->unsignedBigInteger('student_id');
+            $table->uuid('student_id');
             $table->foreign('wm_id')->references('id')->on('workshop_moments');
-            $table->foreign('student_id')->references('id')->on('users');
+            $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

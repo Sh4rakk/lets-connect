@@ -1,12 +1,13 @@
 <x-app-layout>
+    <x-slot name="leftHeader">
+        <a href="https://xerte.deltion.nl/play.php?template_id=8708#programma" target="_blank" class="flex gap-1">
+            <p class="deltion-blue font-semibold text-xl">Let's</p>
+            <p class="deltion-orange font-semibold text-xl">Connect</p>
+        </a>
+    </x-slot>
+
     <x-slot name="header">
-        <x-slot name="leftHeader">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <a href="https://xerte.deltion.nl/play.php?template_id=8708#programma" target="_blank" style="display: flex">
-                    <p class="deltion-blue">Let's</p><pre> </pre><p class="deltion-orange">Connect</p>
-                </a>
-            </h2>
-        </x-slot>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Workshop Dashboard</h2>
     </x-slot>
 
     <!DOCTYPE html>
@@ -20,7 +21,6 @@
         <script src="{{ asset('/js/confirmPopup.js') }}"></script>
         <script src="{{ asset('/js/errorPopup.js') }}"></script>
         <script src="{{ asset('/js/infoPopup.js') }}"></script>
-        <script src="{{ asset('/js/register.js') }}"></script>
     </head>
     <body>
 
@@ -229,7 +229,7 @@
                         </button>
                     </div>
                 </div>
-            </div>  
+            </div>
 
             <!-- Save Confirmation Modal -->
             <div id="mobileSavePopup" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 flex items-center justify-center">
@@ -319,7 +319,7 @@
                     document.getElementById('error-popup-mobile').classList.add('hidden');
                     document.getElementById('mobileSavePopup').classList.add('hidden');
                 }
-                
+
             </script>
         </div>
 

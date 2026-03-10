@@ -1,12 +1,12 @@
 <x-app-layout>
 
-<x-slot name="leftHeader">
-    <x-secondary-anchor :href="route('dashboard')">Terug naar studenten overzicht</x-secondary-anchor>
-</x-slot>
+    <x-slot name="leftHeader">
+        <x-secondary-anchor :href="route('selectionDashboard')">Terug naar admin dashboard</x-secondary-anchor>
+    </x-slot>
 
-<x-slot name="header">
-    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Workshop Overzicht</h2>
-</x-slot>
+    <x-slot name="header">
+        <h1 class="text-2xl font-bold text-center text-gray-800">Workshop Overzicht</h1>
+    </x-slot>
 
 <div class="container mx-auto p-6 max-w-5xl">
     <div class="flex justify-between items-center mb-6">
@@ -76,7 +76,7 @@
                                     </td>
 
                                     <td class="px-6 py-4 border-b text-sm">
-                                        {!! $isAdmin ? '<a href="' . route('workshop-moment.showbookings', ['wsm' => $wm]) . '" class="text-blue-600 font-semibold hover:underline">🔗 Bekijk</a>' : ($isOpen ? '<a href="' . route('workshop-moment.showbookings', ['wsm' => $wm]) . '" class="text-blue-600 font-semibold hover:underline">🔗 Bekijk</a>' : '<span class="text-gray-400 font-semibold">🔒 Locked</span>') !!}
+                                        {!! $isAdmin ? '<a href="' . route('workshop-moment.showbookings', ['wsm' => $wm]) . '" class="text-deltion-blue-600 font-semibold hover:underline">🔗 Bekijk</a>' : ($isOpen ? '<a href="' . route('workshop-moment.showbookings', ['wsm' => $wm]) . '" class="text-deltion-blue-600 font-semibold hover:underline">🔗 Bekijk</a>' : '<span class="text-gray-400 font-semibold">🔒 Locked</span>') !!}
                                     </td>
                                 </tr>
                             @endforeach

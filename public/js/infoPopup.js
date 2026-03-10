@@ -1,5 +1,5 @@
 let currentZIndex = 1000;
-let originalWorkshopPositions = new Map(); 
+let originalWorkshopPositions = new Map();
 
 function storeOriginalPositions() {
     const workshopList = document.getElementById("4");
@@ -14,7 +14,7 @@ function restoreWorkshopPosition(workshop) {
     const workshops = Array.from(workshopList.children);
 
     if (originalIndex !== undefined) {
-    
+
         let referenceNode = workshops[originalIndex] || null;
         workshopList.insertBefore(workshop, referenceNode);
     } else {
@@ -39,7 +39,6 @@ function addCloseButton(workshop) {
         const workshopList = document.getElementById("4");
         let closeXpath = `//div[@workshop="` + workshop.querySelector(".title").getAttribute("workshop") + `"]`;
         newLocation = document.evaluate(closeXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.parentNode.parentNode;
-        console.log("new location: ", newLocation);
 
         let index = originalWorkshopOrder.indexOf(workshop.id);
 
@@ -49,8 +48,8 @@ function addCloseButton(workshop) {
         } else {
             workshopList.appendChild(workshop);
         }
-        restoreWorkshopPosition(workshop); 
-        workshopsInRounds.delete(workshop.id); 
+        restoreWorkshopPosition(workshop);
+        workshopsInRounds.delete(workshop.id);
         document.getElementById("save" + newLocation.id).value = "";
         updateSaveButton();
         closeButton.remove();
@@ -72,7 +71,7 @@ function checkRoundsFilled() {
 
 function info(event) {
     const buttonId = event.target.id;
-    const popupId = "popup" + buttonId.match(/\d+/)[0];
+    const popupId = "popup" + buttonId.slice(4);
     const popup = document.getElementById(popupId);
     const allPopups = document.querySelectorAll(".popup");
     allPopups.forEach(p => {

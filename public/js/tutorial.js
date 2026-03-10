@@ -26,7 +26,7 @@ let tutorialLength = tutorialSteps.length - 1;
 
 document.addEventListener("DOMContentLoaded", () => {
     var cookieSatus = cookieState();
-    
+
     if(!cookieSatus) {
         startTutorial();
         document.cookie = "render=loaded"
@@ -54,14 +54,9 @@ observerI.observe(document.body, { childList: true, subtree: true });
 // dragged workshop.
 const observerDrag = new MutationObserver((mutationsList, observer) => {
     let roundOneX = sendRoundX();
-    let workshopOne = sendWorkshop();
     if(roundOneX) {
-        // roundOneX.addEventListener('click', function () {
-        if(roundOne.contains(workshopOne)) {
-            nextButton.disabled = false;
-            nextStep();
-        }
-        // })
+        nextButton.disabled = false;
+        nextStep();
         observer.disconnect();
     }
 });
@@ -99,7 +94,7 @@ function nextStep() {
     document.getElementById('tutorial-text').textContent = tutorialSteps[currentStepIndex].text;
 
     // styling buttons
-    if (currentStepIndex) { // if index is not zero. (true - false if value < 0), 
+    if (currentStepIndex) { // if index is not zero. (true - false if value < 0),
         prevButton.style.display = "flex";
         tutButtons.style.justifyContent = "space-between";
     }
@@ -182,27 +177,22 @@ function showNextOverlay() {
 }
 
 function sendWorkshop() {
-    // first workshop
-    let workshopOne = document.getElementById('workshop0')
-    return workshopOne;
+    // first workshop - select first workshop element regardless of ID (works with UUIDs)
+    return document.querySelector('.workshops .workshop:first-child');
 }
 
 function sendInfoIcon() {
-    // first icon
-    let iconOne = document.getElementById('info0');
-    return iconOne;
+    // first icon - get info icon from first workshop (works with UUIDs)
+    let workshopOne = sendWorkshop();
+    return workshopOne ? workshopOne.querySelector('.info') : null;
 }
 
 function sendRoundX() {
-    // let roundX = document.querySelector('#round1 .round .workshop .close-button')
-
-    let workshopOne = sendWorkshop();
-
-    let roundOneX;
-    if (currentStepIndex && roundOne.contains(workshopOne)) {
-        roundOneX = document.querySelector('#round1 .round .workshop .close-button');
+    let workshopInRound = roundOne.querySelector('.workshop');
+    if (currentStepIndex && workshopInRound) {
+        return workshopInRound.querySelector('.close-button');
     }
-    return roundOneX;
+    return null;
 }
 
 function defaultStyling() {
@@ -292,7 +282,7 @@ function fourthStep() {
     defaultStyling() // resets previous styling.
 
     nextButton.disabled = true;
-    
+
     nextButton.classList.add("disabledStyle")
 
     let roundOneX = sendRoundX();

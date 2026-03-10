@@ -9,11 +9,12 @@ use Illuminate\Notifications\Notifiable;
 use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable implements LaratrustUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRolesAndPermissions;
+    use HasFactory, Notifiable, HasRolesAndPermissions, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +53,6 @@ class User extends Authenticatable implements LaratrustUser
 
     public function bookings(): HasMany
     {
-        return $this->hasMany(Bookings::class);
+        return $this->hasMany(Bookings::class, 'student_id');
     }
 }
