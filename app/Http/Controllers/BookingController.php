@@ -23,17 +23,20 @@ class BookingController extends Controller
             ], 403);
         }
 
-        // Retrieve workshop names from the request (e.g., save1, save2, save3, etc.)
-        $workshopNames = $request->only(['save1', 'save2', 'save3']);
-        
-        // Initialize an array to hold the workshop objects
+        // Retrieve submitted workshop values (UUID preferred, legacy names supported).
+        $submittedValues = $request->only(['save1', 'save2', 'save3']);
+
         $workshops = [];
-        // Loop through the workshop names to fetch workshop data
-        foreach ($workshopNames as $workshopName) {
-            // Fetch the workshop by name (assuming 'name' is the field storing the workshop name)
-            $workshops[] = Workshop::where('name', $workshopName)->first();
+        foreach ($submittedValues as $index => $submittedValue) {
+            $workshop = $this->resolveWorkshop($submittedValue);
+            if (!$workshop) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Ongeldige workshop selectie voor {$index}."
+                ], 422);
+            }
+            $workshops[] = $workshop;
         }
-        //dd($workshops);
 
         // Initialize the error message
         $errormessage = "";
@@ -47,7 +50,7 @@ class BookingController extends Controller
                 $errormessage .= "Workshop " . ($index + 1) . " was unavailable. ";
             }
         }
-        
+
         // If there's an error message, return it
         if ($errormessage) {
             return response()->json([
@@ -61,7 +64,7 @@ class BookingController extends Controller
             // Create new bookings for each workshop moment
             foreach ($workshops as $index => $workshop) {
                 $wm = $this->getWorkshopMoment($workshop->id, $index + 1);
-                
+
                 Bookings::create([
                     'wm_id' => $wm->id,
                     'student_id' => auth()->id(),
@@ -71,9 +74,9 @@ class BookingController extends Controller
             foreach ($workshops as $index => $workshop) {
                 // Calculate the modulus value
                 $modValue = ($index + 1) % 3;  // This will give 1, 2, 0 for the 3 workshops
-            
+
                 $wm = $this->getWorkshopMoment($workshop->id, $index + 1);
-            
+
                 // Update the booking based on the modulus value
                 DB::table('bookings')
                     ->where('student_id', auth()->id())
@@ -83,6 +86,16 @@ class BookingController extends Controller
         }
 
         return redirect('/send-mail');
+    }
+
+    private function resolveWorkshop($submittedValue)
+    {
+        if (!$submittedValue) {
+            return null;
+        }
+
+        // Prefer primary key lookup (UUID), then fallback to legacy name lookup.
+        return Workshop::find($submittedValue) ?? Workshop::where('name', $submittedValue)->first();
     }
 
     private function getWorkshopMoment($workshopId, $momentId)
@@ -101,39 +114,39 @@ class BookingController extends Controller
     {
         // Get all workshops along with their moments and bookings count
         $workshops = Workshop::with(['workshopMoments' => function ($query) {
-            $query->withCount('bookings');  
+            $query->withCount('bookings');
         }])->get();
-    
+
         // Prepare the response data in a structured format
         $data = $workshops->map(function ($workshop) {
             return [
                 'workshop_name' => $workshop->name,
                 'moments' => $workshop->workshopMoments->map(function ($moment) use ($workshop) {
                     return [
-                        'workshop_id' => $workshop->id, 
-                        'capacity' => $moment->workshop->capacity, 
-                        'wm_id' => $moment->id, 
+                        'workshop_id' => $workshop->id,
+                        'capacity' => $moment->workshop->capacity,
+                        'wm_id' => $moment->id,
                         'bookings' => $moment->bookings_count,
                         'status' => $moment->bookings_count >= $moment->workshop->capacity
-                            ? 'Fully booked' 
-                            : 'Available spots', 
+                            ? 'Fully booked'
+                            : 'Available spots',
                     ];
                 })
             ];
         });
-    
+
         // Check if $data is not empty
         if ($data->isEmpty()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'No data available',
-            ], 404); 
+            ], 404);
         }
-    
+
         // If data exists, return success with the data
         return response()->json([
             'status' => 'success',
             'data' => $data,
         ]);
-    }    
+    }
 }

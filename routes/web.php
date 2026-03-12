@@ -19,7 +19,12 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard')->with("workshops", Workshop::all());
+    $user = Auth::user();
+    $bookings = $user->bookings()->with('workshopMoments.workshop', 'workshopMoments.moment')->get();
+    return view('dashboard', [
+        "workshops" => Workshop::all(),
+        "bookings" => $bookings
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');

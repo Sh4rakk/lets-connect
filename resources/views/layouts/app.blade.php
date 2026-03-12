@@ -14,26 +14,26 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="font-sans antialiased h-screen overflow-hidden">
+        <div class="h-full flex flex-col bg-gray-100">
             {{-- @include('layouts.navigation') --}}
 
             <!-- Page Heading -->
                 @isset($header)
-                    <header class="bg-white shadow">
+                    <header class="bg-white shadow flex-none z-10">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                            <div class="grid grid-cols-12 gap-4 items-center">
-                                <div class="col-span-3 flex items-center gap-4">
+                            <div class="grid grid-cols-2 gap-3 items-center md:grid-cols-12 md:gap-4">
+                                <div class="col-span-1 md:col-span-3 flex items-center gap-3 min-w-0">
                                     @isset($leftHeader)
                                         {{ $leftHeader }}
                                     @endisset
                                 </div>
 
-                                <div class="col-span-6 flex items-center justify-center">
+                                <div class="col-span-2 order-first md:order-none md:col-span-6 flex items-center justify-center text-center min-w-0">
                                     {{ $header }}
                                 </div>
 
-                                <div class="col-span-3 flex items-center justify-end">
+                                <div class="col-span-1 md:col-span-3 flex items-center justify-end min-w-0">
                                     <x-dropdown align="right" width="48">
                                         <x-slot name="trigger">
                                             <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -72,7 +72,7 @@
                 @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="flex-1 overflow-y-auto w-full">
                 {{ $slot }}
             </main>
         </div>

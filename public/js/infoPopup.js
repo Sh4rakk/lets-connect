@@ -37,8 +37,9 @@ function addCloseButton(workshop) {
     closeButton.textContent = "X";
     closeButton.addEventListener("click", function () {
         const workshopList = document.getElementById("4");
-        let closeXpath = `//div[@workshop="` + workshop.querySelector(".title").getAttribute("workshop") + `"]`;
-        newLocation = document.evaluate(closeXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.parentNode.parentNode;
+        const roundBeforeMove = workshop.parentNode && workshop.parentNode.classList.contains('round')
+            ? workshop.parentNode
+            : null;
 
         let index = originalWorkshopOrder.indexOf(workshop.id);
 
@@ -50,7 +51,12 @@ function addCloseButton(workshop) {
         }
         restoreWorkshopPosition(workshop);
         workshopsInRounds.delete(workshop.id);
-        document.getElementById("save" + newLocation.id).value = "";
+        if (roundBeforeMove) {
+            document.getElementById("save" + roundBeforeMove.id).value = "";
+        }
+        if (typeof syncDesktopSaveInputsFromRounds === 'function') {
+            syncDesktopSaveInputsFromRounds();
+        }
         updateSaveButton();
         closeButton.remove();
     });
@@ -70,9 +76,17 @@ function checkRoundsFilled() {
 }
 
 function info(event) {
+    event.stopPropagation();
+
     const buttonId = event.target.id;
     const popupId = "popup" + buttonId.slice(4);
     const popup = document.getElementById(popupId);
+
+    // Mobile cards do not render desktop popup nodes.
+    if (!popup) {
+        return;
+    }
+
     const allPopups = document.querySelectorAll(".popup");
     allPopups.forEach(p => {
         if (p !== popup) {
@@ -95,7 +109,7 @@ function closePopup(workshopId) {
 }
 
 document.addEventListener("click", function (event) {
-    const isInfoButton = event.target.classList.contains("info");
+    const isInfoButton = event.target.classList.contains("info") || event.target.classList.contains("mobile-info");
     const isPopup = event.target.closest(".popup");
     if (!isInfoButton && !isPopup) {
         const allPopups = document.querySelectorAll(".popup");
