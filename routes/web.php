@@ -60,6 +60,7 @@ Route::patch('/edit-student/{id}/bookings', [UserController::class, 'updateBooki
 Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('workshop-dashboard');
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->middleware(['role:admin'])->name('workshop-moment.showbookings');
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->middleware(['role:admin'])->name('workshop-moment.showfilteredbookings');
+Route::get('/workshop/{workshopName}/export', [WorkshopDashboardController::class, 'exportWorkshop'])->middleware(['role:admin'])->name('workshop.export');
 
 /*Route::get('/bookings', function () {
 
