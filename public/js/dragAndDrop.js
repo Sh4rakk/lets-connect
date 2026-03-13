@@ -1,5 +1,21 @@
 let originalWorkshopOrder = [];
 
+function getWorkshopIdFromElement(workshopElement) {
+    if (!workshopElement || !workshopElement.id) return "";
+    return workshopElement.id.replace(/^workshop/, "");
+}
+
+function syncDesktopSaveInputsFromRounds() {
+    [1, 2, 3].forEach((roundNumber) => {
+        const roundElement = document.getElementById(String(roundNumber));
+        const saveInput = document.getElementById(`save${roundNumber}`);
+        if (!saveInput || !roundElement) return;
+
+        const workshopInRound = roundElement.querySelector('.workshop');
+        saveInput.value = getWorkshopIdFromElement(workshopInRound);
+    });
+}
+
 // Event listener for enabling drops on a valid target
 function allowDrop(ev) {
     ev.preventDefault();
@@ -38,42 +54,27 @@ function drop(ev) {
     // If no children are present, append the dragged element
     if (!targetRound.hasChildNodes()) {
         targetRound.appendChild(draggedElement);
-        let title = draggedElement.querySelector(".title");
-        let xpath = `//input[@value="` + title.getAttribute('workshop') + `"]`;
-        let matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        if (matchingElement !== null) {
-            matchingElement.value = "";
-        }
-        document.getElementById("save" + targetRound.id).value = title.getAttribute('workshop');
+        syncDesktopSaveInputsFromRounds();
         planningChanged = true;
         addCloseButton(draggedElement, targetRound);
         workshopsInRounds.add(draggedElement.id);
         checkWorkshopsInRounds();
     } else {
         // Handle swapping if there's an existing workshop in the target round
-        oldWorkshop = targetRound.firstChild; 
-        oldRound = draggedElement.parentNode; 
-        
+        oldWorkshop = targetRound.firstChild;
+        oldRound = draggedElement.parentNode;
+
         if (targetRound.firstChild.id !== "workshop0" && targetRound.firstChild.id !== "workshop1" && targetRound.firstChild.id !== "workshop2") {
-            let draggedTitle = draggedElement.querySelector(".title"); 
-            let oldTitle = oldWorkshop.querySelector(".title"); 
-            let draggedXpath = `//input[@value="` + oldTitle.getAttribute('workshop') + `"]`;
-            let draggedMatchingElement = document.evaluate(draggedXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            let oldXpath = `//input[@value="` + draggedTitle.getAttribute('workshop') + `"]`;
-            let oldMatchingElement = document.evaluate(oldXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            draggedMatchingElement.value = draggedTitle.getAttribute('workshop'); //set oude input van de te swappen workshop naar value van de workshop waarmee je wil swappen
-            if (oldMatchingElement) {
-                oldMatchingElement.value = oldTitle.getAttribute('workshop'); 
-            }
-            targetRound.replaceChild(draggedElement, oldWorkshop);
-            oldRound.appendChild(oldWorkshop);
-            addCloseButton(draggedElement, targetRound)
-            if (oldWorkshop.parentNode.id == 4) {
-                oldWorkshop.querySelector(".close-button").remove();
-            }
-        }
-    }
-    updateSaveButton();    
+             targetRound.replaceChild(draggedElement, oldWorkshop);
+             oldRound.appendChild(oldWorkshop);
+             syncDesktopSaveInputsFromRounds();
+             addCloseButton(draggedElement, targetRound)
+             if (oldWorkshop.parentNode.id == 4) {
+                 oldWorkshop.querySelector(".close-button").remove();
+             }
+         }
+     }
+    updateSaveButton();
 }
 
 
@@ -82,18 +83,18 @@ function customDrag(event) {
     let ghostEl;
 
     const draggedElement = event.target;
-    
+
     const title = draggedElement.querySelector('.title');
 
     ghostEl = event.target.cloneNode(true);
     ghostEl.classList.remove('hiddenText');
-    ghostEl.classList.add('showText'); 
+    ghostEl.classList.add('showText');
 
-    ghostEl.classList.add("ghost");    
+    ghostEl.classList.add("ghost");
 
     ghostEl.style.width = draggedElement.offsetWidth + 'px';
     ghostEl.style.height = draggedElement.offsetHeight + 'px';
-    ghostEl.style.position = "absolute";  
+    ghostEl.style.position = "absolute";
 
     document.body.appendChild(ghostEl);
 

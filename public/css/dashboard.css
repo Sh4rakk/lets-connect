@@ -58,25 +58,25 @@ html, body{
     width: 40%;
     max-height: 580px;
     display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 10px; 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     overflow: auto;
     padding-right: 15px;
 }
 
 .workshops .workshop {
-    width: 98%; 
-    height: 150px; 
-    margin: 0; 
+    width: 98%;
+    height: 150px;
+    margin: 0;
     border: 3px solid rgb(1, 1, 116);
     border-radius: 10px;
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: flex-start;
     text-align: center;
     flex-direction: column;
-    position: relative; 
-    overflow: hidden;  
+    position: relative;
+    overflow: hidden;
     cursor: grab;
     margin: 3px 3px;
 }
@@ -110,6 +110,21 @@ html, body{
     color: white;
     cursor: pointer;
     align-self: flex-start;
+}
+
+.mobile-info {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: #ffffff;
+    background-color: #1f2b60;
+    cursor: pointer;
 }
 
 /* Rood kruisje binnen workshops */
@@ -181,8 +196,8 @@ html, body{
     transition: opacity 0.3s ease-in-out;
     max-height: 70%;
     overflow: auto;
-    overflow-x: hidden; 
-    overflow-y: auto; 
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .popup p {
@@ -210,22 +225,22 @@ html, body{
 .popup::-webkit-scrollbar {
     width: 20px;
 }
-  
+
 /* Track */
 .popup::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
+    box-shadow: inset 0 0 5px grey;
     border-radius: 15px;
 }
-   
+
 /* Handle */
 .popup::-webkit-scrollbar-thumb {
     background: #343469;
     border-radius: 7px;
 }
-  
+
 /* Handle on hover */
 .popup::-webkit-scrollbar-thumb:hover {
-    background: rgb(245, 130, 32); 
+    background: rgb(245, 130, 32);
 }
 /* Opslaan-knop */
 .button {
@@ -449,21 +464,21 @@ html, body{
 
 /* Track */
 .workshops::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
+    box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
-    border: 2px solid #343469; 
+    border: 2px solid #343469;
 }
 
 /* Handle */
 .workshops::-webkit-scrollbar-thumb {
-    background: #343469; 
+    background: #343469;
     border-radius: 10px;
     border: 2px solid #181838;
 }
 
 /* Handle on hover */
 .workshops::-webkit-scrollbar-thumb:hover {
-    background: rgb(245, 130, 32); 
+    background: rgb(245, 130, 32);
     border: 2px solid rgb(165, 110, 7);
 }
 
@@ -477,57 +492,191 @@ html, body{
 }
 
 .popup-header {
-    color: black; 
-    text-decoration: none; 
+    color: black;
+    text-decoration: none;
 }
 
 .popup-header .highlight {
-    color: blue; 
-    text-decoration: underline; 
+    color: blue;
+    text-decoration: underline;
+}
+
+.success-page,
+.success-page * {
+    font-family: Figtree, ui-sans-serif, system-ui, sans-serif;
 }
 
 .success-page {
-    width: 100%;
-    height: 100%;
+    position: relative;
+    min-height: 100dvh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    background: linear-gradient(160deg, #f7f8ff 0%, #ffffff 45%, #fff5eb 100%);
+    gap: 12px;
+    text-align: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.success-page::before {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,200 Q300,100 600,200 T1200,200 L1200,400 L0,400 Z" fill="%23f58220"/><path d="M0,250 Q300,150 600,250 T1200,250 L1200,400 L0,400 Z" fill="%23343469"/></svg>');
+    background-repeat: repeat-x;
+    background-position: bottom;
+    background-size: auto 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.success-img,
+.success-brand,
+.success-title,
+.success-subtitle,
+.success-action {
+    position: relative;
+    z-index: 1;
+}
+
+.success-card {
+    width: min(760px, 100%);
+    background: #ffffff;
+    border: 1px solid #e8e8f1;
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
     flex-direction: column;
-    -webkit-box-shadow:inset 0px 0px 0px 20px #343469;
-    -moz-box-shadow:inset 0px 0px 0px 20px #343469;
-    box-shadow:inset 0px 0px 0px 20px #343469;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    z-index: 1;
+    box-shadow: 0 12px 34px rgba(26, 30, 88, 0.12);
 }
 
 .success-img {
-    height: 70%;
-    padding-top: 20px;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+    border-radius: 14px;
+    border: 1px solid #ececf6;
+}
+
+.success-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.success-brand-sep {
+    width: 14px;
 }
 
 .deltion-orange {
-    color:rgb(245, 130, 32)
+    color: rgb(245, 130, 32);
 }
 
 .deltion-blue {
     color: #343469;
 }
 
+.success-title {
+    margin: 16px 0 8px;
+    font-size: clamp(26px, 4vw, 40px);
+    line-height: 1.15;
+}
+
 .success-subtitle {
-    font-size: 15px;
+    max-width: 62ch;
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.5;
+    word-break: break-word;
 }
 
-.SaveSave{
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #010174;
-    color: white;
+.success-action {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    min-height: 44px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    color: #ffffff;
+    background: #343469;
+    transition: background-color 0.2s ease;
 }
 
-.SaveSave button:hover {
-       background-color: orange;
+.success-action:hover {
+    background: rgb(245, 130, 32);
+}
+
+@media (max-width: 640px) {
+    .success-page {
+        justify-content: flex-start;
+        padding-top: max(80px, env(safe-area-inset-top));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    .success-card {
+        border-radius: 14px;
+        padding: 16px;
+        margin: 0;
+    }
+
+    .success-img {
+        max-width: 100%;
+        max-height: 200px;
+    }
+
+    .success-brand {
+        font-size: 18px;
+    }
+
+    .success-subtitle {
+        font-size: 16px;
+    }
+
+    .success-action {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 420px) {
+    .success-title {
+        font-size: clamp(22px, 7vw, 30px);
+    }
+
+    .success-brand-sep {
+        display: none;
+    }
+
+    .success-img {
+        max-height: 180px;
+    }
+
+    .success-action {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 15px;
+    }
 }
 
 .hiddenText {
