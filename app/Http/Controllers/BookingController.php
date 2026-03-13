@@ -48,6 +48,7 @@ class BookingController extends Controller
             // Check if the workshop moment has available spots
             if (!$this->checkWorkshopMomentCapacity($wm)) {
                 $errormessage .= "Workshop " . ($index + 1) . " was unavailable. ";
+                return view('errors.409', ['errormessage' => $errormessage]);
             }
         }
 

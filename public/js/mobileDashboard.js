@@ -89,9 +89,7 @@ function getRoundCapacityLabel(workshopId, round) {
     const workshopData = workshopRoundCapacities[String(workshopId)];
     if (!workshopData || !workshopData[round]) return 'capaciteit onbekend';
 
-    return workshopData[round].isFull
-        ? 'workshop zit vol!'
-        : `${workshopData[round].spotsLeft} plekken over`;
+    return workshopData[round].isFull ? 'workshop zit vol!' : `${workshopData[round].spotsLeft} plekken over`;
 }
 
 function updateMobileRoundModalButtons() {
@@ -109,17 +107,21 @@ function updateMobileRoundModalButtons() {
         const selectedName = selectedRoundNames[round];
         const capacityLabel = getRoundCapacityLabel(currentWorkshopId, round);
 
-        button.disabled = isFilled;
+        // Check if workshop is full for this round
+        const workshopData = workshopRoundCapacities[String(currentWorkshopId)];
+        const isFull = workshopData && workshopData[round] && workshopData[round].isFull;
+
+        button.disabled = isFilled || isFull;
         button.textContent = isFilled
             ? `Ronde ${round} (${roundTimes[round]}) - ${capacityLabel} - Gekozen: ${selectedName}`
             : `Ronde ${round} (${roundTimes[round]}) - ${capacityLabel}`;
 
-        button.classList.toggle('bg-deltion-blue-900', !isFilled);
-        button.classList.toggle('hover:bg-deltion-blue-600', !isFilled);
-        button.classList.toggle('cursor-pointer', !isFilled);
+        button.classList.toggle('bg-deltion-blue-900', !isFilled && !isFull);
+        button.classList.toggle('hover:bg-deltion-blue-600', !isFilled && !isFull);
+        button.classList.toggle('cursor-pointer', !isFilled && !isFull);
 
-        button.classList.toggle('bg-gray-400', isFilled);
-        button.classList.toggle('cursor-not-allowed', isFilled);
+        button.classList.toggle('bg-gray-400', isFilled || isFull);
+        button.classList.toggle('cursor-not-allowed', isFilled || isFull);
     });
 }
 
