@@ -220,7 +220,7 @@ return [
              * If the message content is empty it won't be added to the redirection.
              */
             'redirect' => [
-                'url' => '/dashboard',
+                'url' => '/logout',
                 'message' => [
                     'key' => 'error',
                     'content' => 'no access',

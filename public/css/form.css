@@ -10,7 +10,7 @@ body, html {
     align-items: center;
 }
 
-/* Container voor registratie- en loginformulieren */
+
 .register-container, 
 .login-container {
     max-width: 500px;
@@ -19,11 +19,18 @@ body, html {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    min-height: 400px; 
+    box-sizing: border-box;
 }
 
+/* Formulieren */
 .register-form, 
 .login-form {
     width: 100%;
+}
+
+.register-form .form-group {
+    transition: all 0.2s ease-in-out;
 }
 
 /* Formuliervelden */
@@ -37,10 +44,12 @@ input[type="email"],
 input[type="password"], 
 select {
     width: 100%;
-    padding: 10px;  /* Gelijke padding voor alle invoervelden */
+    padding: 10px;
     border: 2px solid #343469;
     border-radius: 8px;
     font-size: 16px;
+    box-sizing: border-box;
+    height: 45px;
 }
 
 input:focus, 
@@ -48,6 +57,15 @@ select:focus {
     border-color: rgb(245, 130, 32);
     outline: none;
     box-shadow: 0 0 5px rgba(245, 130, 32, 0.5);
+}
+
+/* Foutmeldingen */
+.x-input-error {
+    min-height: 1.2em;
+    display: block;
+    color: red;
+    font-size: 0.875em;
+    margin-top: 4px;
 }
 
 /* Knoppen */
@@ -74,16 +92,21 @@ button:hover {
     margin-bottom: 20px;
 }
 
+.logo img {
+    width: 250px;  
+    display: block;
+    margin: 0 auto 20px;
+}
+
 /* Popup styling */
 #dataPopup {
     display: none;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -113,7 +136,7 @@ button:hover {
     gap: 0.5rem;
 }
 
-/* Scrollbar voor een mooie look */
+/* Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -127,38 +150,48 @@ button:hover {
     background: rgb(245, 130, 32);
 }
 
-/* Styling voor de rij met de velden Opleiding en Klas naast elkaar */
+/* Styling voor de rij met Opleiding en Klas naast elkaar */
 .form-group-row {
     align-items: center;
     display: flex;
-    gap: 20px;  /* Ruimte tussen de velden */
+    gap: 20px;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
 }
 
-#opleiding {
-    margin-right: auto;
+#opleiding, #klas {
+    width: 100%;
+    max-width: 280px;
 }
 
 .form-groupe, #klas {
-height: 30%;
     border-radius: 8px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 #klas {
-    min-height: 40px;  /* Stel een minimale hoogte in */
+    min-height: 40px;
     padding: 10px;
     border: 2px solid #343469;
-    border-radius: 8px;
     font-size: 16px;
-    width: 50%;
-    transform-origin: bottom;  /* Zorg ervoor dat het vanaf de onderkant groeit */
-    resize: vertical;  /* Laat de gebruiker het veld verticaal aanpassen */
-    overflow: auto;  /* Zorg ervoor dat de inhoud kan scrollen als de grootte te groot wordt */
+    transform-origin: bottom;
+    resize: vertical;
+    overflow: auto;
 }
 
 #klas:focus {
     border-color: rgb(245, 130, 32);
     outline: none;
     box-shadow: 0 0 5px rgba(245, 130, 32, 0.5);
+}
+.logo img {
+    width: 250px;  
+    display: block;
+    margin: 0 auto 20px; /* Zentereer het logo en geef het een beetje marge onderaan */
+
+    #opleiding,
+    #klas {
+        max-width: 100%;
+    }
 }

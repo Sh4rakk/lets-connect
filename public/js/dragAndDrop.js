@@ -23,7 +23,9 @@ function allowDrop(ev) {
 
 // Event listener for dragging
 function drag(ev) {
-    customDrag(ev)
+    if (window.innerWidth > 800) {
+        customDrag(ev)
+    }
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
@@ -77,7 +79,6 @@ function drop(ev) {
     updateSaveButton();
 }
 
-
 // Custom drag element style and ghost image
 function customDrag(event) {
     let ghostEl;
@@ -85,6 +86,8 @@ function customDrag(event) {
     const draggedElement = event.target;
 
     const title = draggedElement.querySelector('.title');
+
+    if(draggedElement.tagName.toString() === 'IMG') return;
 
     ghostEl = event.target.cloneNode(true);
     ghostEl.classList.remove('hiddenText');

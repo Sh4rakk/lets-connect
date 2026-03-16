@@ -33,3 +33,18 @@ opleidingSelect.addEventListener("change", function() {
     });
   }
 });
+
+document.querySelector('.register-form').addEventListener('submit', function(e) {
+  const emailInput = document.getElementById('email');
+  const email = emailInput.value.trim();
+
+  // Controleer of de eerste 8-9 tekens van het e-mailadres alleen uit cijfers bestaan
+  const emailPrefix = email.split('@')[0];
+  const firstPart = emailPrefix.substring(0, 9);
+  
+  if (!/^\d{8,9}$/.test(firstPart)) {
+      e.preventDefault();
+      alert('De eerste 8-9 tekens van je e-mailadres moeten alleen cijfers zijn.');
+      emailInput.focus();
+  }
+});

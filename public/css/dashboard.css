@@ -1,17 +1,22 @@
 /* Algemene styling */
-html, body{
+* {
+    font-family: Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+html,
+body {
     height: 100%;
     margin: 0;
     overflow: hidden;
 }
 
 .container {
-    height: 100vh; /* 100% van de schermhoogte */
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-  }
+}
 
 .main {
     width: 100%;
@@ -26,6 +31,28 @@ html, body{
     flex-direction: column;
 }
 
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .round {
     width: 300px;
     height: 150px;
@@ -36,7 +63,8 @@ html, body{
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative; /* Context voor het kruisje */
+    position: relative;
+
 }
 
 .round .workshop {
@@ -51,17 +79,18 @@ html, body{
     height: 100%;
     text-align: center;
     cursor: n-resize;
+    max-width: none;
 }
 
 .workshops {
     margin-bottom: 15px;
-    width: 40%;
-    max-height: 580px;
+    max-height: 500px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     overflow: auto;
     padding-right: 15px;
+    -webkit-user-drag: none;
 }
 
 .workshops .workshop {
@@ -72,7 +101,7 @@ html, body{
     border-radius: 10px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     text-align: center;
     flex-direction: column;
     position: relative;
@@ -85,6 +114,7 @@ html, body{
     background-color: #343469;
     color: white;
     font-weight: bold;
+    max-width: 240px;
 }
 
 .workshop:hover {
@@ -92,9 +122,10 @@ html, body{
     border-color: rgb(206, 107, 21);
 }
 
+
 /* Info knop */
 .info {
-    z-index:999;
+    z-index: 999;
     position: absolute;
     width: 10%;
     margin: 5px;
@@ -102,14 +133,16 @@ html, body{
     padding-right: 12px;
     top: 2px;
     display: flex;
-    justify-content: center;
-    align-items: center;
     font-family: monospace;
     font-weight: bold;
     font-size: 25px;
     color: white;
     cursor: pointer;
-    align-self: flex-start;
+}
+
+.round .close-button {
+    display: flex !important;
+    /* Maak de knop zichtbaar binnen de workshop */
 }
 
 .mobile-info {
@@ -149,8 +182,6 @@ html, body{
 .title {
     margin-top: 30px;
     width: 100%;
-    height: auto;
-    padding: 10px;
     display: flex;
     padding: 8%;
     justify-content: center;
@@ -176,7 +207,7 @@ html, body{
 
 /* Popup styling */
 .popup {
-    z-index:8;
+    z-index: 1005 !important;
     display: none;
     position: fixed;
     top: 50%; /* Zorg dat de popup correct gecentreerd wordt */
@@ -199,6 +230,7 @@ html, body{
     overflow-x: hidden;
     overflow-y: auto;
 }
+
 
 .popup p {
     padding-top: 4px;
@@ -242,6 +274,7 @@ html, body{
 .popup::-webkit-scrollbar-thumb:hover {
     background: rgb(245, 130, 32);
 }
+
 /* Opslaan-knop */
 .button {
     margin: 10px;
@@ -302,8 +335,8 @@ html, body{
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
-    pointer-events: auto;
+    z-index: 1002;
+    pointer-events: auto
 }
 
 .tutorial-step {
@@ -359,6 +392,7 @@ html, body{
     outline: 2px solid rgb(245, 130, 32);
     background: rgba(255, 165, 0, 0.2);
 }
+
 .textbox {
     display: block;
     margin: 10px;
@@ -383,7 +417,7 @@ html, body{
     background-color: orange; /* Donkerder blauw bij hover */
 }
 
-.flex{
+.flex {
     display: flex;
     justify-content: center;
 }
@@ -423,6 +457,7 @@ html, body{
     flex-direction: column;
     transition: opacity 0.3s ease-in-out;
     z-index: 9999;
+
 }
 
 /* Error box title */
@@ -494,6 +529,7 @@ html, body{
 .popup-header {
     color: black;
     text-decoration: none;
+    -webkit-user-drag: none;
 }
 
 .popup-header .highlight {
@@ -600,6 +636,7 @@ html, body{
 }
 
 .success-subtitle {
+    font-family: Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     max-width: 62ch;
     margin: 0;
     font-size: 18px;
@@ -677,20 +714,27 @@ html, body{
         padding: 12px 14px;
         font-size: 15px;
     }
-}
 
 .hiddenText {
     display: none !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Centreert verticaal */
+    align-items: center;
+    /* Centreert horizontaal */
+    text-align: center;
+    /* Zorgt ervoor dat tekst netjes in het midden blijft */
 }
 
 .capacityText {
     display: none;
-    font-size: smaller;
 }
 
 .showText {
     display: flex !important;
-    padding: 5%;
+    flex-direction: column;
+    padding: 10px 5px;
 }
 
 .locationWorkshop {
@@ -702,6 +746,7 @@ html, body{
     color: #cbcbcb;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .disabledStyle {
@@ -709,14 +754,17 @@ html, body{
     cursor: not-allowed !important;
 }
 
-.confpopup .button-container {
+/* .confpopup .button-container */
+.button-container {
     display: flex;
-    gap: 15px; /* Afstand tussen de knoppen */
-    justify-content: center; /* Knoppen centreren */
+    gap: 15px;
+    /* Afstand tussen de knoppen */
+    justify-content: center;
+    /* Knoppen centreren */
     margin-top: 15px;
 }
 
-.confpopup .yes-button {
+.yes-button {
     background-color: black;
     color: white;
     padding: 10px 20px;
@@ -726,11 +774,11 @@ html, body{
     cursor: pointer;
 }
 
-.confpopup .yes-button:hover {
+.yes-button:hover {
     background-color: black;
 }
 
-.confpopup .no-button {
+.no-button {
     background-color: white;
     color: black;
     padding: 10px 20px;
@@ -742,22 +790,184 @@ html, body{
     border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
 }
 
-.confpopup .no-button:hover {
+.no-button:hover {
     background-color: white;
 
 }
 
 .ghost {
-    color: white;              /* Set text color to black */
-    font-weight: 700;          /* Bold font */
-    background-color: #343469;  /* Make background black */
-    box-shadow: solid blue 2px;          /* Remove any box shadows */
-    position: absolute;        /* Position it absolutely in the document */
-    margin: 0;
-    height: 100%;
-    width: 10px;
-    border: 3px solid rgb(1, 1, 116);
     border-radius: 10px;
-    cursor: grab;
-    margin: 3px 3px;
+    border: 3px solid rgb(1, 1, 116);
+    outline: unset;
+    align-items: center;
+    text-align: center;
+    background: #343469;
+}
+
+/* popups */
+#workshopsPopup,
+#selectedWorkshopPopup {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1002;
+    overflow: auto;
+    pointer-events: none;
+}
+
+.popupWrapper,
+.selectedWrapper {
+    background-color: #F5F4F7;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    width: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1001;
+    position: fixed;
+    pointer-events: auto;
+}
+
+/* loader animation */
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid black;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: none;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    margin: 10px;
+}
+
+.whiteLoader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid white;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: none;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.image-container {
+    display: flex;
+    align-items: center;
+    /* Align text with image */
+    gap: 10px;
+    /* Add space between image and text */
+}
+
+.image-container img {
+    width: 115px;
+    height: auto;
+}
+
+.image-title {
+    font-size: 24px;
+    /* Bigger text */
+    font-weight: bold;
+    white-space: nowrap;
+    /* Prevents text from wrapping */
+}
+
+@media (max-width: 500px) {
+    .main {
+        margin-top: 25px;
+        justify-content: center;
+    }
+
+    /* rounds */
+    .round {
+        height: 110px;
+        width: 230px;
+    }
+
+    /* workshops */
+    #workshopsContainer {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .workshops {
+        max-height: 460px;
+    }
+
+    .workshops .workshop {
+        height: auto;
+    }
+
+    .chosenRound {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin: 5px;
+    }
+}
+
+@media (max-width: 800px) {
+    /* workshop popup */
+    .description {
+        flex-direction: column-reverse;
+    }
+
+    .descriptionText {
+        max-width: 100%;
+    }
+
+    .popup-header {
+        width: 85%;
+    }
+
+    .popup {
+        width: 85%;
+    }
+
+    .emptyDataDiv {
+        display: none;
+    }
+
+    .roundWorkshop {
+        align-items: center;
+        display: flex;
+        padding-right: 30px;
+    }
+
+    .main .rounds .round .locationWorkshop {
+        position: absolute;
+        bottom: 0;
+    }
+
+    .tutorial-overlay {
+        pointer-events: auto;
+    }
+
+    /* .round {
+        z-index: 1;
+    } */
+
+    .flex.col.round.placeholder {
+        pointer-events: none;
+    }
 }

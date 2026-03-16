@@ -5,6 +5,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\WorkshopDashboardController;
+use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\UserExportController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\Success;
@@ -36,6 +37,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified', 'checkSignupsOpen'])->name('dashboard');
 
 Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
+Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->name('Capacity');
 
 Route::get('/send-mail', [MailController::class, 'store']);
 
@@ -46,6 +48,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/save', [BookingController::class, 'bookWorkshop'])->middleware(['auth', 'verified']);
+
 
 Route::get('/overzicht', function () {
     return view('overzicht');
@@ -88,5 +91,18 @@ Route::get('/moments', function () {
 
 Route::get('/export-users', [UserExportController::class, 'export'])
     ->name('users.export');
+
+
+// Two-factor authentication routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/two-factor/challenge', [TwoFactorAuthController::class, 'showChallenge'])
+        ->name('two-factor.challenge');
+
+    Route::post('/two-factor/verify', [TwoFactorAuthController::class, 'verify'])
+        ->name('two-factor.verify');
+
+    Route::post('/two-factor/resend', [TwoFactorAuthController::class, 'resend'])
+        ->name('two-factor.resend');
+});
 
 require __DIR__.'/auth.php';

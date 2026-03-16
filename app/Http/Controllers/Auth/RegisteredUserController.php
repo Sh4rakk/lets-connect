@@ -28,24 +28,37 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'ends_with:@st.deltion.nl', 'unique:users,email'],
-            'klas' => ['required', 'string', 'max:255'],
-        ]);
+{
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => [
+            'required',
+            'email',
+            'ends_with:@st.deltion.nl',
+            'unique:users,email',
+            function ($attribute, $value, $fail) {
+                $prefix = explode('@', $value)[0];
+                $firstPart = substr($prefix, 0, 9);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'class' => $request->klas,
-            // 'password' => Hash::make($request->password),
-        ]);
+                if (!preg_match('/^\d{8,9}$/', $firstPart)) {
+                    $fail('De eerste 8-9 tekens van het e-mailadres moeten alleen cijfers zijn.');
+                }
+            },
+        ],
+        'klas' => ['required', 'string', 'max:255'],
+    ]);
 
-        event(new Registered($user));
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'class' => $request->klas,
+        // 'password' => Hash::make($request->password),
+    ]);
 
-        Auth::login($user);
+    event(new Registered($user));
 
-        return redirect(route('dashboard', absolute: false));
-    }
+    Auth::login($user);
+
+    return redirect(route('dashboard', absolute: false));
+}
 }

@@ -21,13 +21,30 @@ let workshopsInRounds = new Set();
 //     planningChanged = false; 
 //     closeSavePopup();
 // }
+function confirmSave(event) {
+    event.preventDefault();
 
-function confirmSave() {
+    // Disable de knop en toon de spinner
+    const saveButton = document.getElementById('confirm-yes-button');
+    const spinner = document.getElementById('save-spinner');
+    saveButton.disabled = true;
+    spinner.style.display = 'inline-block';
+
+    // Verzamel ronde + workshop data (voor logging of gebruik in JS)
     const rounds = [...document.querySelectorAll(".round")].map(round => ({
         roundId: round.id,
         workshops: [...round.children].map(workshop => workshop.id)
     }));
+
+    console.log("Op te slaan data:", rounds);
+
+    // Je kunt eventueel de data posten met fetch i.p.v. formulier-submissie
+    // Maar omdat je een form gebruikt, gewoon dit:
+    setTimeout(() => {
+        document.getElementById("confirmForm").submit();
+    }, 500);
 }
+
 
 function cancelSave() {
     closeSavePopup();

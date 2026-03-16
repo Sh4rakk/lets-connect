@@ -8,15 +8,33 @@ use App\Models\Workshop;
 use App\Models\Setting;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Spatie\LaravelPdf\Facades\Pdf;
+
 
 class WorkshopDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return view('dashboard.workshops')->with('workshopmoments', WorkshopMoment::with(['workshop'], ['bookings'])->get());
 
         //return view('dashboard.bookings')->with ('bookings',  Bookings::with(['student', 'workshopMoment.workshop', 'workshopMoment.moment'])->get());
+
     }
+
+
+    public function pdf(Request $request){
+        $workshopmoments = WorkshopMoment::with(['workshop', 'bookings.student', 'moment'])->get();
+
+        if ($request->query('pdf')) {
+            $pdf = Pdf::view('dashboard.showbookings', compact('workshopmoments'));
+            return $pdf->download('boekingen.pdf');
+        }
+
+        return view('dashboard.showbookings', compact('workshopmoments'));
+    }
+
+
+
     public function showbookings(WorkShopMoment $wsm)
     {
         //$wsm->load('bookings');
@@ -74,9 +92,9 @@ class WorkshopDashboardController extends Controller
     {
         \Log::info('Toggle signups called');
         $setting = Setting::where('key', 'signups_open')->first();
-        
+
         \Log::info('Current setting:', ['setting' => $setting ? $setting->toArray() : 'null']);
-        
+
         if ($setting) {
             $setting->value = $setting->value == '1' ? '0' : '1';
             $setting->save();
@@ -124,14 +142,14 @@ class WorkshopDashboardController extends Controller
             $roundNumber = $wm->moment->id;
             $time = $wm->moment->time;
             $workshop = $wm->workshop->name;
-            
+
             if ($wm->bookings->count() === 0) {
                 $sheet->setCellValue('A' . $row, $workshop);
                 $sheet->setCellValue('B' . $row, 'Ronde ' . $roundNumber);
                 $sheet->setCellValue('C' . $row, $time);
                 $sheet->setCellValue('D' . $row, 'Geen inschrijvingen');
                 $sheet->setCellValue('E' . $row, '');
-                
+
                 $this->styleDataRow($sheet, $row);
                 $row++;
             } else {
@@ -142,7 +160,7 @@ class WorkshopDashboardController extends Controller
                     $sheet->setCellValue('C' . $row, $time);
                     $sheet->setCellValue('D' . $row, $student->name ?? '');
                     $sheet->setCellValue('E' . $row, $student->class ?? '');
-                    
+
                     $this->styleDataRow($sheet, $row);
                     $row++;
                 }
@@ -150,9 +168,9 @@ class WorkshopDashboardController extends Controller
         }
 
         $fileName = 'Workshop_' . str_replace(' ', '_', urldecode($workshopName)) . '_' . date('Y-m-d_H-i-s') . '.xlsx';
-        
+
         $writer = new Xlsx($spreadsheet);
-        
+
         return response()->stream(
             function() use ($writer) {
                 $writer->save('php://output');
@@ -171,12 +189,12 @@ class WorkshopDashboardController extends Controller
         for ($col = 1; $col <= 5; $col++) {
             $cell = $sheet->getCellByColumnAndRow($col, $row);
             $cell->getStyle()->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)->setWrapText(true);
-            
+
             if ($row % 2 === 0) {
                 $cell->getStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->setStartColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFF2F2F2'));
             }
         }
-        
+
         $sheet->getRowDimension($row)->setRowHeight(25);
     }
 }

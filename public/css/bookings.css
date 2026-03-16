@@ -1,0 +1,42 @@
+.workshop-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Responsive tabel */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.workshop-table {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+.workshop-table th,
+.workshop-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.workshop-table th {
+    background-color: #343469;
+    color: white;
+}
+
+/* 📱 Mobiele weergave */
+@media (max-width: 768px) {
+    .workshop-table {
+        font-size: 14px;
+    }
+
+    .workshop-table th,
+    .workshop-table td {
+        padding: 6px;
+    }
+}

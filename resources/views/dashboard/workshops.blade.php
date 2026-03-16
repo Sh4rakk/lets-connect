@@ -8,7 +8,9 @@
         <h1 class="text-2xl font-bold text-center text-gray-800">Workshop Overzicht</h1>
     </x-slot>
 
-<div class="container mx-auto p-6 max-w-5xl">
+    <link rel="stylesheet" href="{{ asset('/css/wdashboard.css') }}">
+
+    <div class="container mx-auto p-6 max-w-5xl">
     <div class="flex justify-between items-center mb-6">
 
         @php
@@ -37,7 +39,7 @@
                 {!! session('success') !!}
             </div>
 
-            <button 
+            <button
                 type="button"
                 onclick="this.parentElement.style.display = 'none';"
                 class="ml-3 -mt-1 -mr-1 text-green-700 hover:text-green-900 focus:outline-none transition-colors"
@@ -49,12 +51,16 @@
             </button>
         </div>
     @endif
-    
+
     @php
         $workshopsByName = $workshopmoments->groupBy('workshop.name');
         $isAdmin = Auth::user() && Auth::user()->hasRole('admin');
         $shouldLock = !$isOpen && !$isAdmin;
     @endphp
+        <button id="toggleAllBtn" class="accordion-toggle-all-btn" onclick="toggleAllAccordions()">Alles uitklappen</button>
+        @php
+            $workshopsByName = $workshopmoments->groupBy('workshop.name');
+        @endphp
 
     @foreach ($workshopsByName as $workshopName => $workshopMoments)
         <div class="border border-black-300 rounded-lg mb-2 {{ $shouldLock ? 'relative opacity-75' : '' }}" style="{{ $shouldLock ? 'position: relative;' : '' }}">
@@ -112,5 +118,61 @@
 <!-- Laad de JavaScript en CSS -->
 <link rel="stylesheet" href="{{ asset('css/wdashboard.css') }}">
 <script src="{{ asset('js/accordion.js') }}"></script>
+    <!-- Javascript voor de accordion toggle -->
+    <script>
+        function toggleAccordion(button) {
+            let content = button.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                button.classList.remove('open');  // Verwijder de "open" class van de knop
+                button.querySelector("span:last-child").textContent = "+";  // Zet het teken terug naar "+"
+            } else {
+                content.style.display = "block";
+                button.classList.add('open');  // Voeg de "open" class toe aan de knop
+                button.querySelector("span:last-child").textContent = "−";  // Zet het teken naar "-"
+            }
+        }
 
+        // Deze code zorgt ervoor dat alle accordion-content standaard zichtbaar zijn
+        document.addEventListener("DOMContentLoaded", function () {
+            let accordionContents = document.querySelectorAll(".accordion-content");
+            accordionContents.forEach(function (content) {
+                content.style.display = "block";  // Zorg ervoor dat alle accordion-secties open zijn
+            });
+
+            // Ook de "+" naar "−" veranderen voor de visuele indicatie
+            let accordionButtons = document.querySelectorAll(".accordion-btn");
+            accordionButtons.forEach(function (button) {
+                button.querySelector("span:last-child").textContent = "−";  // Zet de teken om naar "-"
+            });
+        });
+
+        // Nieuwe functie om alles open of dicht te klappen
+        function toggleAllAccordions() {
+            let accordionContents = document.querySelectorAll(".accordion-content");
+            let accordionButtons = document.querySelectorAll(".accordion-btn");
+            let toggleButton = document.getElementById("toggleAllBtn");
+            let isAnyOpen = Array.from(accordionContents).some(content => content.style.display === "block");
+
+            if (isAnyOpen) {
+                // Als een van de accordion-secties open is, sluit dan alles
+                accordionContents.forEach(function (content) {
+                    content.style.display = "none";
+                });
+                accordionButtons.forEach(function (button) {
+                    button.querySelector("span:last-child").textContent = "+";  // Zet de teken om naar "+"
+                });
+                toggleButton.textContent = "Alles uitklappen"; // Zet de knoptekst naar 'Alles uitklappen'
+            } else {
+                // Als geen enkele accordion-sectie open is, open dan alles
+                accordionContents.forEach(function (content) {
+                    content.style.display = "block";
+                });
+                accordionButtons.forEach(function (button) {
+                    button.querySelector("span:last-child").textContent = "−";  // Zet de teken om naar "−"
+                });
+                toggleButton.textContent = "Alles inklappen"; // Zet de knoptekst naar 'Alles inklappen'
+            }
+        }
+    </script>
 </x-app-layout>

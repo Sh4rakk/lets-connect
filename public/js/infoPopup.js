@@ -1,8 +1,9 @@
-let currentZIndex = 1000;
+let currentZIndex = 1002;
 let originalWorkshopPositions = new Map();
 
 function storeOriginalPositions() {
     const workshopList = document.getElementById("4");
+    if (!workshopList) return;
     Array.from(workshopList.children).forEach((workshop, index) => {
         originalWorkshopPositions.set(workshop.id, index);
     });
@@ -59,6 +60,7 @@ function addCloseButton(workshop) {
         }
         updateSaveButton();
         closeButton.remove();
+        setTimeout(() => workshop.removeAttribute("has-been-selected"), 500);
     });
 
     workshop.appendChild(closeButton);
@@ -96,6 +98,7 @@ function info(event) {
 
     if (popup.style.display === "flex") {
         popup.style.display = "none";
+
     } else {
         currentZIndex++;
         popup.style.zIndex = currentZIndex;

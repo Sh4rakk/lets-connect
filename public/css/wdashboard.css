@@ -1,46 +1,104 @@
-.accordion-content {
-    display: none;
+/* Algemeen */
+* {
+    font-family: "Figtree", ui-sans-serif, system-ui, sans-serif;
+    box-sizing: border-box;
 }
 
-/* Knop styling */
+body {
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Voorkom horizontaal scrollen */
+}
+
+/* Container voor de inhoud */
+.container {
+    max-width: 100%;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Voorkom overflow binnen de container */
+}
+
+/* Stijl voor de accordion */
 .accordion-btn {
+    width: 100%;
+    background: #010174;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-radius: 8px;
     padding: 12px 18px;
-    color: white;
+    transition: background 0.3s;
 }
 
+.accordion-btn:hover {
+    background: rgb(245, 130, 32);
+}
+
+/* Accordion inhoud */
 .accordion-content {
+    display: none;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+}
+
+/* Stijl voor de toggle-knop (alles in- of uitklappen) */
+.toggleAccordionAll {
+    background-color: #010174;
+    color: white;
+    border-radius: 9999px;
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease-in-out;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.toggleAccordionAll:hover {
+    background-color: rgb(245, 130, 32);
+}
+
+/* Tabel styling */
+.workshop-table {
     width: 100%;
-    margin: 0 auto;
 }
 
-/* Stijl voor de tabel */
-thead {
-    background-color: #f7fafc;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* 🔹 Zorg dat alle cellen hun inhoud centreren */
 th {
-    text-align: left;
-    padding: 12px 18px;
-    font-weight: 600;
-    color: #4A5568;
-    font-size: 1rem;
-}
-
-td {
-    padding: 12px 18px;
-    font-size: 0.875rem;
-    color: #4A5568;
+    background: #f1f1f1;
+    color: #333;
+    text-align: center;
 }
 
 tr:hover {
     background-color: #f9fafb;
 }
 
-/* Statuslabels */
+/* Kleuren voor statuslabels */
 .text-green-600 {
     color: #38A169;
 }
@@ -49,19 +107,93 @@ tr:hover {
     color: #E53E3E;
 }
 
-/* Scrollbare tabel */
-.overflow-x-auto {
-    max-width: 100%;
-    overflow-x: auto;
+/* 🔹 Zet de error-icoontjes op één lijn */
+.error-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Zorgt ervoor dat het icoon in het midden blijft */
 }
+
+/* 🔹 Error-icoontjes gestandaardiseerd */
+.error-icon {
+    position: relative;
+    cursor: pointer;
+    color: red;
+    font-size: 20px;
+    z-index: 10;
+    margin: 0 auto; /* Zorgt ervoor dat het icoon in het midden blijft */
+}
+
+/* 🔹 Tooltip netjes uitgelijnd */
+.error-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    max-width: 250px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 30px; /* ✅ Zorgt ervoor dat de tooltip altijd correct gepositioneerd blijft */
+    transition: opacity 0.3s ease-in-out;
+    z-index: 9999;
+}
+
+.error-icon:hover .error-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 📱 Responsieve aanpassingen */
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    th, td {
+        display: block;
+        text-align: left;
+        padding: 8px;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #555;
+        display: block;
+    }
 
 /* Knoppenkleuren */
 .bg-blue-900 {
     background-color: #343469;
 }
+    /* Responsieve tooltip aanpassing */
+    .error-tooltip {
+        font-size: 12px;
+    }
 
 .bg-orange-900 {
     background-color: #f58220;
+    .error-icon {
+        font-size: 16px;
+    }
+}
+button {
+    background-color: #010174; /* Blauw als standaardkleur */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
 }
 
 div.border {

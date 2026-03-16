@@ -35,6 +35,7 @@ class BookingController extends Controller
             $workshops[] = $workshop;
         }
 
+
         // Initialize the error message
         $errormessage = "";
 
