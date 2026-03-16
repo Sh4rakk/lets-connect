@@ -145,6 +145,7 @@
                         </form>
                     </div>
                 </div>
+            </div>
             <div class="flex">
                 <button id="save-button" style="display: none;" onclick="showSavePopup()">Opslaan</button>
             </div>
@@ -160,7 +161,6 @@
                     });
                 }
             </script>
-        </div>
         </div>
 
         <!-- Mobile View -->
@@ -196,7 +196,7 @@
 
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800">Workshop Selectie</h1>
-                <p class="text-gray-600 mt-1">Klik op een workshop om deze toe te voegen</p>
+                <p class="text-gray-600 mt-1">{{ $registrationsClosed ? 'Inschrijvingen zijn gesloten' : 'Klik op een workshop om deze toe te voegen' }}</p>
             </div>
 
             <!-- Selected Rounds Display -->
@@ -225,20 +225,29 @@
             </div>
 
             <!-- Workshops Grid -->
-            <div id="mobile-workshops-container" class="space-y-3 mb-6">
-                @foreach ($workshops as $workshop)
-                    <div id="{{ $workshop->id }}" class="bg-white border-2 border-gray-300 rounded-lg p-4 cursor-pointer hover:border-deltion-blue-900 hover:shadow-md transition" onclick="selectWorkshopMobile('{{ $workshop->id }}', {{ json_encode($workshop->name) }})">
+            <div id="mobile-workshops-container" class="space-y-3 mb-6 @if($registrationsClosed) opacity-50 pointer-events-none @endif">
+                    @foreach ($workshops as $workshop)
+                    <div id="{{ $workshop->id }}"
+                         class="bg-white border-2 border-gray-300 rounded-lg p-4 relative
+                    @unless($registrationsClosed)
+                        cursor-pointer hover:border-deltion-blue-900 hover:shadow-md transition
+                    @endunless"
+                         @unless($registrationsClosed)
+                             onclick="selectWorkshopMobile('{{ $workshop->id }}', {{ json_encode($workshop->name) }})"
+                        @endunless>
+
+                        @if($registrationsClosed)
+                            <div class="absolute inset-0 flex items-center justify-center z-10">
+                                <span class="text-4xl">🔒</span>
+                            </div>
+                        @endif
+
                         <div class="flex items-start gap-3">
                             <img src="{{ $workshop->image_url }}" alt="{{ $workshop->name }}" class="w-16 h-16 object-cover rounded">
                             <div class="flex-1">
                                 <div class="flex items-center justify-between gap-2">
                                     <h3 class="font-bold text-gray-800 me-auto">{{ $workshop->name }}</h3>
-                                    <button
-                                        type="button"
-                                        class="mobile-info flex-shrink-0 ms-auto"
-                                        onclick='mobileInfo(event, @json($workshop->name), @json($workshop->full_description))'
-                                        id="info{{ $workshop->id }}"
-                                        tabindex="0"
+                                    <button type="button" class="mobile-info flex-shrink-0 ms-auto" onclick='mobileInfo(event, @json($workshop->name), @json($workshop->full_description))' id="info{{ $workshop->id }}" tabindex="0" @if($registrationsClosed) disabled @endif
                                     >i</button>
                                 </div>
                                 <p class="text-sm text-gray-600 mt-1">{{ substr($workshop->full_description, 0, 100) }}...</p>
@@ -254,12 +263,7 @@
 
             <!-- Save Button -->
             <div class="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-300 z-10">
-                <button
-                    id="mobile-save-button"
-                    onclick="showMobileSavePopup()"
-                    class="w-full px-6 py-3 bg-gray-400 text-white font-bold rounded-lg cursor-not-allowed"
-                    disabled
-                >
+                <button id="mobile-save-button" onclick="showMobileSavePopup()" class="w-full px-6 py-3 {{ $registrationsClosed ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-gray-400 text-white' }} font-bold rounded-lg"{{ $registrationsClosed ? 'disabled' : '' }}>
                     Opslaan
                 </button>
             </div>

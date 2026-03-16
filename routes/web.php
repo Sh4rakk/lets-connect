@@ -13,9 +13,16 @@ use App\Mail\SendMail;
 use Illuminate\Support\Facades\Route;
 use App\Models\Workshop;
 use App\Models\Bookings;
+use App\Models\Setting;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return redirect()->route('register');
+    $signupsOpen = Setting::where('key', 'signups_open')->first();
+    $registrationsClosed = !$signupsOpen || $signupsOpen->value === '0';
+
+    return $registrationsClosed
+        ? redirect()->route('login')
+        : redirect()->route('register');
 });
 
 Route::get('/dashboard', function () {
@@ -23,9 +30,10 @@ Route::get('/dashboard', function () {
     $bookings = $user->bookings()->with('workshopMoments.workshop', 'workshopMoments.moment')->get();
     return view('dashboard', [
         "workshops" => Workshop::all(),
-        "bookings" => $bookings
+        "bookings" => $bookings,
+        "isOpen" => null
     ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'checkSignupsOpen'])->name('dashboard');
 
 Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
 

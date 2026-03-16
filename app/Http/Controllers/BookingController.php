@@ -17,10 +17,7 @@ class BookingController extends Controller
         $isOpen = $signupsOpen && $signupsOpen->value == '1';
 
         if (!$isOpen) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Registrations are currently closed. You cannot book workshops at this time.'
-            ], 403);
+            return view('auth.signups-closed');
         }
 
         // Retrieve submitted workshop values (UUID preferred, legacy names supported).
