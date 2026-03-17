@@ -70,16 +70,20 @@ body {
 .round .workshop {
     width: 100%;
     height: 100%;
-    text-align: center;
     border-radius: 8px;
-}
-
-.round .workshop {
-    width: 100%;
-    height: 100%;
     text-align: center;
     cursor: n-resize;
     max-width: none;
+    border: 3px solid rgb(1, 1, 116);
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    padding: 12px 14px 36px;
+    gap: 8px;
+    box-sizing: border-box;
 }
 
 .workshops {
@@ -180,6 +184,7 @@ body {
     top: 10px; /* Plaats in de rechterbovenhoek van de workshop */
     right: 10px;
     background-color: red;
+    opacity: 75%;
     color: white;
     border: none;
     border-radius: 50%;
@@ -201,7 +206,7 @@ body {
     justify-content: flex-start;
     align-items: center;
     text-align: left;
-    font-size: 16px;
+    font-size: 13px;
     line-height: 1.2;
     gap: 6px;
     word-break: break-word;
@@ -445,6 +450,18 @@ body {
 
 .placeholder {
     position: absolute;
+}
+
+.round-container:focus,              /* als je een class hebt op de div */
+.round-container:focus-within,
+.round-container *:focus {
+    outline: none !important;
+}
+
+/* Of target op ID als je die hebt */
+#mobile-round-1-parent:focus,        /* pas aan als je een wrapper-ID hebt */
+#mobile-round-1-parent:focus-within {
+    outline: none !important;
 }
 
 /* Error overlay */
@@ -732,17 +749,14 @@ body {
         font-size: 15px;
     }
 
-.hiddenText {
-    display: none !important;
+.hidden {
+    display: none;
 }
 
 .capacityText {
-    display: none;
     width: 100%;
     text-align: left;
-    gap: 4px;
-    line-height: 1;
-    font-weight: 400;
+    display: none !important;
 }
 
 .showText {
@@ -989,4 +1003,3 @@ body {
         pointer-events: none;
     }
 }
-

@@ -203,8 +203,6 @@ function addToRoundMobile(round) {
     if (round === 2) round2WorkshopId = currentWorkshopId;
     if (round === 3) round3WorkshopId = currentWorkshopId;
 
-    console.log(`Round ${round}: `, currentWorkshopId)
-
     updateMobileSaveButtonState();
     updateMobileRoundModalButtons();
     closeWorkshopSelection();

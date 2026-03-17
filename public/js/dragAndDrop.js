@@ -22,11 +22,11 @@ function allowDrop(ev) {
 }
 
 // Event listener for dragging
-function drag(ev) {
+function drag(event) {
     if (window.innerWidth > 800) {
-        customDrag(ev)
+        customDrag(event)
     }
-    ev.dataTransfer.setData("text", ev.target.id);
+    event.dataTransfer.setData("text", event.target.id);
 }
 
 // Event listener for dropping

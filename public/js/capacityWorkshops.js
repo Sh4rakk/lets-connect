@@ -97,57 +97,18 @@ async function waitUntilApi() {
 }
 
 function handleMouseOver() {
-    var hoverState = true;
-    inRoundContainers.forEach(roundContainer => { // disables the element from changing inside the main rounds.
-        roundContainer.addEventListener('mouseenter', function () {
-
-            var text = roundContainer.querySelector('.title');
-            if (text) {
-                hoverState = false;
-                text.classList.remove('hiddenText');
-                text.classList.add('showText');
-            }
-        })
-    })
-
     workshopContainers.forEach(container => {
-        container.addEventListener("mouseleave", () => {
-
-            if (hoverState) {
-                const hoveredDiv = container.querySelector('.title');
-                const hoverCapText = container.querySelector('.capacityText');
-
-                if (hoveredDiv) {
-                    hoveredDiv.classList.remove('hiddenText');
-                    hoveredDiv.classList.add('showText');
-                }
-
-                if (hoverCapText) {
-                    hoverCapText.classList.remove('showText');
-                    hoverCapText.classList.add('hiddenText');
-                }
-            } else {
-                hoverState = true;
-            }
-        });
+        const capacityText = container.querySelector('.capacityText');
+        const location = container.querySelector('.locationWorkshop');
 
         container.addEventListener("mouseenter", () => {
-            if (hoverState) {
-                const hoveredDiv = container.querySelector('.title');
-                const hoverCapText = container.querySelector('.capacityText');
+            capacityText.classList.add('hidden');
+            location.classList.remove('hidden');
+        });
 
-                if (hoveredDiv) {
-                    hoveredDiv.classList.remove('showText');
-                    hoveredDiv.classList.add('hiddenText');
-                }
-
-                if (hoverCapText) {
-                    hoverCapText.classList.remove('hiddenText');
-                    hoverCapText.classList.add('showText');
-                }
-            } else {
-                hoverState = true;
-            }
+        container.addEventListener("mouseleave", () => {
+            capacityText.classList.remove('hidden');
+            location.classList.add('hidden');
         });
     });
 }
