@@ -103,27 +103,29 @@
                             <p>Ronde 3</p>
                             <p>15:00 - 15:45</p>
                         </div>
-                        <div class="round" ondrop="drop(event, this)" ondragover="allowDrop(event)" id="3"></div>
+                        <div class="round" ondrop="drop(Event, this)" ondragover="allowDrop(Event)" id="3"></div>
                     </div>
                 </div>
-                <div class="workshops" ondrop="drop(event, this)" ondragover="allowDrop(event)" draggable="true" id="4">
+                <div class="workshops" ondrop="drop(Event, this)" ondragover="allowDrop(Event)" draggable="true" id="4">
                     @foreach ($workshops as $workshop)
-                        <div class='workshop' id='workshop{{ $workshop->id}}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(event)' style='@if($registrationsClosed)opacity: 0.5; position: relative;@endif'>
+                        <div class='workshop' id='workshop{{ $workshop->id}}' capacity="{{ $workshop->capacity}}" draggable='true' ondragstart='drag(Event)' style='@if($registrationsClosed)opacity: 0.5; position: relative;@endif'>
                             @if($registrationsClosed)
                                 <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; z-index: 10;">🔒</div>
                             @endif
-                            <div class='info' onclick='info(event)' id='info{{ $workshop->id}}' tabindex='0'>i</div>
-                            <div class='popup' id='popup{{ $workshop->id}}' draggable='false'>
-                                <button class='close' onclick='closePopup({{ $workshop->id}})'>x</button>
-                                <a href='https://xerte.deltion.nl/play.php?template_id=8708#programma' class='popup-header' target='_blank'>Klik <span class='highlight'>hier</span> voor meer informatie</a>
-                                <div class='description'>
-                                    <div class='descriptionText'>{{ $workshop->full_description }} </div>
-                                    <div class='descriptionImage'><img src="{{ $workshop->image_url }}" alt="Workshop afbeelding"></div>
+                                <div class='popup' id='popup{{ $workshop->id}}' draggable='false'>
+                                    <button class='close' onclick="closePopup('{{ $workshop->id }}')">x</button>
+                                    <a href="https://xerte.deltion.nl/play.php?template_id=8708#programma" class="popup-header" target="_blank">Klik <span class="highlight">hier</span> voor meer informatie</a>
+                                    <div class='description'>
+                                        <div class='descriptionText'>{{ $workshop->full_description }} </div>
+                                        <div class='descriptionImage'><img src="{{ $workshop->image_url }}" alt="Workshop afbeelding"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class='title showText' id='title{{ $workshop->id}}' workshop='{{ $workshop->name }}'>{{$workshop->name }}  </div>
-                            <div class="capacityText title hiddenText" id="capacityText{{ $workshop->id}}"></div>
-                            <div class="locationWorkshop">Deze workshop vind plaats in: <div id="location">#</div></div>
+                                <div class="workshop-header">
+                                    <div class='info' onclick='info(Event)' id='info{{ $workshop->id}}' tabindex='0'>i</div>
+                                    <div class="title showText" id='title{{ $workshop->id}}' workshop='{{ $workshop->name }}'>{{$workshop->name }}  </div>
+                                </div>
+                                <div class="capacityText title hiddenText" id="capacityText{{ $workshop->id}}"></div>
+                                <div class="locationWorkshop">Deze workshop vind plaats in: <div id="location">#</div></div>
                         </div>
                     @endforeach
                 </div>

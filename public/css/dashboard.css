@@ -84,6 +84,7 @@ body {
 
 .workshops {
     margin-bottom: 15px;
+    width: 40%;
     max-height: 500px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -94,27 +95,29 @@ body {
 }
 
 .workshops .workshop {
-    width: 98%;
+    width: 100%;
     height: 150px;
-    margin: 0;
     border: 3px solid rgb(1, 1, 116);
     border-radius: 10px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-align: center;
+    align-items: stretch;
+    justify-content: flex-start;
+    text-align: left;
     flex-direction: column;
     position: relative;
     overflow: hidden;
     cursor: grab;
     margin: 3px 3px;
+    padding: 12px 14px 36px;
+    gap: 8px;
+    box-sizing: border-box;
 }
 
 .workshop {
     background-color: #343469;
     color: white;
     font-weight: bold;
-    max-width: 240px;
+    max-width: 280px;
 }
 
 .workshop:hover {
@@ -125,19 +128,30 @@ body {
 
 /* Info knop */
 .info {
-    z-index: 999;
-    position: absolute;
-    width: 10%;
-    margin: 5px;
-    padding-left: 12px;
-    padding-right: 12px;
-    top: 2px;
-    display: flex;
+    z-index: 1;
+    position: static;
+    width: 34px;
+    height: 34px;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: #1f2b60;
     font-family: monospace;
-    font-weight: bold;
-    font-size: 25px;
+    font-weight: 700;
+    font-size: 18px;
     color: white;
     cursor: pointer;
+    flex-shrink: 0;
+}
+
+.workshop-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
 }
 
 .round .close-button {
@@ -180,14 +194,17 @@ body {
 
 /* Titel van de workshop */
 .title {
-    margin-top: 30px;
+    margin: 0;
     width: 100%;
     display: flex;
-    padding: 8%;
-    justify-content: center;
+    padding: 0;
+    justify-content: flex-start;
     align-items: center;
-    text-align: center;
-    font-size: smaller;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.2;
+    gap: 6px;
+    word-break: break-word;
 }
 
 .description {
@@ -717,24 +734,24 @@ body {
 
 .hiddenText {
     display: none !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    /* Centreert verticaal */
-    align-items: center;
-    /* Centreert horizontaal */
-    text-align: center;
-    /* Zorgt ervoor dat tekst netjes in het midden blijft */
 }
 
 .capacityText {
     display: none;
+    width: 100%;
+    text-align: left;
+    gap: 4px;
+    line-height: 1;
+    font-weight: 400;
 }
 
 .showText {
     display: flex !important;
     flex-direction: column;
-    padding: 10px 5px;
+    padding: 0;
+    align-items: flex-start;
+    text-align: left;
+    gap: 4px;
 }
 
 .locationWorkshop {
@@ -745,7 +762,9 @@ body {
     gap: 3px;
     color: #cbcbcb;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 0 14px 8px;
+    box-sizing: border-box;
     flex-wrap: wrap;
 }
 
@@ -783,7 +802,6 @@ body {
     color: black;
     padding: 10px 20px;
     font-size: 16px;
-    border: none;
     border: 2px solid black;
     border-radius: 5px;
     cursor: pointer;
@@ -971,3 +989,4 @@ body {
         pointer-events: none;
     }
 }
+
