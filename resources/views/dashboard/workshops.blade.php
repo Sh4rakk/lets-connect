@@ -95,7 +95,7 @@
                             @foreach ($workshopMoments as $wm)
                                 <tr class="{{ !$shouldLock ? 'hover:bg-gray-50' : '' }}">
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->moment->time }}</td>
-                                    <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->room_name }}</td>
+                                    <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->location }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->capacity }}</td>
                                     <td class="px-6 py-4 border-b text-sm">{{ count($wm->bookings) }}</td>
 
