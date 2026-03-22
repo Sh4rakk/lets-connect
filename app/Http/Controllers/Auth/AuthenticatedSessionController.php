@@ -24,11 +24,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->route('login')
+            ->with('status', 'Gebruik de e-mail code login.');
     }
 
     /**
@@ -43,5 +44,10 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function __construct()
+    {
+        // Option A: 2FA is enforced via 'verified' middleware on protected routes.
     }
 }

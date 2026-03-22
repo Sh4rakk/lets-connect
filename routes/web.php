@@ -12,26 +12,33 @@ use App\Mail\SendMail;
 use Illuminate\Support\Facades\Route;
 use App\Models\Workshop;
 use App\Models\Bookings;
+use App\Http\Controllers\Auth\LoginCodeController;
+use App\Models\Moment;
 
 Route::get('/', function () {
     return redirect()->route('register');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard')->with("workshops", Workshop::all());
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard')->with("workshops", Workshop::all());
+    })->name('dashboard');
 
-Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
+    Route::post('/save', [BookingController::class, 'bookWorkshop']);
 
-Route::get('/send-mail', [MailController::class, 'store']);
-
-Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/save', [BookingController::class, 'bookWorkshop'])->middleware(['auth', 'verified']);
+// 2FA / OTP (allow both guests and already-authenticated users)
+Route::get('/auth/verify-otp', [LoginCodeController::class, 'showVerifyForm'])->name('auth.verify-otp');
+Route::post('/auth/login-code/request', [LoginCodeController::class, 'requestCode'])->name('auth.login-code.request');
+Route::post('/auth/login-code/verify', [LoginCodeController::class, 'verify'])->name('auth.login-code.verify');
+
+Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
+
+Route::get('/send-mail', [MailController::class, 'store']);
 
 Route::get('/overzicht', function () {
     return view('overzicht');

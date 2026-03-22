@@ -1,6 +1,6 @@
 <x-guest-layout>
     <link href="{{ asset('/css/form.css') }}" rel="stylesheet">
-    
+
     <!-- Logo -->
     <div class="logo">
         <img src="https://xerte.deltion.nl/USER-FILES/3183-cmartens-site/media/Deltion_College_CMYK_145x57.png" alt="Deltion Logo" class="deltion-logo">
@@ -11,12 +11,15 @@
 
     <!-- Registratieformulier -->
     <div class="register-container">
-        <form method="POST" action="{{ route('register') }}" class="register-form">
+        {{-- add status like on login --}}
+        <x-auth-session-status class="mb-4" :status="session('status')" />
+
+        <form id="registerForm" method="POST" action="{{ route('register') }}" class="register-form">
             @csrf
             <div class="forms">
                 <div class="form-group">
                     <x-input-label for="name" :value="__('Naam')" />
-                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" 
+                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
                         :value="old('name')" placeholder="Voer je volledige naam in" required autofocus autocomplete="name" />
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                 </div>
@@ -24,7 +27,7 @@
                 <!-- Email Address -->
                 <div class="form-groupl">
                     <x-input-label for="email" :value="__('Email')" />
-                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" 
+                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
                         :value="old('email')" placeholder="Voer je studentenemail in" required autocomplete="username" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
@@ -50,7 +53,7 @@
                         </select>
                     </div>
 
-                   
+
                         <select id="klas" name="klas">
                             <option value="">Kies een klas</option>
                         </select>
@@ -67,6 +70,8 @@
                         {{ __('Registreren') }}
                     </x-primary-button>
                 </div>
+
+
             </div>
         </form>
 
@@ -79,10 +84,12 @@
                     <div id="userData"></div>
                 </div>
                 <div class="buttonWrapper">
-                    <x-secondary-button class="popupButtonNo">
+                    <x-secondary-button class="popupButtonNo" type="button">
                         Nee
                     </x-secondary-button>
-                    <x-primary-button class="popupButtonYes">
+
+                    {{-- IMPORTANT: bind to the real form so CSRF + fields are submitted --}}
+                    <x-primary-button class="popupButtonYes" type="submit" form="registerForm">
                         Ja
                     </x-primary-button>
                 </div>
