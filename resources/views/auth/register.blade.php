@@ -1,6 +1,7 @@
     <x-guest-layout>
     <link href="{{ asset('/css/form.css') }}" rel="stylesheet">
 
+
     @if (session('error'))
         <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
             <div style="background: white; border-radius: 12px; padding: 40px; max-width: 500px; text-align: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
@@ -17,8 +18,11 @@
     </div>
 
     <!-- Registratieformulier -->
-    <div class="register-container" style="max-width: 400px; margin: 0 auto; padding: 20px;">
-        <form method="POST" action="{{ route('register') }}" class="register-form">
+    <div class="register-container">
+        {{-- add status like on login --}}
+        <x-auth-session-status class="mb-4" :status="session('status')" />
+
+        <form id="registerForm" method="POST" action="{{ route('register') }}" class="register-form">
             @csrf
 
             <div class="logo-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px; text-align: center;">
@@ -33,15 +37,17 @@
                 <!-- Naam invoeren -->
                 <div class="form-group" style="margin-bottom: 10px;">
                     <x-input-label for="name" :value="__('Naam')" />
-                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" placeholder="Voer je volledige naam in" required autofocus autocomplete="name" style="width: 100%; max-width: 550px;" />
-                    <x-input-error :messages="$errors->get('name')" class="mt-1" />
+                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
+                        :value="old('name')" placeholder="Voer je volledige naam in" required autofocus autocomplete="name" />
+                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
                 </div>
 
                 <!-- E-mailadres invoeren -->
                 <div class="form-group" style="margin-bottom: 10px;">
                     <x-input-label for="email" :value="__('Email')" />
-                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" placeholder="Voer je studentenemail in" required autocomplete="username" style="width: 100%; max-width: 550px;" />
-                    <x-input-error :messages="$errors->get('email')" class="mt-1" />
+                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
+                        :value="old('email')" placeholder="Voer je studentenemail in" required autocomplete="username" />
+                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
                 <!-- Opleiding en Klas -->
@@ -65,6 +71,8 @@
                             <option value="opleiding13">Creative Development</option>
                         </select>
                     </div>
+
+
                     <div class="form-group" style="flex: 1;">
                         <select id="klas" name="klas">
                             <option value="">Kies een klas</option>
@@ -83,6 +91,8 @@
                         {{ __('Registreren') }}
                     </x-primary-button>
                 </div>
+
+
             </div>
         </form>
 
@@ -95,10 +105,12 @@
                     <div id="userData"></div>
                 </div>
                 <div class="buttonWrapper">
-                    <x-secondary-button class="popupButtonNo">
+                    <x-secondary-button class="popupButtonNo" type="button">
                         Nee
                     </x-secondary-button>
-                    <x-primary-button class="popupButtonYes">
+
+                    {{-- IMPORTANT: bind to the real form so CSRF + fields are submitted --}}
+                    <x-primary-button class="popupButtonYes" type="submit" form="registerForm">
                         Ja
                     </x-primary-button>
                 </div>

@@ -14,6 +14,8 @@ use App\Mail\SendMail;
 use Illuminate\Support\Facades\Route;
 use App\Models\Workshop;
 use App\Models\Bookings;
+use App\Http\Controllers\Auth\LoginCodeController;
+use App\Models\Moment;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,28 +28,44 @@ Route::get('/', function () {
         : redirect()->route('register');
 });
 
-Route::get('/dashboard', function () {
-    $user = Auth::user();
-    $bookings = $user->bookings()->with('workshopMoments.workshop', 'workshopMoments.moment')->get();
-    return view('dashboard', [
-        "workshops" => Workshop::all(),
-        "bookings" => $bookings,
-        "isOpen" => null
-    ]);
-})->middleware(['auth', 'verified', 'checkSignupsOpen'])->name('dashboard');
+Route::middleware(['auth', 'verified', 'checkSignupsOpen'])->group(function () {
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
 
-Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
-Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->name('Capacity');
+        $bookings = $user->bookings()
+            ->with('workshopMoments.workshop', 'workshopMoments.moment')
+            ->get();
 
-Route::get('/send-mail', [MailController::class, 'store']);
+        return view('dashboard', [
+            "workshops" => Workshop::all(),
+            "bookings" => $bookings,
+            "isOpen" => null
+        ]);
+    })->name('dashboard');
+});
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard')->with("workshops", Workshop::all());
+    })->name('dashboard');
+
+    Route::post('/save', [BookingController::class, 'bookWorkshop']);
+    Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
+    Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->name('Capacity');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/save', [BookingController::class, 'bookWorkshop'])->middleware(['auth', 'verified']);
+// 2FA / OTP (allow both guests and already-authenticated users)
+Route::get('/auth/verify-otp', [LoginCodeController::class, 'showVerifyForm'])->name('auth.verify-otp');
+Route::post('/auth/login-code/request', [LoginCodeController::class, 'requestCode'])->name('auth.login-code.request');
+Route::post('/auth/login-code/verify', [LoginCodeController::class, 'verify'])->name('auth.login-code.verify');
+
+Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
+
+Route::get('/send-mail', [MailController::class, 'store']);
 
 
 Route::get('/overzicht', function () {
@@ -93,16 +111,16 @@ Route::get('/export-users', [UserExportController::class, 'export'])
     ->name('users.export');
 
 
-// Two-factor authentication routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/two-factor/challenge', [TwoFactorAuthController::class, 'showChallenge'])
-        ->name('two-factor.challenge');
-
-    Route::post('/two-factor/verify', [TwoFactorAuthController::class, 'verify'])
-        ->name('two-factor.verify');
-
-    Route::post('/two-factor/resend', [TwoFactorAuthController::class, 'resend'])
-        ->name('two-factor.resend');
-});
+//// Two-factor authentication routes
+//Route::middleware(['auth'])->group(function () {
+//    Route::get('/two-factor/challenge', [TwoFactorAuthController::class, 'showChallenge'])
+//        ->name('two-factor.challenge');
+//
+//    Route::post('/two-factor/verify', [TwoFactorAuthController::class, 'verify'])
+//        ->name('two-factor.verify');
+//
+//    Route::post('/two-factor/resend', [TwoFactorAuthController::class, 'resend'])
+//        ->name('two-factor.resend');
+//});
 
 require __DIR__.'/auth.php';
