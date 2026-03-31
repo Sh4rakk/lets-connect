@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    // Fokke: Haalt alle gebruikers op en filtert ze op basis van de request.
     public function index(Request $request)
     {
         $query = User::query();
@@ -41,13 +42,16 @@ class UserController extends Controller
 
     public function edit($id)
     {
+        // findOrFail stopt de uitvoering en geeft een 404-pagina als het model niet wordt gevonden.
         $user = User::with([
             'bookings.workshopMoments.workshop',
             'bookings.workshopMoments.moment',
         ])->findOrFail($id);
 
+        // Fokke: array voor boekingen per ronde.
         $bookingsByRound = [1 => null, 2 => null, 3 => null];
 
+        // Fokke: loop over de bookings van de gebruiker.
         foreach ($user->bookings as $booking) {
             $workshopMoment = $booking->workshopMoments;
 
@@ -57,6 +61,7 @@ class UserController extends Controller
 
             $round = (int) $workshopMoment->moment->id;
 
+            // Fokke: filter bookings per ronde, geen dubbele boekingen per ronde.
             if ($round < 1 || $round > 3 || $bookingsByRound[$round] !== null) {
                 continue;
             }
@@ -71,10 +76,12 @@ class UserController extends Controller
 
         $workshopOptionsByRound = [1 => [], 2 => [], 3 => []];
 
+        // Fokke: Haalt alle workshopmomenten op.
         $workshopMoments = WorkshopMoment::with('workshop')
             ->whereIn('moment_id', [1, 2, 3])
             ->get();
 
+        // Fokke: verbind de workshop moment id en workshop naam.
         foreach ($workshopMoments as $workshopMoment) {
             $round = (int) $workshopMoment->moment_id;
 
@@ -88,6 +95,7 @@ class UserController extends Controller
             ];
         }
 
+        // Fokke: sorteert de workshopopties alfabetisch.
         foreach ($workshopOptionsByRound as $round => $options) {
             usort($options, fn ($a, $b) => strcmp($a['name'], $b['name']));
             $workshopOptionsByRound[$round] = $options;
@@ -99,6 +107,7 @@ class UserController extends Controller
             'workshopOptionsByRound' => $workshopOptionsByRound,
         ]);
     }
+
 
     public function updateBookings(Request $request, $id)
     {
@@ -116,8 +125,10 @@ class UserController extends Controller
             3 => $validated['rounds'][3] ?? null,
         ];
 
+        // Fokke: filtert de null eruit, list met selected teurg.
         $selectedIds = array_values(array_filter($selectedByRound));
 
+        // Fokke: check of workshop moment bij de ronde hoort.
         if (!empty($selectedIds)) {
             $selectedWorkshopMoments = WorkshopMoment::whereIn('id', $selectedIds)->get()->keyBy('id');
 
@@ -145,6 +156,7 @@ class UserController extends Controller
             $existingByRound = [1 => null, 2 => null, 3 => null];
             $duplicates = [];
 
+            // Fokke: Verdeelt bestaande boekingen over rondes en identificeert eventuele dubbele boekingen (meer dan één per ronde).
             foreach ($existingBookings as $booking) {
                 $round = (int) ($booking->workshopMoments->moment_id ?? 0);
 
@@ -160,13 +172,16 @@ class UserController extends Controller
                 $duplicates[] = $booking;
             }
 
+            // Fokke: Capaciteitscontrole voor de geselecteerde workshops.
             if (!empty($selectedIds)) {
+                // Fokke: Lock ook de geselecteerde workshopmomenten om hun capaciteitsgegevens te beschermen.
                 $lockedWorkshopMoments = WorkshopMoment::with('workshop')
                     ->whereIn('id', $selectedIds)
                     ->lockForUpdate()
                     ->get()
                     ->keyBy('id');
 
+                // Fokke: Telt het huidige aantal boekingen voor de geselecteerde workshops. Ook gelockt.
                 $currentCounts = Bookings::query()
                     ->select('wm_id', DB::raw('COUNT(*) as total'))
                     ->whereIn('wm_id', $selectedIds)
@@ -184,6 +199,7 @@ class UserController extends Controller
                     $workshopMoment = $lockedWorkshopMoments->get((int) $selectedWmId);
 
                     if (!$workshopMoment || !$workshopMoment->workshop) {
+                        // Fokke: Gooit een ValidationException als de workshop niet (meer) bestaat. De transactie wordt hierdoor teruggedraaid.
                         throw ValidationException::withMessages([
                             'rounds.' . $round => 'De gekozen workshop is niet beschikbaar.',
                         ]);
@@ -192,10 +208,12 @@ class UserController extends Controller
                     $existingBooking = $existingByRound[$round];
                     $isSameBooking = $existingBooking && (int) $existingBooking->wm_id === (int) $selectedWmId;
                     $currentCount = (int) ($currentCounts[(int) $selectedWmId] ?? 0);
+                    // Fokke: Berekent het verwachte aantal boekingen. Als de boeking niet verandert, telt deze niet als nieuw.
                     $projectedCount = $currentCount + ($isSameBooking ? 0 : 1);
                     $capacity = (int) $workshopMoment->workshop->capacity;
 
                     if ($projectedCount > $capacity) {
+                        // Fokke: Gooit een exception als de capaciteit wordt overschreden.
                         throw ValidationException::withMessages([
                             'rounds.' . $round => 'Deze workshop is vol voor ronde ' . $round . '.',
                         ]);
@@ -203,15 +221,18 @@ class UserController extends Controller
                 }
             }
 
+            // Fokke: Verwijder de geïdentificeerde dubbele boekingen.
             foreach ($duplicates as $duplicate) {
                 $duplicate->delete();
             }
 
+            // Fokke: Verwerkt de updates, creaties en verwijderingen.
             foreach ([1, 2, 3] as $round) {
                 $selectedWmId = $selectedByRound[$round];
                 $existingBooking = $existingByRound[$round];
 
                 if (!$selectedWmId) {
+                    // Fokke: Geen selectie voor deze ronde, dus verwijder de bestaande boeking indien aanwezig.
                     if ($existingBooking) {
                         $existingBooking->delete();
                     }
@@ -219,6 +240,7 @@ class UserController extends Controller
                 }
 
                 if ($existingBooking) {
+                    // Fokke: Er is een bestaande boeking. Werk deze bij als de selectie is gewijzigd.
                     if ((int) $existingBooking->wm_id !== (int) $selectedWmId) {
                         $existingBooking->wm_id = $selectedWmId;
                         $existingBooking->save();
@@ -226,6 +248,7 @@ class UserController extends Controller
                     continue;
                 }
 
+                // Fokke: Geen bestaande boeking, dus maak een nieuwe aan.
                 Bookings::create([
                     'student_id' => $user->id,
                     'wm_id' => $selectedWmId,
@@ -233,6 +256,7 @@ class UserController extends Controller
             }
         });
 
+        // Fokke: Redirect terug naar de edit-pagina met een succesbericht.
         return redirect()
             ->route('edit-student', $user->id)
             ->with('status', 'success')

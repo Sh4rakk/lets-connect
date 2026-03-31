@@ -1,6 +1,6 @@
 /* Algemene styling */
 * {
-    font-family: Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
@@ -573,7 +573,7 @@ body {
 
 .success-page,
 .success-page * {
-    font-family: Figtree, ui-sans-serif, system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans ExtraBold",Figtree, ui-sans-serif, system-ui, sans-serif;
 }
 
 .success-page {
@@ -587,7 +587,7 @@ body {
     background: linear-gradient(160deg, #f7f8ff 0%, #ffffff 45%, #fff5eb 100%);
     gap: 12px;
     text-align: center;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 
@@ -669,8 +669,12 @@ body {
     line-height: 1.15;
 }
 
+.success-action:active {
+    transform: translateY(0);
+}
+
 .success-subtitle {
-    font-family: Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Plus Jakarta Sans Medium",Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     max-width: 62ch;
     margin: 0;
     font-size: 18px;
@@ -683,18 +687,20 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 20px;
+    padding: clamp(12px, 2.5vw, 16px) clamp(28px, 7vw, 48px);
     min-height: 44px;
     border-radius: 10px;
     text-decoration: none;
     font-weight: 700;
     color: #ffffff;
     background: #343469;
-    transition: background-color 0.2s ease;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .success-action:hover {
     background: rgb(245, 130, 32);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(240, 125, 0, 0.30);
 }
 
 @media (max-width: 640px) {
@@ -819,7 +825,6 @@ body {
     border: 2px solid black;
     border-radius: 5px;
     cursor: pointer;
-    border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
 }
 
 .no-button:hover {
@@ -1002,4 +1007,4 @@ body {
     .flex.col.round.placeholder {
         pointer-events: none;
     }
-}
+}}

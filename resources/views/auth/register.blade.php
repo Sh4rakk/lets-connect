@@ -13,7 +13,7 @@
     @else
     <!-- Logo -->
     <div class="logo">
-        <img src="https://xerte.deltion.nl/USER-FILES/3183-cmartens-site/media/Deltion_College_CMYK_145x57.png" alt="Deltion Logo" class="deltion-logo">
+        <img src="{{ asset('/images/deltion.png') }}" alt="Deltion Logo" class="deltion-logo">
     </div>
 
     <!-- Registratieformulier -->
@@ -23,7 +23,7 @@
 
             <div class="logo-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px; text-align: center;">
                 <div class="logo">
-                    <img src="{{ asset('/images/Letsconnect2.0.jpeg') }}" alt="Logo" class="logo-image" style="max-width: 250px; height: auto; margin-bottom: 0;">
+                    <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="logo-image" style="max-width: 250px; height: auto; margin-bottom: 0;">
                 </div>
                 <div class="logo-text" style="margin-left: 10px; font-size: 20px; font-weight: bold;">
                 </div>
@@ -75,13 +75,20 @@
 
                 <!-- Registreren Button -->
                 <div class="form-actions flex items-center justify-end mt-2">
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                        {{ __('Al geregistreerd?') }}
-                    </a>
-
-                    <x-primary-button class="ms-4">
+                    <button type="submit" class="w-80 m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
                         {{ __('Registreren') }}
-                    </x-primary-button>
+                    </button>
+                </div>
+                <div class="flex items-center mt-3 justify-center">
+                <span class="text-gray-600">
+                    {{ __('Heb je al een account?') }}
+                </span>
+                    <span class="text-black ms-1 me-1">
+                    |
+                </span>
+                    <a class="text-black hover:text-deltion-orange-900 font-bold transition-all rounded-md" href="{{ route('login') }}">
+                        {{ __('Inloggen') }}
+                    </a>
                 </div>
             </div>
         </form>

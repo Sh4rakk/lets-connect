@@ -1,21 +1,11 @@
 <x-guest-layout>
     <link href="{{ asset('/css/form.css') }}" rel="stylesheet">
-
+    <div class="flex flex-row gap-5 justify-center mb-6" style="margin-right: 5px;">
+        <img src="{{ asset('/images/deltion.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-16" >
+    </div>
     <!-- Formulier Container -->
-    <div class="login-container">
-        
-        <!-- Logo en "Let's Connect" tekst bovenaan in de form -->
-        <div class="logo-container" style="display: flex; align-items: center; justify-content: center; ">
-            <!-- Logo -->
-            <div class="logo" style="margin-right: 5px;">
-                <img src="{{ asset('/images/Letsconnect2.0.jpeg') }}" alt="Logo" class="logo-image" style="width: 250px;">
-            </div>
-
-            <!-- "Let's Connect" tekst -->
-            <div class="logo-text" style="font-size: 20px; display: flex; align-items: center;">
-            </div>
-        </div>
-
+    <div class="login-container !h-auto">
+        <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-36">
         <!-- Session Status -->
         <x-auth-session-status class="mb-3" :status="session('status')" />
 
@@ -36,14 +26,21 @@
                 </label>
             </div> --}}
 
-            <div class="flex items-center justify-end mt-3">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('register') }}">
-                    {{ __('Nog geen account?') }}
+            <div class="flex items-center mt-3">
+                <button type="submit" class="w-80 m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
+                    {{__('Log In')}}
+                </button>
+            </div>
+            <div class="flex items-center mt-3 justify-center">
+                <span class="text-gray-600">
+                    {{ __('Heb je nog geen account?') }}
+                </span>
+                <span class="text-black ms-1 me-1">
+                    |
+                </span>
+                <a class="text-black hover:text-deltion-orange-900 font-bold transition-all rounded-md" href="{{ route('register') }}">
+                    {{ __('Account aanmaken') }}
                 </a>
-
-                <x-primary-button class="ms-3">
-                    {{ __('Log In') }}
-                </x-primary-button>
             </div>
         </form>
     </div>

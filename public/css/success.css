@@ -1,0 +1,114 @@
+/* public/css/success.css */
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: "Plus Jakarta Sans",'Inter', sans-serif;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,200 Q300,100 600,200 T1200,200 L1200,400 L0,400 Z" fill="%23f58220"/><path d="M0,250 Q300,150 600,250 T1200,250 L1200,400 L0,400 Z" fill="%23343469"/></svg>');
+    overflow-y: auto; /* Allow vertical scrolling */
+}
+
+.success-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Use min-height to allow content to expand */
+    padding: 1rem; /* p-4 */
+    box-sizing: border-box;
+}
+
+.success-card {
+    background-color: white;
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.06), 0 12px 24px rgba(0,0,0,0.10), 0 24px 48px rgba(0,0,0,0.08);
+    text-align: center;
+    padding: 2rem; /* p-8 */
+    width: 100%;
+    max-width: 700px;
+    margin: 2rem 0;
+}
+
+.success-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    gap: 1rem; /* gap-4 */
+    margin-bottom: 1.5rem; /* mb-6 */
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700; /* font-bold */
+}
+
+.success-brand img {
+    height: 3rem; /* h-12 */
+    width: auto;
+}
+
+.success-brand-text {
+    display: flex;
+    gap: 0.5rem; /* gap-2 */
+}
+
+.success-brand-sep {
+    display: none; /* Hidden by default, shown on larger screens */
+}
+
+.deltion-blue {
+    color: #343469;
+}
+
+.deltion-orange {
+    color: #f58220;
+}
+
+.success-title {
+    font-family: "Plus Jakarta Sans ExtraBold","Plus Jakarta Sans",'Inter', sans-serif;
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 600; /* font-semibold */
+    margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.success-subtitle {
+    font-size: 1rem; /* text-base */
+    color: #4a5568; /* text-gray-600 */
+    margin-bottom: 1.5rem; /* mb-6 */
+}
+
+.success-action {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 4px;
+    padding: clamp(0.75rem, 2.5vw, 1rem) clamp(1rem, 4vw, 3rem);
+    background: #343469;
+    color: #fff;
+    border-radius: 50px;
+    font-size: clamp(0.875rem, 2.2vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 16px rgba(0, 87, 168, 0.25);
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    box-sizing: border-box; /* padding included in width */
+}
+
+.success-action:hover {
+    background: #f07d00;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(240, 125, 0, 0.30);
+}
+
+/* Responsive adjustments for larger screens */
+@media (min-width: 640px) {
+    .success-brand-sep {
+        display: block;
+        border-left: 2px solid #e5e7eb; /* border-l-2 border-gray-200 */
+        height: 2.5rem; /* h-10 */
+    }
+
+    .success-brand img {
+        height: 4rem; /* h-16 */
+    }
+}
+

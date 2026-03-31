@@ -4,29 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Succes - Let's Connect</title>
-    <link href="{{ asset('/css/dashboard.css') }}" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="{{ asset('/css/success.css') }}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 @php
     $successTitle = session('title') ?? 'Bedankt voor je aanmelding';
-    $successMessage = session('message') ?? session('status') ?? 'Je planning is succesvol opgeslagen. Je ontvangt zo snel mogelijk een mail ter bevestiging van je gekozen planning. Je kan dit scherm nu sluiten.';
+    $successMessage = session('message') ?? session('status') ?? 'Je inschrijvingen zijn succesvol opgeslagen. Je ontvangt zo snel mogelijk een mail ter bevestiging van je gekozen inschrijvingen. Je kan dit scherm nu sluiten.';
 @endphp
 
 <div class="success-page">
     <div class="success-card">
-        <img
-            src="https://xerte.deltion.nl/USER-FILES/8708-abvries-site/media/letsconnect2.jpg"
-            class="success-img"
-            alt="Let's Connect"
-        >
-
         <div class="success-brand">
-            <span class="deltion-blue">Del</span><span class="deltion-orange">tion</span>
+            <img src="{{ asset('/images/deltion.png') }}" alt="Logo">
             <span class="success-brand-sep"></span>
-            <span class="deltion-blue">Let's</span>
-            <span class="deltion-orange">Connect</span>
+            <div class="success-brand-text">
+                <span class="deltion-blue">Let's</span>
+                <span class="deltion-orange">Connect</span>
+            </div>
         </div>
 
         <h1 class="deltion-orange success-title">{{ $successTitle }}</h1>

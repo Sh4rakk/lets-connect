@@ -39,7 +39,7 @@
                                     <span class="text-xs text-gray-500 bg-white px-2 py-1 rounded border">{{ $booking->workshopMoments->moment->time }}</span>
                                 </div>
                                 <h3 class="font-semibold text-deltion-blue-900">{{ $booking->workshopMoments->workshop->name }}</h3>
-                                <p class="text-sm text-gray-500 mt-1">Locatie: {{ $booking->workshopMoments->workshop->room_name ?? 'Nader te bepalen' }}</p>
+                                <p class="text-sm text-gray-500 mt-1">Locatie: {{ $booking->workshopMoments->workshop->location ?? 'Nader te bepalen' }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -253,7 +253,7 @@
                                     >i</button>
                                 </div>
                                 <p class="text-sm text-gray-600 mt-1">{{ substr($workshop->full_description, 0, 100) }}...</p>
-                                <p class="text-xs text-gray-500 mt-2">Locatie: {{ $workshop->room_name }}</p>
+                                <p class="text-xs text-gray-500 mt-2">Locatie: {{ $workshop->location }}</p>
                             </div>
                         </div>
                     </div>
