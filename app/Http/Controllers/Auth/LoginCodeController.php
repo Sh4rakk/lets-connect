@@ -75,19 +75,11 @@ class LoginCodeController extends Controller
             ]);
         }
 
-        // ADMIN BYPASS: email-only login (no OTP, no password)
+
         if ($user->hasRole('admin')) {
-            $user->forceFill([
-                'email_verified_at' => $user->email_verified_at ?: Carbon::now(),
-                'last_login_at' => Carbon::now(),
-                'login_code_hash' => null,
-                'login_code_expires_at' => null,
-            ])->save();
-
-            Auth::login($user, true);
-            $request->session()->regenerate();
-
-            return redirect()->route('selectionDashboard');
+            return redirect()
+                ->route('admin.login')
+                ->with('admin_email', $user->email);
         }
 
         try {

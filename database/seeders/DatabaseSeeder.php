@@ -10,6 +10,7 @@ use App\Models\WorkshopMoment;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,8 +26,9 @@ class DatabaseSeeder extends Seeder
         User::insert([
             'id' => $adminId,
             'name' => 'admin',
-            'email' => 'admin@example.com',
-            'class' => 'SD2A'
+            'email' => 'letsconnect@admin.com',
+            'class' => 'SD2A',
+            'password' => Hash::make('admin12345'),
         ]);
 
         $userId = Str::uuid()->toString();
