@@ -3,7 +3,7 @@
 
     <div class="full-page-background"></div>
 
-    <div class="login-container space-y-4">
+    <div class="login-container m-auto !h-auto">
         <h1 class="text-2xl font-bold">Inschrijvingen gesloten</h1>
         <p>Heb je vragen of wil je een wijziging doorgeven? Mail ons op <a class="text-deltion-blue-900 underline font-semibold" href="mailto:{{ $contactEmail ?? config('mail.from.address') }}">{{ $contactEmail ?? config('mail.from.address') }}</a>.</p>
 
