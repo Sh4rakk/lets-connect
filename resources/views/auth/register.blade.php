@@ -12,7 +12,7 @@
         </div>
     @else
     <!-- Logo -->
-    <div class="logo">
+    <div class="flex flex-row gap-5 justify-center mb-6" style="margin-right: 5px;">
         <img src="{{ asset('/images/deltion.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-16" >
     </div>
 
@@ -22,7 +22,7 @@
             @csrf
 
             <div class="logo-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px; text-align: center;">
-                <div class="logo">
+                <div>
                     <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">
                 </div>
                 <div class="logo-text" style="margin-left: 10px; font-size: 20px; font-weight: bold;">
