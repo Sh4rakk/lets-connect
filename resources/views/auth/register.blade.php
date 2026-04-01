@@ -13,7 +13,7 @@
     @else
     <!-- Logo -->
     <div class="logo">
-        <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">
+        <img src="{{ asset('/images/deltion.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-16" >
     </div>
 
     <!-- Registratieformulier -->
@@ -23,7 +23,7 @@
 
             <div class="logo-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px; text-align: center;">
                 <div class="logo">
-                    <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto h-20 w-auto object-contain md:h-36">
+                    <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">
                 </div>
                 <div class="logo-text" style="margin-left: 10px; font-size: 20px; font-weight: bold;">
                 </div>
