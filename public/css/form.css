@@ -29,6 +29,14 @@ html {
     box-sizing: border-box;
 }
 
+@media (max-width: 480px) {
+    .register-container,
+    .login-container {
+        width: 92%;
+        padding: 1.25rem;
+    }
+}
+
 /* Formulieren */
 .register-form,
 .login-form {
