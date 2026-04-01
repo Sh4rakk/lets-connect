@@ -13,7 +13,7 @@
     @else
     <!-- Logo -->
     <div class="logo">
-        <img src="{{ asset('/images/deltion.png') }}" alt="Deltion Logo" class="deltion-logo h-20 w-auto object-contain md:h-36">
+        <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">
     </div>
 
     <!-- Registratieformulier -->
