@@ -25,7 +25,7 @@
             </button>
         </form>
         <form>
-            <div class="text-end px-6 py-2 text-white font-semibold rounded-lg transition-colors bg-green-600 hover:bg-green-700">
+            <div class="text-end px-6 py-2 text-white font-semibold rounded-lg transition-colors deltion-orange-400 hover:bg-green-700">
                 <a href="{{ route('users.export') }}"class="btn btn-success">
                     <i class="fas fa-file-excel"></i> 📊 Export to Excel
                 </a>
@@ -45,7 +45,7 @@
                 class="ml-3 -mt-1 -mr-1 text-green-700 hover:text-green-900 focus:outline-none transition-colors"
                 aria-label="Sluit bericht"
             >
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">  
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
@@ -75,7 +75,7 @@
 
             <div class="hidden p-6 border-t border-black-300 bg-white accordion-content">
                 <div class="mb-4">
-                    <a href="{{ route('workshop.export', ['workshopName' => urlencode($workshopName)]) }}" class="inline-block px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                    <a href="{{ route('workshop.export', ['workshopName' => urlencode($workshopName)]) }}" class="inline-block px-4 py-2 bg-deltion-orange-400 text-white font-semibold rounded-lg hover:bg-deltion-orange-500 transition-colors">
                         📊 Export {{ $workshopName }}
                     </a>
                 </div>

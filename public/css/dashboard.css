@@ -347,25 +347,78 @@ body {
 }
 
 /* Tutorial overlay */
-.tutorial-overlay {
+.tutorial-overlay, .mobile-tutorial-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1002;
-    pointer-events: auto
+    pointer-events: none;
 }
 
-.tutorial-step {
+.tutorial-step, .mobile-tutorial-box {
+    pointer-events: auto;
+}
+
+.tutorial-step, .mobile-tutorial-box {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 320px;
+    z-index: 1003;
+    pointer-events: auto;
+}
+
+.tutorial-step {
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tutorial-buttons button,
+#mobileTutorial .mobile-tutorial-box button {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    border: none;
+    min-width: 80px;
+    transition: background 150ms ease-in-out, transform 150ms ease;
+}
+
+.tutorial-buttons button:first-child,
+#mobileTutorial .mobile-tutorial-box #mobilePrevBtn {
+    background-color: #1e3a8a; /* deltion-blue */
+}
+
+.tutorial-buttons button:nth-child(2),
+#mobileTutorial .mobile-tutorial-box #mobileNextBtn {
+    background-color: #1e40af; /* darker deltion-blue */
+}
+
+.tutorial-buttons button.skip-button,
+#mobileTutorial .mobile-tutorial-box .skip-button {
+    background-color: #ea580c; /* deltion-orange */
+}
+
+.tutorial-buttons button:hover,
+#mobileTutorial .mobile-tutorial-box button:hover {
+    transform: translateY(-1px);
+}
+
+.tutorial-buttons button.skip-button:hover,
+#mobileTutorial .mobile-tutorial-box .skip-button:hover {
+    background-color: #c2410c;
+}
     text-align: center;
     width: 300px;
     z-index: 1001;

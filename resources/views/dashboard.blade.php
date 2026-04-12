@@ -22,6 +22,7 @@
         <script src="{{ asset('/js/errorPopup.js') }}"></script>
         <script src="{{ asset('/js/infoPopup.js') }}"></script>
         <script src="{{ asset('/js/tutorial.js') }}"></script>
+        <script src="{{ asset('/js/mobileTutorial.js') }}"></script>
         <script src="{{ asset('/js/mobileDashboard.js') }}"></script>
     </head>
     <body>
@@ -57,10 +58,12 @@
             <!-- Tutorial -->
             <div class="tutorial-overlay" id="tutorial-overlay" style="display: none;">
                 <div class="tutorial-step" id="tutorial-step">
+                    <button onclick="skipTutorial()" class="absolute top-2 right-2 text-2xl">×</button>
                     <p id="tutorial-text"></p>
                     <div class="tutorial-buttons">
                         <button id="prevButton" onclick="prevStep()" >Terug</button>
                         <button id="nextButton" onclick="nextStep()">Volgende</button>
+                        <button onclick="skipTutorial()" class="skip-button">Overslaan</button>
                     </div>
                 </div>
             </div>
@@ -153,7 +156,6 @@
             </div>
             <!-- loading script after html has loaded because of getElementById -->
             <script src="{{ asset('/js/capacityWorkshops.js') }}"></script>
-            <script src="{{ asset('/js/tutorial.js') }}"></script>
             <script src="{{ asset('/js/dragAndDrop.js') }}"></script>
             <script>
                 const registrationsClosed = @json($registrationsClosed);
@@ -172,10 +174,12 @@
             <div class="mobile-tutorial-overlay" id="mobileTutorial" style="display: none;">
                 <div class="mobile-tutorial-box">
                     <button onclick="closeMobileTutorial()" class="absolute top-2 right-2 text-2xl">×</button>
-                    <p id="mobileTutorialText" class="text-lg font-semibold mb-4"></p>
+                    <button onclick="skipMobileTutorial()" class="absolute top-2 left-2 text-sm px-2 py-1 bg-gray-200 rounded">Overslaan</button>
+                    <h3 id="mobileTutorialTitle" class="text-2xl font-bold mb-4"></h3>
+                    <p id="mobileTutorialText" class="text-lg mb-6"></p>
                     <div class="flex gap-2 justify-center">
-                        <button onclick="prevMobileStep()" class="px-4 py-2 bg-blue-500 text-white rounded">Terug</button>
-                        <button onclick="nextMobileStep()" class="px-4 py-2 bg-blue-500 text-white rounded">Volgende</button>
+                        <button id="mobilePrevBtn" onclick="prevMobileStep()" class="px-4 py-2 bg-blue-500 text-white rounded hidden">Terug</button>
+                        <button id="mobileNextBtn" onclick="nextMobileStep()" class="px-4 py-2 bg-blue-500 text-white rounded">Volgende</button>
                     </div>
                 </div>
             </div>
