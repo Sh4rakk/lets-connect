@@ -57,7 +57,7 @@
         $isAdmin = Auth::user() && Auth::user()->hasRole('admin');
         $shouldLock = !$isOpen && !$isAdmin;
     @endphp
-        <button id="toggleAllBtn" class="accordion-toggle-all-btn" onclick="toggleAllAccordions()">Alles uitklappen</button>
+        <button id="toggleAllBtn" class="toggleAccordionAll" onclick="toggleAllAccordions()">Alles uitklappen</button>
         @php
             $workshopsByName = $workshopmoments->groupBy('workshop.name');
         @endphp

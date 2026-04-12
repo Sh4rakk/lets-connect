@@ -13,8 +13,9 @@ body {
 
 /* Container voor de inhoud */
 .container {
-    max-width: 100%;
+    max-width: 60%;
     margin: auto;
+    margin-top: 15px;
     padding: 20px;
     background: white;
     border-radius: 10px;
@@ -50,6 +51,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 5px;
     background: white;
+    transition: all;
 }
 
 /* Stijl voor de toggle-knop (alles in- of uitklappen) */
@@ -173,10 +175,10 @@ tr:hover {
 .bg-blue-900 {
     background-color: #343469;
 }
-    /* Responsieve tooltip aanpassing */
-    .error-tooltip {
-        font-size: 12px;
-    }
+/* Responsieve tooltip aanpassing */
+.error-tooltip {
+    font-size: 12px;
+}
 
 .bg-orange-900 {
     background-color: #f58220;

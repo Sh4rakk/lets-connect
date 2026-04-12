@@ -61,6 +61,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        Bookings::factory()->count(50)->create();
+//        Bookings::factory()->count(50)->create();
     }
 }
