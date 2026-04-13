@@ -9,6 +9,7 @@
         <!-- Session Status -->
         <x-auth-session-status class="mb-3" :status="session('status')" />
 
+        <form id="loginForm" method="POST" action="{{ route('auth.login-code.request') }}" class="register-form">
         <form method="POST" action="{{ route('login') }}" class="login-form">
             @csrf
             <!-- Email -->

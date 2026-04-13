@@ -25,6 +25,11 @@ class User extends Authenticatable implements LaratrustUser
         'name',
         'email',
         'class',
+        // OTP/2FA columns (match migration)
+        'login_code_hash',
+        'login_code_expires_at',
+        'last_login_at',
+        'email_verified_at',
         // 'password',
     ];
 
@@ -47,6 +52,8 @@ class User extends Authenticatable implements LaratrustUser
     {
         return [
             'email_verified_at' => 'datetime',
+            'login_code_expires_at' => 'datetime',
+            'last_login_at' => 'datetime',
             // 'password' => 'hashed',
         ];
     }

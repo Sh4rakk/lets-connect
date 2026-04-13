@@ -14,8 +14,8 @@ use App\Mail\SendMail;
 use Illuminate\Support\Facades\Route;
 use App\Models\Workshop;
 use App\Models\Bookings;
-use App\Models\Setting;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\LoginCodeController;
+use App\Models\Moment;
 
 Route::get('/', function () {
     $signupsOpen = Setting::where('key', 'signups_open')->first();
@@ -26,6 +26,10 @@ Route::get('/', function () {
         : redirect()->route('register');
 });
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard')->with("workshops", Workshop::all());
+    })->name('dashboard');
 Route::get('/dashboard', function () {
     $user = Auth::user();
     $bookings = $user->bookings()->with('workshopMoments.workshop', 'workshopMoments.moment')->get();
@@ -36,6 +40,7 @@ Route::get('/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified', 'checkSignupsOpen'])->name('dashboard');
 
+    Route::post('/save', [BookingController::class, 'bookWorkshop']);
 Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
 Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->name('Capacity');
 
@@ -47,7 +52,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/save', [BookingController::class, 'bookWorkshop'])->middleware(['auth', 'verified']);
+// 2FA / OTP (allow both guests and already-authenticated users)
+Route::get('/auth/verify-otp', [LoginCodeController::class, 'showVerifyForm'])->name('auth.verify-otp');
+Route::post('/auth/login-code/request', [LoginCodeController::class, 'requestCode'])->name('auth.login-code.request');
+Route::post('/auth/login-code/verify', [LoginCodeController::class, 'verify'])->name('auth.login-code.verify');
+
+Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
+
+Route::get('/send-mail', [MailController::class, 'store']);
 
 
 Route::get('/overzicht', function () {
