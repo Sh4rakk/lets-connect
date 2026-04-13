@@ -42,7 +42,7 @@
             </div>
         </form>
 
-        <form method="POST" action="{{ route('auth.login-code.request') }}" class="login-form" style="margin-top: 1rem;">
+        <form method="POST" action="{{ route('auth.login-code.request') }}" class="login-form" style="margin-top: -1rem;">
             @csrf
             <input type="hidden" name="email" value="{{ $prefillEmail }}" />
             <x-secondary-button type="submit">
