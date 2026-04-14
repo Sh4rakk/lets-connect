@@ -3,7 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\WorkshopDashboardController;
 use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\UserExportController;
@@ -14,6 +13,7 @@ use App\Mail\SendMail;
 use Illuminate\Support\Facades\Route;
 use App\Models\Workshop;
 use App\Models\Bookings;
+use App\Models\Setting;
 use App\Http\Controllers\Auth\LoginCodeController;
 use App\Models\Moment;
 
@@ -26,10 +26,6 @@ Route::get('/', function () {
         : redirect()->route('register');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard')->with("workshops", Workshop::all());
-    })->name('dashboard');
 Route::get('/dashboard', function () {
     $user = Auth::user();
     $bookings = $user->bookings()->with('workshopMoments.workshop', 'workshopMoments.moment')->get();
@@ -40,11 +36,11 @@ Route::get('/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified', 'checkSignupsOpen'])->name('dashboard');
 
-    Route::post('/save', [BookingController::class, 'bookWorkshop']);
-Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
-Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->name('Capacity');
+Route::post('/save', [BookingController::class, 'bookWorkshop'])->middleware(['auth', 'verified']);
+Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->middleware(['auth', 'verified'])->name('viewCapacity');
+Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->middleware(['auth', 'verified'])->name('Capacity');
 
-Route::get('/send-mail', [MailController::class, 'store']);
+Route::get('/send-mail', [MailController::class, 'store'])->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -56,10 +52,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/auth/verify-otp', [LoginCodeController::class, 'showVerifyForm'])->name('auth.verify-otp');
 Route::post('/auth/login-code/request', [LoginCodeController::class, 'requestCode'])->name('auth.login-code.request');
 Route::post('/auth/login-code/verify', [LoginCodeController::class, 'verify'])->name('auth.login-code.verify');
-
-Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->name('viewCapacity');
-
-Route::get('/send-mail', [MailController::class, 'store']);
 
 
 Route::get('/overzicht', function () {

@@ -2,14 +2,12 @@
     <link href="{{ asset('/css/form.css') }}" rel="stylesheet">
 
     <!-- Logo -->
-    <div class="logo">
-        <img src="https://xerte.deltion.nl/USER-FILES/3183-cmartens-site/media/Deltion_College_CMYK_145x57.png" alt="Deltion Logo" class="deltion-logo">
+    <div class="flex flex-row gap-5 justify-center mb-6" style="margin-right: 5px;">
+        <img src="{{ asset('/images/deltion.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-16" >
     </div>
 
-    <!-- Achtergrond -->
-    <div class="full-page-background"></div>
-
-    <div class="register-container">
+    <div class="login-container m-auto !h-auto">
+        <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
 

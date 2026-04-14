@@ -1,11 +1,9 @@
 <x-guest-layout>
     <link href="{{ asset('/css/form.css') }}" rel="stylesheet">
 
-    <div class="logo">
-        <img src="https://xerte.deltion.nl/USER-FILES/3183-cmartens-site/media/Deltion_College_CMYK_145x57.png" alt="Deltion Logo" class="deltion-logo">
+    <div class="flex flex-row gap-5 justify-center mb-6" style="margin-right: 5px;">
+        <img src="{{ asset('/images/deltion.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-16" >
     </div>
-
-    <div class="full-page-background"></div>
 
     @php
         $statusMessage = session('status') ?: 'We hebben een code naar je e-mailadres gestuurd.';
@@ -13,7 +11,8 @@
         $prefillEmail = old('email', $email ?? request('email'));
     @endphp
 
-    <div class="login-container">
+    <div class="login-container m-auto !h-auto">
+        <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto mb-6 w-auto h-20 md:h-36">
         <div class="alert {{ $statusClass }}">
             {{ $statusMessage }}
         </div>
@@ -35,19 +34,28 @@
                 <x-input-error :messages="$errors->get('code')" class="mt-2" />
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-primary-button class="ms-3">
-                    {{ __('Verify') }}
-                </x-primary-button>
+            <div class="flex items-center mt-3">
+                <button type="submit" class="w-full max-w-xs m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
+                    {{ __('Verifiëren') }}
+                </button>
             </div>
         </form>
 
         <form method="POST" action="{{ route('auth.login-code.request') }}" class="login-form" style="margin-top: -1rem;">
             @csrf
             <input type="hidden" name="email" value="{{ $prefillEmail }}" />
-            <x-secondary-button type="submit">
-                {{ __('Resend code') }}
-            </x-secondary-button>
+
+            <div class="flex items-center mt-8 justify-center">
+                <span class="text-gray-600">
+                    {{ __('Geen code ontvangen?') }}
+                </span>
+                <span class="text-black ms-1 me-1">
+                    |
+                </span>
+                <x-secondary-button type="submit">
+                    {{ __('Code opnieuw verzenden') }}
+                </x-secondary-button>
+            </div>
         </form>
     </div>
 </x-guest-layout>
