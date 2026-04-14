@@ -6,6 +6,7 @@ let tutOverlay = null;
 let tutStep = null;
 let roundOne = null;
 let isDesktopView = false;
+let tutorialInfoClickHandlers = [];
 
 const tutorialSteps = [
     { text: "Welkom op het dashboard! Laten we leren hoe je deze pagina gebruikt.", highlight: ".round:nth-child(1)" },
@@ -71,9 +72,49 @@ function sendWorkshop() {
     return document.querySelector('.workshops .workshop:first-child');
 }
 
+function sendInfoIcons() {
+    return Array.from(document.querySelectorAll('.workshop .info'));
+}
+
 function sendInfoIcon() {
-    const workshop = sendWorkshop();
-    return workshop ? workshop.querySelector('.info') : null;
+    const icons = sendInfoIcons();
+    return icons.length ? icons[0] : null;
+}
+
+function bindTutorialInfoClick() {
+    if (tutorialInfoClickHandlers.length) return;
+
+    const icons = sendInfoIcons();
+    icons.forEach((icon) => {
+        icon.style.pointerEvents = 'auto';
+        icon.style.cursor = 'pointer';
+        icon.style.position = 'relative';
+        icon.style.zIndex = '1005';
+        icon.style.boxShadow = '0 0 0 4px rgba(255, 165, 0, 0.8)';
+
+        const onInfoClick = () => {
+            nextButton.disabled = false;
+            nextButton.classList.remove('disabledStyle');
+            icon.style.boxShadow = '';
+            unbindTutorialInfoClick();
+        };
+
+        icon.addEventListener('click', onInfoClick, { once: true, capture: true });
+        icon.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                onInfoClick();
+            }
+        }, { once: true });
+
+        tutorialInfoClickHandlers.push({ icon, handler: onInfoClick });
+    });
+}
+
+function unbindTutorialInfoClick() {
+    tutorialInfoClickHandlers.forEach(({ icon, handler }) => {
+        icon.removeEventListener('click', handler);
+    });
+    tutorialInfoClickHandlers = [];
 }
 
 function sendRoundX() {
@@ -87,13 +128,21 @@ function defaultStyling() {
     nextButton.classList.remove('disabledStyle');
     if (roundOne) roundOne.style.zIndex = 'unset';
     const workshop = sendWorkshop();
-    if (workshop) workshop.style.zIndex = 'unset';
-    const icon = sendInfoIcon();
-    if (icon) icon.style.zIndex = 'unset';
+    if (workshop) {
+        workshop.style.zIndex = 'unset';
+        workshop.classList.remove('tutorial-highlight');
+    }
+    const icons = sendInfoIcons();
+    icons.forEach((icon) => {
+        icon.style.zIndex = 'unset';
+        icon.style.boxShadow = '';
+        icon.style.position = 'unset';
+        icon.onclick = null;
+    });
+    unbindTutorialInfoClick();
     const roundX = sendRoundX();
     if (roundX) roundX.style.zIndex = 'unset';
     if (roundOne) roundOne.classList.remove('tutorial-highlight');
-    if (workshop) workshop.classList.remove('tutorial-highlight');
     tutStep.style.position = 'unset';
     tutStep.style.top = 'unset';
 }
@@ -103,22 +152,14 @@ function firstStep() {
     defaultStyling();
     nextButton.disabled = true;
     nextButton.classList.add('disabledStyle');
-    const icon = sendInfoIcon();
-    if (icon) {
+    const icons = sendInfoIcons();
+    icons.forEach((icon) => {
         icon.style.position = 'relative';
         icon.style.zIndex = '1005';
         icon.style.boxShadow = '0 0 0 4px rgba(255, 165, 0, 0.8)';
-
-        const onInfoClick = () => {
-            nextButton.disabled = false;
-            nextButton.classList.remove('disabledStyle');
-            icon.removeEventListener('click', onInfoClick);
-            icon.style.boxShadow = '';
-        };
-
-        icon.removeEventListener('click', onInfoClick);
-        icon.addEventListener('click', onInfoClick);
-    }
+        icon.style.cursor = 'pointer';
+    });
+    bindTutorialInfoClick();
     tutStep.style.position = 'relative';
     tutStep.style.top = '25%';
 }
@@ -147,16 +188,13 @@ function thirdStep() {
         const unlock = () => {
             nextButton.disabled = false;
             nextButton.classList.remove('disabledStyle');
-            workshop.removeEventListener('dragstart', unlock);
-            workshop.removeEventListener('click', unlock);
-            workshop.removeEventListener('keyup', unlock);
         };
 
-        workshop.addEventListener('dragstart', unlock);
-        workshop.addEventListener('click', unlock);
+        workshop.addEventListener('dragstart', unlock, { once: true });
+        workshop.addEventListener('click', unlock, { once: true });
         workshop.addEventListener('keyup', (e) => {
             if (e.key === 'Enter' || e.key === ' ') unlock();
-        });
+        }, { once: true });
     } else {
         // nothing to drag, just enable after brief delay
         setTimeout(() => {
@@ -194,11 +232,13 @@ function fifthStep() {
 
 function endTutorial() {
     if (!isDesktopView) return;
+    defaultStyling();
     tutOverlay.style.display = 'none';
 }
 
 function skipTutorial() {
     setTutorialCookie();
+    defaultStyling();
     if (tutOverlay) tutOverlay.style.display = 'none';
 }
 

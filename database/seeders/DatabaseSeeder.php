@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'id' => $adminId,
             'name' => 'admin',
             'email' => 'admin@example.com',
-            'class' => 'SD2A'
+            'class' => 'OSD2A'
         ]);
 
         $userId = Str::uuid()->toString();
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'id' => $userId,
             'name' => 'user',
             'email' => 'user@example.com',
-            'class' => 'SD2A'
+            'class' => 'OSD2A'
         ]);
 
         User::find($adminId)->addRole('admin');

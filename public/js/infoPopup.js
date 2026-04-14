@@ -101,7 +101,8 @@ function info(event) {
 
     } else {
         currentZIndex++;
-        popup.style.zIndex = currentZIndex;
+        popup.style.zIndex = Math.max(currentZIndex, 99999);
+        popup.style.position = 'fixed';
         popup.style.display = "flex";
     }
 }

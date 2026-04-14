@@ -376,12 +376,23 @@ body {
     pointer-events: auto;
 }
 
+.mobile-tutorial-box {
+    width: min(90vw, 360px);
+}
+
 .tutorial-step {
     width: 300px;
     background: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tutorial-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
 .tutorial-buttons button,
@@ -391,7 +402,8 @@ body {
     font-weight: 600;
     color: white;
     border: none;
-    min-width: 80px;
+    min-width: 90px;
+    white-space: nowrap;
     transition: background 150ms ease-in-out, transform 150ms ease;
 }
 
@@ -408,6 +420,16 @@ body {
 .tutorial-buttons button.skip-button,
 #mobileTutorial .mobile-tutorial-box .skip-button {
     background-color: #ea580c; /* deltion-orange */
+}
+
+.tutorial-buttons button:hover,
+#mobileTutorial .mobile-tutorial-box button:hover {
+    transform: translateY(-1px);
+}
+
+.tutorial-buttons button.skip-button:hover,
+#mobileTutorial .mobile-tutorial-box .skip-button:hover {
+    background-color: #c2410c;
 }
 
 .tutorial-buttons button:hover,
