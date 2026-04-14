@@ -26,7 +26,7 @@
         }
         .header {
             background: linear-gradient(135deg, #3f3f69 0%, #2a2a4b 100%);
-            padding: 10px 30px;
+            padding: 0px 30px;
             text-align: center;
             color: #ffffff;
         }
@@ -126,13 +126,67 @@
             color: #f58220;
             font-weight: 600;
         }
+        .success-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.875rem;
+            font-weight: 700;
+            padding: 40px 30px 20px;
+        }
+
+        .success-brand img {
+            height: 3rem;
+            width: auto;
+            display: block;
+        }
+
+        .success-brand-text {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .success-brand-sep {
+            display: none;
+            border-left: 2px solid #e5e7eb;
+            height: 2.5rem;
+            margin: 0 1rem;
+        }
+
+        .deltion-blue {
+            color: #343469;
+        }
+
+        .deltion-orange {
+            color: #f58220;
+        }
+
+        @media (min-width: 640px) {
+            .success-brand-sep {
+                display: block;
+            }
+
+            .success-brand img {
+                height: 4rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="email-wrapper">
-            <div class="header">
-                <h1>Let's Connect</h1>
+            <div class="success-brand">
+                <img src="{{ $message->embed(public_path('images/deltion.png')) }}" alt="Deltion Logo" style="max-width: 150px; height: auto">
+                <span class="success-brand-sep"></span>
+                <div class="success-brand-text">
+                    <span class="deltion-blue">Let's </span>
+                    <span class="deltion-orange">Connect</span>
+                </div>
             </div>
 
             <div class="content">
