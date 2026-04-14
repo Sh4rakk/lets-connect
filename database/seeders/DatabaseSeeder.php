@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'email' => 'letsconnect@admin.nl',
             'class' => 'SD2A',
-            'password' => Hash::make('admin12345'),
+            'password' => Hash::make('L3tsC0nn3ct_Adm!n26'),
         ]);
 
         $userId = Str::uuid()->toString();
