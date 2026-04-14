@@ -52,10 +52,50 @@
                 <span class="text-black ms-1 me-1">
                     |
                 </span>
-                <x-secondary-button type="submit">
+                <x-secondary-button type="submit" id="resend-btn">
                     {{ __('Code opnieuw verzenden') }}
                 </x-secondary-button>
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const resendBtn = document.getElementById('resend-btn');
+
+            if (resendBtn) {
+                let timeLeft = {{ $cooldownSeconds ?? 30 }};
+                resendBtn.disabled = true;
+                resendBtn.style.opacity = '0.5';
+                resendBtn.style.cursor = 'not-allowed';
+
+                const originalText = "{{ __('Code opnieuw verzenden') }}";
+
+
+                const updateText = () => {
+                    if (timeLeft > 60) {
+                        let minutes = Math.ceil(timeLeft / 60);
+                        resendBtn.innerText = `Wacht ${minutes}m...`;
+                    } else {
+                        resendBtn.innerText = `Wacht ${timeLeft}s...`;
+                    }
+                };
+
+                updateText();
+
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    updateText();
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        resendBtn.disabled = false;
+                        resendBtn.style.opacity = '1';
+                        resendBtn.style.cursor = 'pointer';
+                        resendBtn.innerText = originalText;
+                    }
+                }, 1000);
+            }
+        });
+    </script>
 </x-guest-layout>

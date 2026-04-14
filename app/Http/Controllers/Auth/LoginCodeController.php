@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
@@ -33,8 +34,17 @@ class LoginCodeController extends Controller
             $request->session()->regenerateToken();
         }
 
+        $email = $request->query('email') ?: $request->old('email');
+
+        $requestKey = 'request-code:' . $email . ':' . $request->ip();
+        $verifyKey = 'verify-code:' . $email . ':' . $request->ip();
+
+
+        $cooldownSeconds = max(RateLimiter::availableIn($requestKey), RateLimiter::availableIn($verifyKey), 30);
+
         return view('auth.verify-otp', [
-            'email' => $request->query('email'),
+            'email' => $email,
+            'cooldownSeconds' => $cooldownSeconds,
         ]);
     }
 
@@ -58,10 +68,20 @@ class LoginCodeController extends Controller
             'email' => ['required', 'email'],
         ]);
 
+        $key = 'request-code:' . $data['email'] . ':' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+            throw ValidationException::withMessages([
+                'email' => "Te veel pogingen. Wacht {$minutes} minuut/minuten ({$seconds} seconden) voordat je een nieuwe code aanvraagt.",
+            ]);
+        }
+
         /** @var User|null $authUser */
         $authUser = $request->user();
 
-        // If logged in, only allow OTP request for your own email (prevents swapping emails).
+
         if ($authUser) {
             $data['email'] = $authUser->email;
         }
@@ -81,6 +101,8 @@ class LoginCodeController extends Controller
                 ->route('admin.login')
                 ->with('admin_email', $user->email);
         }
+
+        RateLimiter::hit($key, 60); // 1 minute lockout after 3 attempts
 
         try {
             $this->issueAndSendCode($user);
@@ -105,6 +127,16 @@ class LoginCodeController extends Controller
             'code' => ['required', 'string'],
         ]);
 
+        $key = 'verify-code:' . $data['email'] . ':' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+            throw ValidationException::withMessages([
+                'code' => "Te veel foute pogingen. Wacht {$minutes} minuten voordat je het opnieuw probeert.",
+            ]);
+        }
+
         /** @var User|null $user */
         $user = User::query()->where('email', $data['email'])->first();
 
@@ -117,10 +149,13 @@ class LoginCodeController extends Controller
             !Hash::check($code, (string) $user->login_code_hash) ||
             Carbon::parse($user->login_code_expires_at)->isPast()
         ) {
+            RateLimiter::hit($key, 300);
             throw ValidationException::withMessages([
                 'code' => 'The code is invalid or expired.',
             ]);
         }
+
+        RateLimiter::clear($key);
 
         $user->forceFill([
             'login_code_hash' => null,
