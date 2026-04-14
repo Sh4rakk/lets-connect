@@ -75,9 +75,9 @@
                 const updateText = () => {
                     if (timeLeft > 60) {
                         let minutes = Math.ceil(timeLeft / 60);
-                        resendBtn.innerText = `Wacht ${minutes}m...`;
+                        resendBtn.innerText = `Wacht ${minutes} Minuten`;
                     } else {
-                        resendBtn.innerText = `Wacht ${timeLeft}s...`;
+                        resendBtn.innerText = `Wacht ${timeLeft} Seconden.`;
                     }
                 };
 
