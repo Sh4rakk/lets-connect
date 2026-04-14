@@ -26,7 +26,7 @@
         }
         .header {
             background: linear-gradient(135deg, #3f3f69 0%, #2a2a4b 100%);
-            padding: 40px 30px;
+            padding: 10px 30px;
             text-align: center;
             color: #ffffff;
         }
@@ -34,9 +34,11 @@
             margin: 0;
             font-size: 28px;
             font-weight: 600;
+            color: #f58220;
             letter-spacing: -0.5px;
         }
         .header-subtitle {
+            color: #6b7280;
             font-size: 14px;
             opacity: 0.9;
             margin-top: 8px;
@@ -51,7 +53,7 @@
         }
         .code-section {
             background: linear-gradient(135deg, #f0f0f5 0%, #e1e1ed 100%);
-            border-left: 4px solid #fa7a1a;
+            border-left: 4px solid #f58220;
             padding: 24px;
             border-radius: 8px;
             margin: 32px 0;
@@ -68,7 +70,7 @@
         .code-value {
             font-size: 36px;
             font-weight: 700;
-            color: #fa7a1a;
+            color: #f58220;
             letter-spacing: 4px;
             font-family: 'Courier New', monospace;
             margin: 0;
@@ -121,7 +123,7 @@
             margin: 24px 0;
         }
         .brand {
-            color: #fa7a1a;
+            color: #f58220;
             font-weight: 600;
         }
     </style>
@@ -129,51 +131,30 @@
 <body>
     <div class="container">
         <div class="email-wrapper">
-            <!-- Header -->
             <div class="header">
                 <h1>Let's Connect</h1>
-                <p class="header-subtitle">Sign In to Your Account</p>
             </div>
 
-            <!-- Content -->
             <div class="content">
-                <p class="greeting">Hello,</p>
+                <p>We hebben een verzoek ontvangen om in te loggen op uw Let's Connect-account. Gebruik de onderstaande code om in te loggen:</p>
 
-                <p>We've received a request to sign in to your Let's Connect account. Use the code below to complete your sign-in:</p>
-
-                <!-- Code Section -->
                 <div class="code-section">
-                    <div class="code-label">Your Sign-In Code</div>
+                    <div class="code-label">Uw Log-in code</div>
                     <div class="code-value">{{ $code }}</div>
                 </div>
 
-                <!-- Expiry Info -->
                 <div class="expiry-info">
-                    <span class="expiry-icon">⏱️</span>
-                    <span>This code expires in <strong>10 minutes</strong>. Please use it soon.</span>
+                    <span>Deze code is <strong>10 minuten</strong> geldig.</span>
                 </div>
-
-                <!-- Security Note -->
-                <div class="security-note">
-                    <strong>🔒 Security Tip:</strong> Never share this code with anyone. We will never ask you for this code via email or phone.
-                </div>
-
-                <p class="footer-text">
-                    If you didn't request this sign-in code, you can safely ignore this email. Your account remains secure.
-                </p>
 
                 <div class="divider"></div>
 
                 <p style="font-size: 12px; color: #6b7280; margin-bottom: 0;">
-                    Questions? Need help? <span class="brand">Contact us</span> or reply to this email.
+                    Heeft u een vraag? Stuur dan een mail naar dit addres: <span class="brand">lets.connect.support@gmail.com</span>
                 </p>
-            </div>
-
-            <!-- Footer -->
-            <div class="footer">
-                <p style="margin: 0;">© {{ date('Y') }} <span class="brand">Let's Connect</span> • All rights reserved</p>
             </div>
         </div>
     </div>
 </body>
 </html>
+
