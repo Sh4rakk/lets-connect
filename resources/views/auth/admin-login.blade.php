@@ -32,14 +32,16 @@
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
 
-                <div class="form-actions flex items-center justify-end mt-4">
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                        {{ __('Terug naar inloggen') }}
+                <div class="flex items-center mt-3 justify-center">
+                <span class="text-gray-600">
+                    {{ __('Ben je verdwaald?') }}
+                </span>
+                    <span class="text-black ms-1 me-1">
+                    |
+                </span>
+                    <a class="text-black hover:text-deltion-orange-900 font-bold transition-all rounded-md" href="{{ route('login') }}">
+                        {{ __('Terug naar Login') }}
                     </a>
-
-                    <x-primary-button class="ms-4">
-                        {{ __('Inloggen') }}
-                    </x-primary-button>
                 </div>
             </div>
         </form>
