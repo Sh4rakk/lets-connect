@@ -9,26 +9,18 @@
         <!-- Session Status -->
         <x-auth-session-status class="mb-3" :status="session('status')" />
 
-        <form id="loginForm" method="POST" action="{{ route('auth.login-code.request') }}" class="register-form">
-        <form method="POST" action="{{ route('login') }}" class="login-form">
+        <form method="POST" action="{{ route('auth.login-code.request') }}" class="register-form" onsubmit="document.getElementById('login-btn').disabled = true; document.getElementById('login-btn').innerText = 'laden...'; document.getElementById('login-btn').classList.add('opacity-50', 'cursor-not-allowed');">
             @csrf
             <!-- Email -->
             <div class="mt-2">
                 <x-input-label for="email" :value="__('Email')" />
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('username')" required autocomplete="email" />
+                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="email" />
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
-            <!-- Remember Me -->
-            {{-- <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                    <span class="ms-2 text-sm text-gray-600">{{ __('Onthoud Mij') }}</span>
-                </label>
-            </div> --}}
 
             <div class="flex items-center mt-3">
-                <button type="submit" class="w-full max-w-xs m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
+                <button id="login-btn" type="submit" class="w-full max-w-xs m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
                     {{__('Log In')}}
                 </button>
             </div>
