@@ -40,8 +40,27 @@ class LoginCodeController extends Controller
         $requestKey = 'request-code:' . $email . ':' . $request->ip();
         $verifyKey = 'verify-code:' . $email . ':' . $request->ip();
 
+        $cooldownSeconds = 0;
 
-        $cooldownSeconds = max(RateLimiter::availableIn($requestKey), RateLimiter::availableIn($verifyKey), 30);
+
+        $user = User::query()->where('email', $email)->first();
+        if ($user && $user->login_code_expires_at) {
+            $expiresAt = Carbon::parse($user->login_code_expires_at);
+            if ($expiresAt->isFuture()) {
+                $secondsSinceCreated = 600 - Carbon::now()->diffInSeconds($expiresAt);
+                if ($secondsSinceCreated < 30 && $secondsSinceCreated >= 0) {
+                    $cooldownSeconds = 30 - $secondsSinceCreated;
+                }
+            }
+        }
+
+        if (RateLimiter::tooManyAttempts($requestKey, 3)) {
+            $cooldownSeconds = max($cooldownSeconds, RateLimiter::availableIn($requestKey));
+        }
+
+        if (RateLimiter::tooManyAttempts($verifyKey, 5)) {
+            $cooldownSeconds = max($cooldownSeconds, RateLimiter::availableIn($verifyKey));
+        }
 
         return view('auth.verify-otp', [
             'email' => $email,
@@ -103,15 +122,15 @@ class LoginCodeController extends Controller
                 ->with('admin_email', $user->email);
         }
 
+
         if ($user->login_code_expires_at) {
             $expiresAt = Carbon::parse($user->login_code_expires_at);
-            if ($expiresAt->isFuture() && Carbon::now()->diffInSeconds($expiresAt) > 570) {
+            if ($expiresAt->isFuture() && Carbon::now()->addSeconds(570)->isBefore($expiresAt)) {
                 return redirect()
                     ->route('auth.verify-otp', ['email' => $data['email']])
                     ->with('status', 'We hebben een code naar je e-mailadres gestuurd.');
             }
         }
-
 
         $lock = Cache::lock('issue-code-' . $user->id, 10);
 
@@ -168,7 +187,7 @@ class LoginCodeController extends Controller
             !Hash::check($code, (string) $user->login_code_hash) ||
             Carbon::parse($user->login_code_expires_at)->isPast()
         ) {
-            RateLimiter::hit($key, 300);
+            RateLimiter::hit($key, 600);
             throw ValidationException::withMessages([
                 'code' => 'The code is invalid or expired.',
             ]);

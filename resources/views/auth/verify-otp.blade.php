@@ -64,7 +64,7 @@
             const resendBtn = document.getElementById('resend-btn');
 
             if (resendBtn) {
-                let timeLeft = {{ $cooldownSeconds ?? 30 }};
+                let timeLeft = Math.ceil({{ $cooldownSeconds ?? 30 }});
                 resendBtn.disabled = true;
                 resendBtn.style.opacity = '0.5';
                 resendBtn.style.cursor = 'not-allowed';
