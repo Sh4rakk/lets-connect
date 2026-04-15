@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
@@ -100,6 +101,24 @@ class LoginCodeController extends Controller
             return redirect()
                 ->route('admin.login')
                 ->with('admin_email', $user->email);
+        }
+
+        if ($user->login_code_expires_at) {
+            $expiresAt = Carbon::parse($user->login_code_expires_at);
+            if ($expiresAt->isFuture() && Carbon::now()->diffInSeconds($expiresAt) > 570) {
+                return redirect()
+                    ->route('auth.verify-otp', ['email' => $data['email']])
+                    ->with('status', 'We hebben een code naar je e-mailadres gestuurd.');
+            }
+        }
+
+
+        $lock = Cache::lock('issue-code-' . $user->id, 10);
+
+        if (!$lock->get()) {
+            return redirect()
+                ->route('auth.verify-otp', ['email' => $data['email']])
+                ->with('status', 'We hebben een code naar je e-mailadres gestuurd.');
         }
 
         RateLimiter::hit($key, 60); // 1 minute lockout after 3 attempts
