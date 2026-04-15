@@ -6,8 +6,9 @@
     <!-- Formulier Container -->
     <div class="login-container m-auto !h-auto">
         <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-3" :status="session('status')" />
+
+{{--        <!-- Session Status -->--}}
+{{--        <x-auth-session-status class="mb-3" :status="session('status')" />--}}
 
         <form method="POST" action="{{ route('auth.login-code.request') }}" class="register-form" onsubmit="document.getElementById('login-btn').disabled = true; document.getElementById('login-btn').innerText = 'laden...'; document.getElementById('login-btn').classList.add('opacity-50', 'cursor-not-allowed');">
             @csrf
