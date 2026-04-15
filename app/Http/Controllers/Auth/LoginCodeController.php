@@ -20,19 +20,16 @@ use Throwable;
 class LoginCodeController extends Controller
 {
     // GET /auth/verify-otp
-    public function showVerifyForm(Request $request): View
+    public function showVerifyForm(Request $request)
     {
         /** @var User|null $authUser */
         $authUser = $request->user();
 
-        if (
-            $authUser &&
-            !$authUser->hasVerifiedEmail() &&
-            !(method_exists($authUser, 'hasRole') && $authUser->hasRole('admin'))
-        ) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+        if ($authUser) {
+            if (method_exists($authUser, 'hasRole') && $authUser->hasRole('admin')) {
+                return redirect()->route('selectionDashboard');
+            }
+            return redirect()->route('dashboard');
         }
 
         $email = $request->query('email') ?: $request->old('email');
