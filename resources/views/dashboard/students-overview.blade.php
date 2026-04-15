@@ -31,47 +31,45 @@
                                     <option value="SIS3A" {{ ($filters['class'] ?? '') === 'SIS3A' ? 'selected' : '' }}>SIS3A</option>
                                     <option value="SIA3A" {{ ($filters['class'] ?? '') === 'SIA3A' ? 'selected' : '' }}>SIA3A</option>
                                 </optgroup>
-                                <optgroup label="Musicalperformer">
-                                    <option value="AR2MP" {{ ($filters['class'] ?? '') === 'AR2MP' ? 'selected' : '' }}>AR2MP</option>
+                                <optgroup label="Muzikant">
+                                    <option value="AR2MZ" {{ ($filters['class'] ?? '') === 'AR2MZ' ? 'selected' : '' }}>AR2MZ</option>
                                 </optgroup>
                                 <optgroup label="Podium-en Evenemententechniek">
                                     <option value="P2.1" {{ ($filters['class'] ?? '') === 'P2.1' ? 'selected' : '' }}>P2.1</option>
                                     <option value="P2.2" {{ ($filters['class'] ?? '') === 'P2.2' ? 'selected' : '' }}>P2.2</option>
-                                    <option value="P2.3" {{ ($filters['class'] ?? '') === 'P2.3' ? 'selected' : '' }}>P2.3</option>
                                 </optgroup>
                                 <optgroup label="Acteur">
-                                    <option value="2ARAC" {{ ($filters['class'] ?? '') === '2ARAC' ? 'selected' : '' }}>2ARAC</option>
+                                    <option value="AR2AC" {{ ($filters['class'] ?? '') === 'AR2AC' ? 'selected' : '' }}>AR2AC</option>
                                 </optgroup>
                                 <optgroup label="Mode">
                                     <option value="2AFT" {{ ($filters['class'] ?? '') === '2AFT' ? 'selected' : '' }}>2AFT</option>
+                                    <option value="2FT" {{ ($filters['class'] ?? '') === '2FT' ? 'selected' : '' }}>2FT</option>
                                     <option value="2FC" {{ ($filters['class'] ?? '') === '2FC' ? 'selected' : '' }}>2FC</option>
                                     <option value="2FR" {{ ($filters['class'] ?? '') === '2FR' ? 'selected' : '' }}>2FR</option>
                                     <option value="2FDA" {{ ($filters['class'] ?? '') === '2FDA' ? 'selected' : '' }}>2FDA</option>
                                     <option value="2FDB" {{ ($filters['class'] ?? '') === '2FDB' ? 'selected' : '' }}>2FDB</option>
                                 </optgroup>
-                                <optgroup label="Mediavormgeving">
-                                    <option value="MV2A" {{ ($filters['class'] ?? '') === 'MV2A' ? 'selected' : '' }}>MV2A</option>
-                                    <option value="MV2B" {{ ($filters['class'] ?? '') === 'MV2B' ? 'selected' : '' }}>MV2B</option>
-                                    <option value="MV2C" {{ ($filters['class'] ?? '') === 'MV2C' ? 'selected' : '' }}>MV2C</option>
+                                <optgroup label="Media vormgeving">
+                                    <option value="OMV2A" {{ ($filters['class'] ?? '') === 'OMV2A' ? 'selected' : '' }}>OMV2A</option>
+                                    <option value="OMV2B" {{ ($filters['class'] ?? '') === 'OMV2B' ? 'selected' : '' }}>OMV2B</option>
+                                    <option value="OMV2C" {{ ($filters['class'] ?? '') === 'OMV2C' ? 'selected' : '' }}>OMV2C</option>
                                 </optgroup>
-                                <optgroup label="Av-Specialist">
-                                    <option value="AV3A" {{ ($filters['class'] ?? '') === 'AV3A' ? 'selected' : '' }}>AV3A</option>
+                                <optgroup label="AV-productie">
+                                    <option value="AV3B" {{ ($filters['class'] ?? '') === 'AV3B' ? 'selected' : '' }}>AV3B</option>
                                 </optgroup>
                                 <optgroup label="Fotograaf">
-                                    <option value="AV3B" {{ ($filters['class'] ?? '') === 'AV3B' ? 'selected' : '' }}>AV3B</option>
+                                    <option value="AV3A" {{ ($filters['class'] ?? '') === 'AV3A' ? 'selected' : '' }}>AV3A</option>
                                 </optgroup>
                                 <optgroup label="Expert IT systems and devices">
                                     <option value="IT2A" {{ ($filters['class'] ?? '') === 'IT2A' ? 'selected' : '' }}>IT2A</option>
-                                    <option value="IT2B" {{ ($filters['class'] ?? '') === 'IT2B' ? 'selected' : '' }}>IT2B</option>
                                 </optgroup>
                                 <optgroup label="Allround medewerkers IT systems and devices">
                                     <option value="MI1A" {{ ($filters['class'] ?? '') === 'MI1A' ? 'selected' : '' }}>MI1A</option>
                                     <option value="MI2A" {{ ($filters['class'] ?? '') === 'MI2A' ? 'selected' : '' }}>MI2A</option>
                                 </optgroup>
-                                <optgroup label="Software Developer">
-                                    <option value="SD2A" {{ ($filters['class'] ?? '') === 'SD2A' ? 'selected' : '' }}>SD2A</option>
-                                    <option value="SD2B" {{ ($filters['class'] ?? '') === 'SD2B' ? 'selected' : '' }}>SD2B</option>
-                                    <option value="SD2O" {{ ($filters['class'] ?? '') === 'SD2O' ? 'selected' : '' }}>SD2O</option>
+                                <optgroup label="Software developer">
+                                    <option value="OSD2A" {{ ($filters['class'] ?? '') === 'OSD2A' ? 'selected' : '' }}>OSD2A</option>
+                                    <option value="OSD2B" {{ ($filters['class'] ?? '') === 'OSD2B' ? 'selected' : '' }}>OSD2B</option>
                                 </optgroup>
                                 <optgroup label="Interieuradviseur">
                                     <option value="BOW2A" {{ ($filters['class'] ?? '') === 'BOW2A' ? 'selected' : '' }}>BOW2A</option>
