@@ -7,18 +7,18 @@ const klassen = {
   opleiding3: ["P2.1", "P2.2"],
   opleiding4: ["AR2AC",],
   opleiding5: ["2AFT", "2FT", "2FC", "2FR", "2FDA", "2FDB"],
-  opleiding6: ["OMV2A", "OMV2B", "OMV2C"],
+  opleiding6: ["MV2A", "MV2B", "MV2C"],
   opleiding7: ["AV3B",],
   opleiding8: ["AV3A",],
   opleiding9: ["IT2A"],
   opleiding10: ["MI1A", "MI2A"],
-  opleiding11: ["OSD2A", "OSD2B"],
-  opleiding12: ["OBOW3B", "OBOW3C", "OBOW2V", "OBOW3D", "OBOW2A", "OBOW2B"],
+  opleiding11: ["SD2A", "SD2B"],
+  opleiding12: ["BOW3B", "BOW3C", "BOW2V", "BOW3D", "BOW2A", "BOW2B"],
   opleiding13: ["CD2A", "CD2B"],
 };
 
 opleidingSelect.addEventListener("change", function() {
-  
+
   klasSelect.innerHTML = "<option value=''>Kies een klas</option>";
 
   const selectedOpleiding = opleidingSelect.value;
@@ -41,7 +41,7 @@ document.querySelector('.register-form').addEventListener('submit', function(e) 
   // Controleer of de eerste 8-9 tekens van het e-mailadres alleen uit cijfers bestaan
   const emailPrefix = email.split('@')[0];
   const firstPart = emailPrefix.substring(0, 9);
-  
+
   if (!/^\d{8,9}$/.test(firstPart)) {
       e.preventDefault();
       alert('De eerste 8-9 tekens van je e-mailadres moeten alleen cijfers zijn.');
