@@ -1,66 +1,49 @@
-let originalWorkshopOrder = [];
+// Initialize global variables safely
+window.originalWorkshopOrder = window.originalWorkshopOrder || [];
+window.workshopsInRounds = window.workshopsInRounds || new Set();
+window.planningChanged = window.planningChanged || false;
 
-function getWorkshopIdFromElement(workshopElement) {
-    if (!workshopElement || !workshopElement.id) return "";
-    return workshopElement.id.replace(/^workshop/, "");
+function drag(event) {
+    // Find the actual workshop element by traversing up from the target
+    let workshopElement = event.target;
+    if (!workshopElement.classList.contains('workshop')) {
+        workshopElement = workshopElement.closest('.workshop');
+        if (!workshopElement) return; // Exit if no workshop parent found
+    }
+
+    if (window.innerWidth > 800) {
+        customDrag(event)
+    }
+    event.dataTransfer.setData("text", workshopElement.id);
 }
 
-function syncDesktopSaveInputsFromRounds() {
-    [1, 2, 3].forEach((roundNumber) => {
-        const roundElement = document.getElementById(String(roundNumber));
-        const saveInput = document.getElementById(`save${roundNumber}`);
-        if (!saveInput || !roundElement) return;
-
-        const workshopInRound = roundElement.querySelector('.workshop');
-        saveInput.value = getWorkshopIdFromElement(workshopInRound);
-    });
-}
-
-// Event listener for enabling drops on a valid target
 function allowDrop(ev) {
     ev.preventDefault();
 }
 
-// Event listener for dragging
-function drag(event) {
-    if (window.innerWidth > 800) {
-        customDrag(event)
-    }
-    event.dataTransfer.setData("text", event.target.id);
-}
-
-// Event listener for dropping
 function drop(ev) {
     ev.preventDefault();
     const data = ev.dataTransfer.getData("text");
     const draggedElement = document.getElementById(data);
     const targetRound = ev.target.closest(".round");
 
-    if (!targetRound) return;
+    if (!draggedElement || !targetRound) return;
 
-    // if (draggedElement.id === "workshop0" && targetRound.id !== "1") {
-    //     showErrorPopup("Theaterworkshop 1 kan alleen in Ronde 1 geplaatst worden.");
-    //     return;
-    // }
+     // If no children are present, append the dragged element
+     if (!targetRound.hasChildNodes()) {
+         targetRound.appendChild(draggedElement);
+         syncDesktopSaveInputsFromRounds();
+         window.planningChanged = true;
+         addCloseButton(draggedElement, targetRound);
+         window.workshopsInRounds.add(draggedElement.id);
+         checkWorkshopsInRounds();
 
-    // if (draggedElement.id === "workshop1" && targetRound.id !== "2") {
-    //     showErrorPopup("Theaterworkshop 2 kan alleen in Ronde 2 geplaatst worden.");
-    //     return;
-    // }
-
-    // if (draggedElement.id === "workshop2" && targetRound.id !== "3") {
-    //     showErrorPopup("Theaterworkshop 3 kan alleen in Ronde 3 geplaatst worden.");
-    //     return;
-    // }
-
-    // If no children are present, append the dragged element
-    if (!targetRound.hasChildNodes()) {
-        targetRound.appendChild(draggedElement);
-        syncDesktopSaveInputsFromRounds();
-        planningChanged = true;
-        addCloseButton(draggedElement, targetRound);
-        workshopsInRounds.add(draggedElement.id);
-        checkWorkshopsInRounds();
+        // Advance tutorial if we're on step 4 and a workshop was dropped in round 1
+        if (typeof currentStepIndex !== 'undefined' && currentStepIndex === 3 && targetRound.id === '1') {
+            if (typeof nextStep === 'function') {
+                nextStep();
+            }
+        }
     } else {
         // Handle swapping if there's an existing workshop in the target round
         oldWorkshop = targetRound.firstChild;
@@ -79,17 +62,21 @@ function drop(ev) {
     updateSaveButton();
 }
 
-// Custom drag element style and ghost image
 function customDrag(event) {
     let ghostEl;
 
-    const draggedElement = event.target;
+    // Find the actual workshop element by traversing up from the target
+    let draggedElement = event.target;
 
-    const title = draggedElement.querySelector('.title');
+    // If the target is not a workshop, find its closest workshop parent
+    if (!draggedElement.classList.contains('workshop')) {
+        draggedElement = draggedElement.closest('.workshop');
+        if (!draggedElement) return; // Exit if no workshop parent found
+    }
 
     if(draggedElement.tagName.toString() === 'IMG') return;
 
-    ghostEl = event.target.cloneNode(true);
+    ghostEl = draggedElement.cloneNode(true);
     ghostEl.classList.remove('hiddenText');
     ghostEl.classList.add('showText');
 
@@ -110,3 +97,98 @@ function customDrag(event) {
         }
     });
 }
+
+// Helper functions
+function getWorkshopIdFromElement(workshopElement) {
+    if (!workshopElement || !workshopElement.id) return "";
+    return workshopElement.id.replace(/^workshop/, "");
+}
+
+function syncDesktopSaveInputsFromRounds() {
+    [1, 2, 3].forEach((roundNumber) => {
+        const roundElement = document.getElementById(String(roundNumber));
+        const saveInput = document.getElementById(`save${roundNumber}`);
+        if (!saveInput || !roundElement) return;
+
+        const workshopInRound = roundElement.querySelector('.workshop');
+        saveInput.value = getWorkshopIdFromElement(workshopInRound);
+    });
+}
+
+function addCloseButton(workshopElement, targetRound) {
+    // Remove existing close button if present
+    const existingCloseButton = workshopElement.querySelector('.close-button');
+    if (existingCloseButton) {
+        existingCloseButton.remove();
+    }
+
+    // Create close button
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('close-button');
+    closeButton.textContent = '×';
+    closeButton.onclick = (e) => {
+        e.stopPropagation();
+        removeWorkshop(workshopElement, targetRound);
+    };
+
+    workshopElement.appendChild(closeButton);
+}
+
+function removeWorkshop(workshopElement, roundElement) {
+     const workshopContainer = document.querySelector('.workshops');
+     if (workshopContainer) {
+         workshopContainer.appendChild(workshopElement);
+     }
+     const closeButton = workshopElement.querySelector('.close-button');
+     if (closeButton) {
+         closeButton.remove();
+     }
+     window.workshopsInRounds.delete(workshopElement.id);
+     syncDesktopSaveInputsFromRounds();
+     checkWorkshopsInRounds();
+     updateSaveButton();
+     window.planningChanged = true;
+}
+
+function checkWorkshopsInRounds() {
+    // Update placeholder visibility
+    [1, 2, 3].forEach((roundNumber) => {
+        const roundElement = document.getElementById(String(roundNumber));
+        if (!roundElement) return;
+
+        const roundContainer = roundElement.parentElement;
+        const placeholder = roundContainer.querySelector('.placeholder');
+        const workshop = roundElement.querySelector('.workshop');
+
+        if (workshop && placeholder) {
+            // Hide placeholder when workshop is present
+            placeholder.style.display = 'none';
+        } else if (placeholder) {
+            // Show placeholder when no workshop
+            placeholder.style.display = 'flex';
+        }
+    });
+}
+
+function updateSaveButton() {
+     const saveButton = document.getElementById('save-button');
+     if (saveButton) {
+         if (window.workshopsInRounds.size === 3) {
+             saveButton.style.display = 'flex';
+         } else {
+             saveButton.style.display = 'none';
+         }
+     }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof checkWorkshopsInRounds === 'function') {
+        checkWorkshopsInRounds();
+    }
+    if (typeof updateSaveButton === 'function') {
+        updateSaveButton();
+    }
+});
+
+

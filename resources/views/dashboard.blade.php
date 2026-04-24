@@ -24,6 +24,7 @@
         <script src="{{ asset('/js/tutorial.js') }}"></script>
         <script src="{{ asset('/js/mobileTutorial.js') }}"></script>
         <script src="{{ asset('/js/mobileDashboard.js') }}"></script>
+        <script defer src="{{ asset('/js/dragAndDrop.js') }}"></script>
     </head>
     <body>
         @if(isset($bookings) && $bookings->count() >= 3)
@@ -55,7 +56,11 @@
 
         <!-- PC View -->
         <div class="hidden md:block">
-            <!-- Tutorial -->
+            <!-- Restart Tutorial Button -->
+            <div style="padding: 10px 20px; background-color: #f3f4f6; border-bottom: 1px solid #e5e7eb;">
+                <button id="restart-tutorial-btn" class="px-4 py-2 bg-deltion-orange-500 text-white rounded hover:bg-deltion-orange-600 font-semibold" onclick="restartTutorial()">Tutorial opnieuw starten</button>
+            </div>
+            <!-- ...existing code... -->
             <div class="tutorial-overlay" id="tutorial-overlay" style="display: none;">
                 <div class="tutorial-step" id="tutorial-step">
                     <button onclick="skipTutorial()" class="absolute top-2 right-2 text-2xl">×</button>
@@ -133,8 +138,8 @@
                     @endforeach
                 </div>
             </div>
-            <div class="flex">
-                <div id="save-button-container" style="display: none;"></div>
+            <div class="flex gap-2">
+                    <div id="save-button-container" style="display: none;"></div>
                 <div id="confirmation-popup" class="confpopup">
                     <div class="popup-content">
                         <p>Wil je dit opslaan?</p>
@@ -156,7 +161,6 @@
             </div>
             <!-- loading script after html has loaded because of getElementById -->
             <script src="{{ asset('/js/capacityWorkshops.js') }}"></script>
-            <script src="{{ asset('/js/dragAndDrop.js') }}"></script>
             <script>
                 const registrationsClosed = @json($registrationsClosed);
                 if (registrationsClosed) {

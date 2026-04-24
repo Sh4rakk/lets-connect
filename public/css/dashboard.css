@@ -63,8 +63,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-
+    position: static;
 }
 
 .round .workshop {
@@ -523,7 +522,20 @@ body {
 }
 
 .placeholder {
+    position: relative;
+}
+
+#round1, #round2, #round3 {
+    position: relative;
+}
+
+#round1 .round:not(.placeholder),
+#round2 .round:not(.placeholder),
+#round3 .round:not(.placeholder) {
     position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
 }
 
 .round-container:focus,              /* als je een class hebt op de div */
