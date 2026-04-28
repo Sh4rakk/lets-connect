@@ -2,19 +2,17 @@ const opleidingSelect = document.getElementById("opleiding");
 const klasSelect = document.getElementById("klas");
 
 const klassen = {
-  opleiding1: ["SIM2A", "SIM2B", "SIS3A", "SIA3A"],
-  opleiding2: ["AR2MZ",],
+  opleiding1: ["MV2A", "MV2B", "MV2C"],
+  opleiding2: ["BOW3B", "BOW3C", "BOW2V", "BOW3D", "BOW2A", "BOW2B",],
   opleiding3: ["P2.1", "P2.2"],
-  opleiding4: ["AR2AC",],
-  opleiding5: ["2AFT", "2FT", "2FC", "2FR", "2FDA", "2FDB"],
-  opleiding6: ["MV2A", "MV2B", "MV2C"],
-  opleiding7: ["AV3B",],
-  opleiding8: ["AV3A",],
-  opleiding9: ["IT2A"],
-  opleiding10: ["MI1A", "MI2A"],
-  opleiding11: ["SD2A", "SD2B"],
-  opleiding12: ["BOW3B", "BOW3C", "BOW2V", "BOW3D", "BOW2A", "BOW2B"],
-  opleiding13: ["CD2A", "CD2B"],
+  opleiding4: ["AR2MZ",],
+  opleiding5: ["AR2AC"],
+  opleiding6: ["IT2A"],
+  opleiding7: ["SD2A","SD2B",],
+  opleiding8: ["AV3B",],
+  opleiding9: ["AV3A"],
+  opleiding10: ["2FR", "2FC", "2AFT", "2FT", "2FDA", "2FDB"],
+  opleiding11: ["CD2A", "CD2B"],
 };
 
 opleidingSelect.addEventListener("change", function() {
