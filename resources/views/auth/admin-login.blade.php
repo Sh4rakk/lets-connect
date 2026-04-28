@@ -7,7 +7,10 @@
     </div>
 
     <div class="login-container m-auto !h-auto">
-        <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">
+        <span class="text-black text-center font-bold transition-all rounded-md">
+            Administrator Login
+        </span>
+{{--        <img src="{{ asset('/images/Lets-connect-logo.png') }}" alt="Logo" class="hover-scale m-auto w-auto h-20 md:h-36">--}}
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -30,6 +33,12 @@
                                     name="password"
                                     required autocomplete="current-password" />
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                </div>
+
+                <div class="flex items-center mt-3">
+                    <button id="login-btn" type="submit" class="w-full max-w-xs m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
+                        {{__('Log In')}}
+                    </button>
                 </div>
 
                 <div class="flex items-center mt-3 justify-center">

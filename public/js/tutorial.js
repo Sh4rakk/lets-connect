@@ -1,21 +1,21 @@
-﻿let currentStepIndex = 0;
+let currentStepIndex = 0;
 let prevButton = null;
 let nextButton = null;
+let skipButton = null;
 let tutButtons = null;
 let tutOverlay = null;
 let tutStep = null;
 let roundOne = null;
 let isDesktopView = false;
 let tutorialInfoClickHandlers = [];
+let autoCloseTimeout = null;
 
 const tutorialSteps = [
     { text: "Welkom op het dashboard! Laten we leren hoe je deze pagina gebruikt.", highlight: ".round:nth-child(1)" },
     { text: "Klik op het 'i' tje om meer info te krijgen over een workshop zelf.", highlight: ".round:nth-child(1)" },
     { text: "Klik op het kruisje om de info pagina te verlaten.", highlight: ".round:nth-child(1)" },
-    { text: "Dit is Ronde 1. Sleep een workshop hierheen om het toe te wijzen aan deze ronde.", highlight: ".round:nth-child(1)" },
     { text: "Hier is een workshop. Klik en sleep het naar een ronde.", highlight: ".workshop:nth-child(1)" },
     { text: "Je kunt ook de workshop weer verwijderen met de 'x'.", highlight: ".round:nth-child(1)" },
-    { text: "Goed gedaan! Laat de workshop vallen in een ronde om je planning te voltooien.", highlight: ".round:nth-child(1)" },
     { text: "Tutorial voltooid! Je kunt nu zelf workshops slepen.", highlight: ".round:nth-child(1)" }
 ];
 
@@ -45,7 +45,12 @@ function updateStepButtonState() {
 
 function nextStep() {
     if (!isDesktopView) return;
-    currentStepIndex = Math.min(currentStepIndex + 1, tutorialLength);
+    // At the last step, close the tutorial instead of trying to advance further
+    if (currentStepIndex >= tutorialLength) {
+        endTutorial();
+        return;
+    }
+    currentStepIndex++;
     tutStep.querySelector('#tutorial-text').textContent = tutorialSteps[currentStepIndex].text;
     updateStepButtonState();
     if (currentStepIndex === 0) defaultStyling();
@@ -53,9 +58,7 @@ function nextStep() {
     if (currentStepIndex === 2) secondStep();
     if (currentStepIndex === 3) thirdStep();
     if (currentStepIndex === 4) fourthStep();
-    if (currentStepIndex === 5) fifthStep();
-    if (currentStepIndex === 6) sixthStep();
-    if (currentStepIndex === tutorialLength) endTutorial();
+    if (currentStepIndex === tutorialLength) lastStep();
 }
 
 function prevStep() {
@@ -68,8 +71,6 @@ function prevStep() {
     if (currentStepIndex === 2) secondStep();
     if (currentStepIndex === 3) thirdStep();
     if (currentStepIndex === 4) fourthStep();
-    if (currentStepIndex === 5) fifthStep();
-    if (currentStepIndex === 6) sixthStep();
 }
 
 function sendWorkshop() {
@@ -121,42 +122,54 @@ function unbindTutorialInfoClick() {
     tutorialInfoClickHandlers = [];
 }
 
-function sendRoundX() {
-    const workshopInRound = roundOne ? roundOne.querySelector('.workshop') : null;
-    return workshopInRound ? workshopInRound.querySelector('.close-button') : null;
-}
-
 function defaultStyling() {
     if (!isDesktopView) return;
+    // Cancel any pending auto-close from the last step
+    if (autoCloseTimeout) {
+        clearTimeout(autoCloseTimeout);
+        autoCloseTimeout = null;
+    }
     nextButton.disabled = false;
     nextButton.classList.remove('disabledStyle');
-    if (roundOne) {
-        roundOne.style.zIndex = 'unset';
-        roundOne.style.pointerEvents = 'unset';
+    nextButton.textContent = 'Volgende';
+    if (skipButton) skipButton.style.display = '';
 
-        // Reset drop target
+    // Reset all round containers (z-index may have been set on any of them)
+    ['round1', 'round2', 'round3'].forEach(id => {
+        const container = document.getElementById(id);
+        if (container) {
+            container.style.zIndex = 'unset';
+            container.style.pointerEvents = 'unset';
+            container.classList.remove('tutorial-highlight');
+        }
+    });
+
+    // Reset internal elements of roundOne (placeholder, drop target)
+    if (roundOne) {
         const dropTarget = roundOne.querySelector('.round:not(.placeholder)');
         if (dropTarget) {
             dropTarget.style.pointerEvents = 'unset';
             dropTarget.style.zIndex = 'unset';
+            dropTarget.style.outline = 'unset';
         }
 
         const placeholder = roundOne.querySelector('.placeholder');
         if (placeholder) {
-            placeholder.style.backgroundColor = '#ffff';
+            placeholder.style.backgroundColor = '';
             placeholder.style.outline = 'unset';
             placeholder.style.zIndex = 'unset';
             placeholder.style.position = 'unset';
             placeholder.style.pointerEvents = 'unset';
         }
     }
+
+    // Reset the first workshop in .workshops
     const workshop = sendWorkshop();
     if (workshop) {
         workshop.style.zIndex = 'unset';
         workshop.style.outline = 'unset';
         workshop.style.outlineOffset = 'unset';
         workshop.classList.remove('tutorial-highlight');
-        // Clear styling from first workshop's info icon
         const icon = workshop.querySelector('.info');
         if (icon) {
             icon.style.zIndex = 'unset';
@@ -167,9 +180,23 @@ function defaultStyling() {
             icon.onclick = null;
         }
     }
+
+    // Reset close buttons in all rounds
+    ['1', '2', '3'].forEach(id => {
+        const roundEl = document.getElementById(id);
+        if (roundEl) {
+            const workshopInRound = roundEl.querySelector('.workshop');
+            if (workshopInRound) {
+                const closeBtn = workshopInRound.querySelector('.close-button');
+                if (closeBtn) {
+                    closeBtn.style.zIndex = 'unset';
+                    closeBtn.style.boxShadow = '';
+                }
+            }
+        }
+    });
+
     unbindTutorialInfoClick();
-    const roundX = sendRoundX();
-    if (roundX) roundX.style.zIndex = 'unset';
     tutStep.style.position = 'unset';
     tutStep.style.top = 'unset';
 }
@@ -187,19 +214,15 @@ function firstStep() {
         icon.style.cursor = 'pointer';
 
         const onInfoClick = () => {
-            // Find the workshop element and its corresponding popup
             const workshop = sendWorkshop();
             if (workshop) {
                 const workshopId = workshop.id.replace('workshop', '');
                 const popup = document.getElementById('popup' + workshopId);
-
                 if (popup) {
-                    // Show the popup
                     popup.style.display = 'flex';
                 }
             }
 
-            // Move to next step after a short delay to let popup render
             setTimeout(() => {
                 nextButton.disabled = false;
                 nextButton.classList.remove('disabledStyle');
@@ -225,7 +248,6 @@ function secondStep() {
     nextButton.disabled = true;
     nextButton.classList.add('disabledStyle');
 
-    // Find the close button in the info popup
     const popup = document.querySelector('.popup[style*="display: flex"]') || document.querySelector('.popup');
     const closeButton = popup ? popup.querySelector('.close') : null;
 
@@ -245,7 +267,6 @@ function secondStep() {
 
         closeButton.addEventListener('click', onCloseClick, { once: true });
     } else {
-        // If popup is not visible, auto-advance after delay
         setTimeout(() => {
             nextButton.disabled = false;
             nextButton.classList.remove('disabledStyle');
@@ -259,59 +280,34 @@ function secondStep() {
 function thirdStep() {
     if (!isDesktopView) return;
     defaultStyling();
-    nextButton.disabled = true;
-    nextButton.classList.add('disabledStyle');
 
-    // Highlight the first workshop card
+    // Highlight the workshop card
     const workshop = sendWorkshop();
     if (workshop) {
-        console.log(workshop)
         workshop.style.zIndex = '1004';
         workshop.style.outline = '2px solid rgb(245, 130, 32)';
         workshop.style.outlineOffset = '2px';
     }
 
-    // Highlight Round 1 - but keep it accessible for dragging
+    // Highlight round 1 — bring it above the overlay and outline the drop zone card
     if (roundOne) {
         roundOne.style.zIndex = '1003';
         roundOne.style.pointerEvents = 'auto';
 
-        // Make sure the drop target is accessible
         const dropTarget = roundOne.querySelector('.round:not(.placeholder)');
         if (dropTarget) {
-            dropTarget.style.pointerEvents = 'auto';
             dropTarget.style.zIndex = '1003';
+            dropTarget.style.pointerEvents = 'auto';
+            dropTarget.style.outline = '2px solid rgb(245, 130, 32)';
         }
 
-        // Also highlight the placeholder
         const placeholder = roundOne.querySelector('.placeholder');
         if (placeholder) {
-            placeholder.style.backgroundColor = '#fffff';
-            placeholder.style.outline = '2px solid rgb(245, 130, 32)';
-            placeholder.style.zIndex = '1004';
-            placeholder.style.position = 'relative';
+            placeholder.style.backgroundColor = 'white';
             placeholder.style.pointerEvents = 'none';
         }
     }
 
-    if (workshop) {
-        const unlock = () => {
-            nextButton.disabled = false;
-            nextButton.classList.remove('disabledStyle');
-        };
-
-        workshop.addEventListener('dragstart', unlock, { once: true });
-        workshop.addEventListener('click', unlock, { once: true });
-        workshop.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') unlock();
-        }, { once: true });
-    } else {
-        // nothing to drag, just enable after brief delay
-        setTimeout(() => {
-            nextButton.disabled = false;
-            nextButton.classList.remove('disabledStyle');
-        }, 2000);
-    }
     tutStep.style.position = 'relative';
     tutStep.style.top = '25%';
 }
@@ -319,36 +315,58 @@ function thirdStep() {
 function fourthStep() {
     if (!isDesktopView) return;
     defaultStyling();
-    if (roundOne) {
-        roundOne.style.zIndex = '1001';
-        roundOne.classList.add('tutorial-highlight');
-    }
-    tutStep.style.position = 'relative';
-    tutStep.style.top = '25%';
-}
-
-function fifthStep() {
-    if (!isDesktopView) return;
-    defaultStyling();
     nextButton.disabled = true;
     nextButton.classList.add('disabledStyle');
-    const roundX = sendRoundX();
-    if (roundX) {
-        roundX.style.zIndex = '1001';
-        roundX.addEventListener('click', function onRoundXClick() {
-            nextButton.disabled = false;
-            nextButton.classList.remove('disabledStyle');
-            roundX.removeEventListener('click', onRoundXClick);
-        });
+
+    // Find the first workshop placed in any round
+    let closeBtn = null;
+    let roundContainer = null;
+    for (const roundNum of [1, 2, 3]) {
+        const roundEl = document.getElementById(String(roundNum));
+        if (roundEl) {
+            const workshopInRound = roundEl.querySelector('.workshop');
+            if (workshopInRound) {
+                closeBtn = workshopInRound.querySelector('.close-button');
+                if (closeBtn) {
+                    roundContainer = roundEl.parentElement;
+                    break;
+                }
+            }
+        }
     }
+
+    if (closeBtn && roundContainer) {
+        // Bring the round above the overlay so the workshop is clearly visible
+        roundContainer.style.zIndex = '1003';
+        closeBtn.style.zIndex = '1005';
+        closeBtn.style.boxShadow = '0 0 0 4px rgba(255, 165, 0, 0.8)';
+
+        closeBtn.addEventListener('click', function onCloseClick() {
+            closeBtn.removeEventListener('click', onCloseClick);
+            nextStep();
+        });
+    } else {
+        // No workshop in any round yet — enable next as fallback
+        nextButton.disabled = false;
+        nextButton.classList.remove('disabledStyle');
+    }
+
     tutStep.style.position = 'relative';
     tutStep.style.top = '25%';
 }
 
-function sixthStep() {
+function lastStep() {
     if (!isDesktopView) return;
     defaultStyling();
-    tutOverlay.style.display = 'none';
+    // Hide all navigation except a single close button
+    prevButton.style.display = 'none';
+    if (skipButton) skipButton.style.display = 'none';
+    nextButton.textContent = 'Sluit tutorial';
+    nextButton.style.display = 'flex';
+    // Auto-close after 5 seconds
+    autoCloseTimeout = setTimeout(() => {
+        endTutorial();
+    }, 5000);
 }
 
 function endTutorial() {
@@ -372,6 +390,7 @@ function restartTutorial() {
 function initTutorial() {
     prevButton = document.getElementById('prevButton');
     nextButton = document.getElementById('nextButton');
+    skipButton = document.querySelector('.skip-button');
     tutButtons = document.querySelector('.tutorial-buttons');
     tutOverlay = document.querySelector('.tutorial-overlay');
     tutStep = document.getElementById('tutorial-step');

@@ -56,11 +56,6 @@
 
         <!-- PC View -->
         <div class="hidden md:block">
-            <!-- Restart Tutorial Button -->
-            <div style="padding: 10px 20px; background-color: #f3f4f6; border-bottom: 1px solid #e5e7eb;">
-                <button id="restart-tutorial-btn" class="px-4 py-2 bg-deltion-orange-500 text-white rounded hover:bg-deltion-orange-600 font-semibold" onclick="restartTutorial()">Tutorial opnieuw starten</button>
-            </div>
-            <!-- ...existing code... -->
             <div class="tutorial-overlay" id="tutorial-overlay" style="display: none;">
                 <div class="tutorial-step" id="tutorial-step">
                     <button onclick="skipTutorial()" class="absolute top-2 right-2 text-2xl">×</button>

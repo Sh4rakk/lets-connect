@@ -39,7 +39,7 @@ function drop(ev) {
          checkWorkshopsInRounds();
 
         // Advance tutorial if we're on step 4 and a workshop was dropped in round 1
-        if (typeof currentStepIndex !== 'undefined' && currentStepIndex === 3 && targetRound.id === '1') {
+        if (typeof currentStepIndex !== 'undefined' && currentStepIndex === 3 && ['1', '2', '3'].includes(targetRound.id)) {
             if (typeof nextStep === 'function') {
                 nextStep();
             }
@@ -161,11 +161,12 @@ function checkWorkshopsInRounds() {
         const workshop = roundElement.querySelector('.workshop');
 
         if (workshop && placeholder) {
-            // Hide placeholder when workshop is present
-            placeholder.style.display = 'none';
+            // Hide placeholder visually when workshop is present, but keep it in the layout
+            // so the round container doesn't collapse (the drop zone is position:absolute)
+            placeholder.style.visibility = 'hidden';
         } else if (placeholder) {
             // Show placeholder when no workshop
-            placeholder.style.display = 'flex';
+            placeholder.style.visibility = 'visible';
         }
     });
 }
