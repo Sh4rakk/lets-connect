@@ -404,6 +404,10 @@ function endTutorial() {
     if (!isDesktopView) return;
     defaultStyling();
     tutOverlay.style.display = 'none';
+    // Reload page to clear all tutorial styling and attributes
+    setTimeout(() => {
+        location.reload();
+    }, 300);
 }
 
 function skipTutorial() {
