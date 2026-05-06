@@ -12,10 +12,10 @@ let autoCloseTimeout = null;
 
 const tutorialSteps = [
     { text: "Welkom op het dashboard! Laten we leren hoe je deze pagina gebruikt.", highlight: ".round:nth-child(1)" },
-    { text: "Klik op het 'i' tje om meer info te krijgen over een workshop zelf.", highlight: ".round:nth-child(1)" },
-    { text: "Klik op het kruisje om de info pagina te verlaten.", highlight: ".round:nth-child(1)" },
-    { text: "Hier is een workshop. Klik en sleep het naar een ronde.", highlight: ".workshop:nth-child(1)" },
-    { text: "Je kunt ook de workshop weer verwijderen met de 'x'.", highlight: ".round:nth-child(1)" },
+    { text: "Klik op het informatie-icoon (i) van een workshop om de workshopinfo te openen. De knop ‘Volgende’ wordt daarna actief.", highlight: ".round:nth-child(1)" },
+    { text: "Klik op het rode kruisje rechtsboven in het info-venster om het te sluiten.", highlight: ".round:nth-child(1)" },
+    { text: "Pak het workshopkaartje vast en sleep het naar ronde 1.", highlight: ".workshop:nth-child(1)" },
+    { text: "Klik op het kleine rode kruisje (x) op de workshop in de ronde om deze weer te verwijderen.", highlight: ".round:nth-child(1)" },
     { text: "Tutorial voltooid! Je kunt nu zelf workshops slepen.", highlight: ".round:nth-child(1)" }
 ];
 
@@ -84,6 +84,21 @@ function sendInfoIcons() {
 function sendInfoIcon() {
     const workshop = sendWorkshop();
     return workshop ? workshop.querySelector('.info') : null;
+}
+
+function setWorkshopCloseButtonsDisabled(disabled, label) {
+    document.querySelectorAll('.close-button').forEach((button) => {
+        button.disabled = disabled;
+        button.style.pointerEvents = disabled ? 'none' : 'auto';
+        button.style.opacity = disabled ? '0.45' : '';
+        if (disabled) {
+            button.title = label;
+            button.setAttribute('aria-label', label);
+        } else {
+            button.title = '';
+            button.removeAttribute('aria-label');
+        }
+    });
 }
 
 function bindTutorialInfoClick() {
@@ -177,6 +192,7 @@ function defaultStyling() {
             icon.style.position = 'unset';
             icon.style.cursor = 'unset';
             icon.style.pointerEvents = 'unset';
+            icon.classList.remove('tutorial-info-highlight');
             icon.onclick = null;
         }
     }
@@ -196,6 +212,8 @@ function defaultStyling() {
         }
     });
 
+    setWorkshopCloseButtonsDisabled(false);
+
     unbindTutorialInfoClick();
     tutStep.style.position = 'unset';
     tutStep.style.top = 'unset';
@@ -206,12 +224,15 @@ function firstStep() {
     defaultStyling();
     nextButton.disabled = true;
     nextButton.classList.add('disabledStyle');
+    nextButton.textContent = 'Klik eerst op i';
     const icon = sendInfoIcon();
     if (icon) {
         icon.style.position = 'relative';
         icon.style.zIndex = '1005';
-        icon.style.boxShadow = '0 0 0 4px rgba(255, 165, 0, 0.8)';
         icon.style.cursor = 'pointer';
+        icon.title = 'Klik op dit informatie-icoon om verder te gaan';
+        icon.setAttribute('aria-label', 'Klik op dit informatie-icoon om verder te gaan');
+        icon.classList.add('tutorial-info-highlight');
 
         const onInfoClick = () => {
             const workshop = sendWorkshop();
@@ -226,7 +247,9 @@ function firstStep() {
             setTimeout(() => {
                 nextButton.disabled = false;
                 nextButton.classList.remove('disabledStyle');
+                nextButton.textContent = 'Volgende';
                 icon.style.boxShadow = '';
+                icon.classList.remove('tutorial-info-highlight');
                 nextStep();
             }, 300);
         };
@@ -255,6 +278,8 @@ function secondStep() {
         closeButton.style.zIndex = '1005';
         closeButton.style.boxShadow = '0 0 0 4px rgba(255, 165, 0, 0.8)';
         closeButton.style.position = 'relative';
+        closeButton.title = 'Klik op dit kruisje om het info-venster te sluiten';
+        closeButton.setAttribute('aria-label', 'Klik op dit kruisje om het info-venster te sluiten');
 
         const onCloseClick = () => {
             nextButton.disabled = false;
@@ -280,6 +305,7 @@ function secondStep() {
 function thirdStep() {
     if (!isDesktopView) return;
     defaultStyling();
+    setWorkshopCloseButtonsDisabled(true, 'Wacht eerst met dit kruisje; sleep de workshop naar een ronde om verder te gaan');
 
     // Highlight the workshop card
     const workshop = sendWorkshop();
@@ -287,6 +313,8 @@ function thirdStep() {
         workshop.style.zIndex = '1004';
         workshop.style.outline = '2px solid rgb(245, 130, 32)';
         workshop.style.outlineOffset = '2px';
+        workshop.title = 'Sleep dit workshopkaartje naar een ronde';
+        workshop.setAttribute('aria-label', 'Sleep dit workshopkaartje naar een ronde');
     }
 
     // Highlight round 1 — bring it above the overlay and outline the drop zone card
@@ -315,6 +343,7 @@ function thirdStep() {
 function fourthStep() {
     if (!isDesktopView) return;
     defaultStyling();
+    setWorkshopCloseButtonsDisabled(false);
     nextButton.disabled = true;
     nextButton.classList.add('disabledStyle');
 
@@ -340,6 +369,8 @@ function fourthStep() {
         roundContainer.style.zIndex = '1003';
         closeBtn.style.zIndex = '1005';
         closeBtn.style.boxShadow = '0 0 0 4px rgba(255, 165, 0, 0.8)';
+        closeBtn.title = 'Klik op dit kleine kruisje om de workshop uit de ronde te verwijderen';
+        closeBtn.setAttribute('aria-label', 'Klik op dit kleine kruisje om de workshop uit de ronde te verwijderen');
 
         closeBtn.addEventListener('click', function onCloseClick() {
             closeBtn.removeEventListener('click', onCloseClick);

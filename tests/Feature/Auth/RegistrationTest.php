@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,14 +19,18 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
-        $response = $this->post('/register', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+        Setting::query()->create([
+            'key' => 'signups_open',
+            'value' => '1',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => '12345678@st.deltion.nl',
+            'klas' => 'SD2A',
+        ]);
+
+        $this->assertGuest();
+        $response->assertRedirect(route('auth.verify-otp', ['email' => '12345678@st.deltion.nl'], false));
     }
 }
