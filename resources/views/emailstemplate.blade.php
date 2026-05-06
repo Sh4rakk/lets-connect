@@ -231,10 +231,12 @@
 
             <div class="content-section">
                 <p>
-                   Bedankt voor je aanmelding!
-                   Leuk dat jij je hebt opgegeven voor netwerkevenement Let's Connect.
-                   Je wordt om 12:30 op het Sweelinckplein verwacht voor de centrale opening.
-                   Hier zijn de details van de workshops die jij hebt gekozen:
+                    Bedankt voor je aanmelding! Leuk dat jij je hebt opgegeven voor netwerkevenement Let's Connect.
+                    Je wordt om 12:30 op het Sweelinckplein verwacht voor de centrale opening.
+                    Vanaf 12:00 uur is er al livemuziek, dus loop gerust al wat eerder naar het plein!
+                    Je ontvangt vooraf van je LOB'er een oranje keycord met je stempelkaart voor die dag.
+
+                    Hier zijn de details van de workshops die jij hebt gekozen:
                 </p>
             </div>
 
