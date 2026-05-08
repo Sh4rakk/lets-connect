@@ -40,6 +40,7 @@
                                     <option value="BOW3D" {{ $selectedClass === 'BOW3D' ? 'selected' : '' }}>BOW3D</option>
                                     <option value="BOW2A" {{ $selectedClass === 'BOW2A' ? 'selected' : '' }}>BOW2A</option>
                                     <option value="BOW2B" {{ $selectedClass === 'BOW2B' ? 'selected' : '' }}>BOW2B</option>
+                                    <option value="BOW2C" {{ $selectedClass === 'BOW2C' ? 'selected' : '' }}>BOW2C</option>
                                     <option value="BOW2V" {{ $selectedClass === 'BOW2V' ? 'selected' : '' }}>BOW2V</option>
                                 </optgroup>
 

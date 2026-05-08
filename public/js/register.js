@@ -3,7 +3,7 @@ const klasSelect = document.getElementById("klas");
 
 const klassen = {
   opleiding1: ["MV2A", "MV2B", "MV2C"],
-  opleiding2: ["BOW3B", "BOW3C", "BOW2V", "BOW3D", "BOW2A", "BOW2B",],
+  opleiding2: ["BOW3B", "BOW3C", "BOW2V", "BOW3D", "BOW2A", "BOW2B", "BOW2C"],
   opleiding3: ["P2.1", "P2.2"],
   opleiding4: ["AR2MZ",],
   opleiding5: ["AR2AC"],
