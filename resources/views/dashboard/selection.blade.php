@@ -19,6 +19,10 @@
                 Workshop overzicht
             </a>
 
+            <a href="{{ route('class-dashboard') }}" class="p-12 bg-deltion-blue-900 text-white font-medium text-lg rounded-xl transition-transform hover:scale-105" >
+                Klas overzicht
+            </a>
+
         </div>
     </div>
 

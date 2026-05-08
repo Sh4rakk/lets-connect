@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Middleware\Success;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\BookingController;
@@ -7,15 +7,15 @@ use App\Http\Controllers\WorkshopDashboardController;
 use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\UserExportController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\Success;
+use App\Http\Controllers\ClassDashboardController;
 use App\Http\Controllers\MailController;
-use App\Mail\SendMail;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginCodeController;
 use App\Models\Workshop;
 use App\Models\Bookings;
 use App\Models\Setting;
-use App\Http\Controllers\Auth\LoginCodeController;
 use App\Models\Moment;
+use App\Mail\SendMail;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $signupsOpen = Setting::where('key', 'signups_open')->first();
@@ -81,6 +81,8 @@ Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->middleware(['role:admin'])->name('workshop-moment.showbookings');
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->middleware(['role:admin'])->name('workshop-moment.showfilteredbookings');
 Route::get('/workshop/{workshopName}/export', [WorkshopDashboardController::class, 'exportWorkshop'])->middleware(['role:admin'])->name('workshop.export');
+
+Route::get('/class-dashboard', [ClassDashboardController::class, 'index'])->middleware(['role:admin'])->name('class-dashboard');
 
 /*Route::get('/bookings', function () {
 
