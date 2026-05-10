@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bookings;
 use App\Models\Classes;
+use App\Models\User;
 use App\Models\WorkshopMoment;
 use Illuminate\Http\Request;
 
@@ -13,5 +15,17 @@ class ClassDashboardController extends Controller
         $classes = Classes::all()->groupBy('class_group');
         $selectedClass = request('class') ? Classes::all()->firstWhere('name', request('class')) : null;
 
-        return view('dashboard.classes', compact('classes', 'selectedClass'));
+        $users = request('class') ? User::all()->where('class', request('class')) : null;
+        $registeredStudents = 0;
+
+        if ($users) {
+            foreach ($users as $user) {
+                $bookings = Bookings::where('student_id', $user->id)->get();
+                if (count($bookings) === 3) {
+                    $registeredStudents++;
+                }
+            }
+        }
+
+        return view('dashboard.classes', compact('classes', 'selectedClass', 'users', 'registeredStudents'));
     }}

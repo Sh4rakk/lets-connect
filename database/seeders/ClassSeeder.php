@@ -50,12 +50,12 @@ class ClassSeeder extends Seeder
             ['name' => 'AV3A', 'class_group' => 'Fotograaf', 'LOB' => 'Jorgen Pal', 'total_amount' => 10, 'shared_total' => null],
 
             // Mode
-            ['name' => '2FR',  'class_group' => 'Mode', 'LOB' => '', 'total_amount' => 5,  'shared_total' => null],
-            ['name' => '2FC',  'class_group' => 'Mode', 'LOB' => '', 'total_amount' => 7,  'shared_total' => null],
-            ['name' => '2AFT', 'class_group' => 'Mode', 'LOB' => '', 'total_amount' => 11, 'shared_total' => 'mode_aft_ft'],
-            ['name' => '2FT',  'class_group' => 'Mode', 'LOB' => '', 'total_amount' => 11, 'shared_total' => 'mode_aft_ft'],
-            ['name' => '2FDA', 'class_group' => 'Mode', 'LOB' => '', 'total_amount' => 34, 'shared_total' => 'mode_fda_fdb'],
-            ['name' => '2FDB', 'class_group' => 'Mode', 'LOB' => '', 'total_amount' => 34, 'shared_total' => 'mode_fda_fdb'],
+            ['name' => '2FR',  'class_group' => 'Mode', 'LOB' => 'Katja Borger', 'total_amount' => 5,  'shared_total' => null],
+            ['name' => '2FC',  'class_group' => 'Mode', 'LOB' => 'Marjet Amptmeijer', 'total_amount' => 7,  'shared_total' => null],
+            ['name' => '2AFT', 'class_group' => 'Mode', 'LOB' => 'Stefan Breuer', 'total_amount' => 11, 'shared_total' => 'mode_aft_ft'],
+            ['name' => '2FT',  'class_group' => 'Mode', 'LOB' => 'Stefan Breuer', 'total_amount' => 11, 'shared_total' => 'mode_aft_ft'],
+            ['name' => '2FDA', 'class_group' => 'Mode', 'LOB' => 'Katja Borger', 'total_amount' => 34, 'shared_total' => 'mode_fda_fdb'],
+            ['name' => '2FDB', 'class_group' => 'Mode', 'LOB' => 'Marjet Amptmeijer', 'total_amount' => 34, 'shared_total' => 'mode_fda_fdb'],
 
             // Creative Development
             ['name' => 'CD2A', 'class_group' => 'Creative Development', 'LOB' => 'Rhonja Gieles', 'total_amount' => 35, 'shared_total' => 'cd'],
