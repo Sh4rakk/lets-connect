@@ -25,11 +25,9 @@
             </button>
         </form>
         <form>
-            <div class="text-end px-6 py-2 text-white font-semibold rounded-lg transition-colors deltion-orange-400 hover:bg-green-700">
-                <a href="{{ route('users.export') }}"class="btn btn-success">
-                    <i class="fas fa-file-excel"></i> 📊 Export to Excel
-                </a>
-            </div>
+            <a href="{{ route('export-all-users') }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-green-600">
+                Alle gebruikers exporteren
+            </a>
         </form>
     </div>
 
@@ -45,7 +43,7 @@
                 class="ml-3 -mt-1 -mr-1 text-green-700 hover:text-green-900 focus:outline-none transition-colors"
                 aria-label="Sluit bericht"
             >
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">  
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
@@ -57,7 +55,7 @@
         $isAdmin = Auth::user() && Auth::user()->hasRole('admin');
         $shouldLock = !$isOpen && !$isAdmin;
     @endphp
-        <button id="toggleAllBtn" class="toggleAccordionAll" onclick="toggleAllAccordions()">Alles uitklappen</button>
+        <button id="toggleAllBtn" class="px-6 py-2 mb-2 text-white font-semibold rounded-lg bg-deltion-blue-900" onclick="toggleAllAccordions()">Alles uitklappen</button>
         @php
             $workshopsByName = $workshopmoments->groupBy('workshop.name');
         @endphp
@@ -66,7 +64,7 @@
         <div class="border border-black-300 rounded-lg mb-2 {{ $shouldLock ? 'relative opacity-75' : '' }}" style="{{ $shouldLock ? 'position: relative;' : '' }}">
             {!! $shouldLock ? '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; z-index: 10;"><div style="background: white; padding: 20px 40px; border-radius: 8px; text-align: center;"><div style="font-size: 48px; margin-bottom: 8px;" draggable="false">🔒</div><p style="font-weight: 600; color: #374151;">Registraties zijn gesloten</p></div></div>' : '' !!}
 
-            <button class="w-full text-left p-6 {{ $shouldLock ? 'bg-gray-400' : 'bg-blue-600' }} text-white font-semibold flex justify-between items-center transition-all duration-300 accordion-btn {{ $shouldLock ? 'cursor-not-allowed' : '' }}"
+            <button class="w-full text-left p-6 {{ $shouldLock ? 'bg-gray-400' : 'bg-deltion-blue-900' }} text-white font-semibold flex justify-between items-center rounded-lg transition-all duration-300 {{ $shouldLock ? 'cursor-not-allowed' : '' }}"
                     onclick="{{ !$shouldLock ? 'toggleAccordion(this)' : '' }}"
                     {{ $shouldLock ? 'disabled' : '' }}>
                 <span>{{ $workshopName }}</span>
@@ -75,9 +73,7 @@
 
             <div class="hidden p-6 border-t border-black-300 bg-white accordion-content">
                 <div class="mb-4">
-                    <a href="{{ route('workshop.export', ['workshopName' => urlencode($workshopName)]) }}" class="inline-block px-4 py-2 bg-deltion-orange-400 text-white font-semibold rounded-lg hover:bg-deltion-orange-500 transition-colors">
-                        📊 Export {{ $workshopName }}
-                    </a>
+                        <a href="{{ route('export-workshop', ['workshopName' => urlencode($workshopName)]) }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-green-600">{{ "Exporteren naar excel" }}</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full table-auto {{ $shouldLock ? 'opacity-50' : '' }}">
