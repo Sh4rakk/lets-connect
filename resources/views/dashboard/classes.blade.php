@@ -47,7 +47,7 @@
                                 {{ request('class') }}
                             </div>
 
-                            <a href="{{ route('class-dashboard', array_merge(request()->query(), ['export' => 'excel'])) }}" class="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors" aria-label="Klas exporteren naar excel">
+                            <a href="{{ route('export-class', request('class'))}}" class="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors" aria-label="Klas exporteren naar excel">
                                 Klas exporteren naar excel
                             </a>
                         </div>

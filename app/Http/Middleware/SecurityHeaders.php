@@ -14,6 +14,7 @@ class SecurityHeaders
         $isLocal = app()->environment('local');
 
         $scriptSrc = ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'blob:'];
+        $styleSrc = ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://fonts.bunny.net'];
         $connectSrc = [
             "'self'",
             'https://o4511341734395904.ingest.de.sentry.io',
@@ -21,6 +22,8 @@ class SecurityHeaders
 
         if ($isLocal) {
             // Allow Vite dev server + HMR websocket during local development.
+            $scriptSrc[] = 'http://127.0.0.1:5173';
+            $styleSrc[] = 'http://127.0.0.1:5173';
             $connectSrc[] = 'http://127.0.0.1:5173';
             $connectSrc[] = 'ws://127.0.0.1:5173';
         }
@@ -29,7 +32,7 @@ class SecurityHeaders
             "default-src 'self'",
             'script-src '.implode(' ', $scriptSrc),
             'script-src-elem '.implode(' ', $scriptSrc),
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net",
+            'style-src '.implode(' ', $styleSrc),
             "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net",
             "img-src 'self' data: https://xerte.deltion.nl https://images.unsplash.com https://primary.jwwb.nl",
             'connect-src '.implode(' ', $connectSrc),

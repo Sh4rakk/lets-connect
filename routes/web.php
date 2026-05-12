@@ -95,7 +95,8 @@ Route::get('/moments', function () {
 });
 
 Route::get('/export/all-users', [ExportController::class, 'exportAll'])->middleware(['role:admin'])->name('export-all-users');
-Route::get('/export/{class}', [ExportController::class, 'exportClass'])->middleware(['role:admin'])->name('export-class');
+Route::get('/export/classes/{class}', [ExportController::class, 'exportClass'])->middleware(['role:admin'])->name('export-class');
+Route::get('/export/all-classes', [ExportController::class, 'exportAllClasses'])->middleware(['role:admin'])->name('export-all-classes');
 Route::get('/export/{workshopName}', [ExportController::class, 'exportWorkshop'])->middleware(['role:admin'])->name('export-workshop');
 
 // Two-factor authentication routes

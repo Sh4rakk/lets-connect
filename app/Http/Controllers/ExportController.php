@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Exports\UsersExport;
 use App\Exports\ClassExport;
+use App\Models\Classes;
+use App\Models\User;
 use App\Models\WorkshopMoment;
+use Illuminate\Filesystem\Filesystem;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use ZanySoft\Zip\Facades\Zip;
 
 class ExportController extends Controller
 {
@@ -21,9 +25,55 @@ class ExportController extends Controller
 
     public function exportClass($class)
     {
+        $students = User::select( 'name', 'class', 'email')->where('class', $class)->get();
+
         return Excel::download(
-            new ClassExport($class), $class.'-lijst-' . now()->format('Y-m-d') . '.xlsx'
+            new ClassExport($students), $class.'-lijst-' . now()->format('Y-m-d') . '.xlsx'
         );
+    }
+
+    public function exportAllClasses()
+    {
+        set_time_limit(0);
+
+        $exportsPath = storage_path('exports/generated_exports');
+        $zippedExportsPath = storage_path('exports/zipped_exports');
+        $date = now()->format('Y-m-d_H-i-s');
+        $exportDir = $exportsPath . '/export-' . $date;
+
+        if (!is_dir($exportsPath)) {
+            mkdir($exportsPath, 0755, true);
+        }
+
+        if (!is_dir($zippedExportsPath)) {
+            mkdir($zippedExportsPath, 0755, true);
+        }
+
+        if (!is_dir($exportDir)) {
+            mkdir($exportDir, 0755, true);
+        }
+
+
+        $zipFileName = $zippedExportsPath . '/lets-connect-klassen-' . $date . '.zip';
+        $zip = Zip::create($zipFileName);
+
+        foreach (Classes::all()->groupBy('class_group') as $classGroup => $classes) {
+            $classGroupPath = storage_path('exports/generated_exports/export-' . $date . '/' . $classGroup);
+            mkdir($classGroupPath, 0755, true);
+            foreach ($classes as $class) {
+                Excel::store(new ClassExport(User::select('name', 'class', 'email')->where('class', $class->name)->get()), 'generated_exports/export-' . $date . '/' . $classGroup . '/' . $class->name . '.xlsx', 'exports');
+            }
+        }
+
+        $zip->add($exportDir);
+
+        while (!file_exists($zipFileName)) {
+            sleep(1); // wait 1 second then check again
+        }
+
+        (new Filesystem)->deleteDirectory($exportDir);
+
+        return true;
     }
 
     ## Workshop export functie gemaakt door Kofmel (verplaatst door Fokke)

@@ -3,24 +3,30 @@
 namespace App\Exports;
 
 use App\Models\User;
-use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class ClassExport implements FromQuery, WithHeadings, ShouldAutoSize
+class ClassExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
-    public function __construct(private string $class) {}
-    public function Query()
+    private $students;
+
+    public function __construct($students)
     {
-        return User::query()->where('class', $this->class)->get();
+        $this->students = $students;
+    }
+
+    public function collection()
+    {
+        return $this->students;
     }
 
     public function headings(): array
     {
         return [
-            'ID',
-            'Name',
-            'Class',
+            'Naam',
+            'Klas',
+            'Email',
         ];
     }
 }
