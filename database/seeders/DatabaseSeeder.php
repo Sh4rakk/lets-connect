@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(LaratrustSeeder::class);
         $this->call(SettingsSeeder::class);
+        $this->call(ClassSeeder::class);
         $this->call(WorkshopSeeder::class);
 
         $adminId = Str::uuid()->toString();
