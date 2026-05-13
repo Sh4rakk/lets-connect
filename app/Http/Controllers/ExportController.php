@@ -34,8 +34,6 @@ class ExportController extends Controller
 
     public function exportAllClasses()
     {
-        set_time_limit(0);
-
         $exportsPath = storage_path('exports/generated_exports');
         $zippedExportsPath = storage_path('exports/zipped_exports');
         $date = now()->format('Y-m-d_H-i-s');
@@ -67,13 +65,7 @@ class ExportController extends Controller
 
         $zip->add($exportDir);
 
-        while (!file_exists($zipFileName)) {
-            sleep(1); // wait 1 second then check again
-        }
-
-        (new Filesystem)->deleteDirectory($exportDir);
-
-        return true;
+        return redirect()->route('class-dashboard');
     }
 
     ## Workshop export functie gemaakt door Kofmel (verplaatst door Fokke)

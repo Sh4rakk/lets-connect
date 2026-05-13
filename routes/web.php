@@ -7,6 +7,7 @@ use App\Http\Controllers\WorkshopDashboardController;
 use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\UserExportController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClassDashboardController;
 use App\Http\Controllers\MailController;
@@ -98,6 +99,9 @@ Route::get('/export/all-users', [ExportController::class, 'exportAll'])->middlew
 Route::get('/export/classes/{class}', [ExportController::class, 'exportClass'])->middleware(['role:admin'])->name('export-class');
 Route::get('/export/all-classes', [ExportController::class, 'exportAllClasses'])->middleware(['role:admin'])->name('export-all-classes');
 Route::get('/export/{workshopName}', [ExportController::class, 'exportWorkshop'])->middleware(['role:admin'])->name('export-workshop');
+
+Route::get('/files/download/{file}', [FileController::class, 'download'])->middleware(['role:admin'])->name('download-export')->where('file', '.*');
+Route::delete('/files/delete/{file}', [FileController::class, 'delete'])->middleware(['role:admin'])->name('delete-export')->where('file', '.*');
 
 // Two-factor authentication routes
 Route::middleware(['auth'])->group(function () {

@@ -7,6 +7,7 @@ use App\Models\Classes;
 use App\Models\User;
 use App\Models\WorkshopMoment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ClassDashboardController extends Controller
 {
@@ -27,5 +28,8 @@ class ClassDashboardController extends Controller
             }
         }
 
-        return view('dashboard.classes', compact('classes', 'selectedClass', 'users', 'registeredStudents'));
+        $zippedExportsPath = storage_path('exports/zipped_exports');
+        $exportFiles  = Storage::disk('exports')->files('zipped_exports');
+
+        return view('dashboard.classes', compact('classes', 'selectedClass', 'users', 'registeredStudents', 'exportFiles'));
     }}
