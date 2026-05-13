@@ -1,21 +1,23 @@
 <?php
-
+use App\Http\Middleware\Success;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\WorkshopDashboardController;
 use App\Http\Controllers\TwoFactorAuthController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\UserExportController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\Success;
+use App\Http\Controllers\ClassDashboardController;
 use App\Http\Controllers\MailController;
-use App\Mail\SendMail;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginCodeController;
 use App\Models\Workshop;
 use App\Models\Bookings;
 use App\Models\Setting;
-use App\Http\Controllers\Auth\LoginCodeController;
 use App\Models\Moment;
+use App\Mail\SendMail;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $signupsOpen = Setting::where('key', 'signups_open')->first();
@@ -80,8 +82,8 @@ Route::patch('/edit-student/{id}/bookings', [UserController::class, 'updateBooki
 Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('workshop-dashboard');
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->middleware(['role:admin'])->name('workshop-moment.showbookings');
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->middleware(['role:admin'])->name('workshop-moment.showfilteredbookings');
-Route::get('/workshop/{workshopName}/export', [WorkshopDashboardController::class, 'exportWorkshop'])->middleware(['role:admin'])->name('workshop.export');
 
+Route::get('/class-dashboard', [ClassDashboardController::class, 'index'])->middleware(['role:admin'])->name('class-dashboard');
 /*Route::get('/bookings', function () {
 
     //return Bookings::with('student','workshopMoment')->get();
@@ -93,9 +95,13 @@ Route::get('/moments', function () {
     return json_encode(Moment::get());
 });
 
-Route::get('/export-users', [UserExportController::class, 'export'])
-    ->name('users.export');
+Route::get('/export/all-users', [ExportController::class, 'exportAll'])->middleware(['role:admin'])->name('export-all-users');
+Route::get('/export/classes/{class}', [ExportController::class, 'exportClass'])->middleware(['role:admin'])->name('export-class');
+Route::get('/export/all-classes', [ExportController::class, 'exportAllClasses'])->middleware(['role:admin'])->name('export-all-classes');
+Route::get('/export/{workshopName}', [ExportController::class, 'exportWorkshop'])->middleware(['role:admin'])->name('export-workshop');
 
+Route::get('/files/download/{file}', [FileController::class, 'download'])->middleware(['role:admin'])->name('download-export')->where('file', '.*');
+Route::delete('/files/delete/{file}', [FileController::class, 'delete'])->middleware(['role:admin'])->name('delete-export')->where('file', '.*');
 
 // Two-factor authentication routes
 Route::middleware(['auth'])->group(function () {

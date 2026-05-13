@@ -8,12 +8,39 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
+        './resources/js/**/*.{vue,js}',
+        './app/View/Components/**/*.php',
+        './app/Http/Controllers/**/*.php',
+    ],
+    safelist: [
+        'bg-deltion-blue-900',
+        'text-deltion-blue-900',
+        'border-deltion-blue-900',
+        'hover:bg-deltion-blue-900',
+        'bg-deltion-orange-100',
+        'hover:bg-deltion-orange-100',
+        'text-deltion-orange-100',
+        'border-deltion-orange-100',
     ],
 
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            width: {
+                '10': '10%',
+                '20': '20%',
+                '25': '25%',
+                '30': '30%',
+                '40': '40%',
+                '50': '50%',
+                '60': '60%',
+                '70': '70%',
+                '75': '75%',
+                '80': '80%',
+                '90': '90%',
+                '100': '100%',
             },
         },
         colors: {

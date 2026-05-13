@@ -7,19 +7,26 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class UsersExport implements FromCollection, WithHeadings, ShouldAutoSize
+class ClassExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
+    private $students;
+
+    public function __construct($students)
+    {
+        $this->students = $students;
+    }
+
     public function collection()
     {
-        return User::select('id', 'name', 'class')->get();
+        return $this->students;
     }
 
     public function headings(): array
     {
         return [
-            'ID',
-            'Name',
-            'Class',
+            'Naam',
+            'Klas',
+            'Email',
         ];
     }
 }
