@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // Analytics toggle and settings used by app middleware when constructing CSP
+    'analytics' => [
+        // Enable via .env: ENABLE_ANALYTICS=true
+        'enabled' => env('ENABLE_ANALYTICS', false),
+        'measurement_id' => env('GA_MEASUREMENT_ID'),
+    ],
+
 ];
