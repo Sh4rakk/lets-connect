@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\Bookings;
 use App\Models\WorkshopMoment;
+use App\Mail\ChoiceChangedMail;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -147,7 +149,9 @@ class UserController extends Controller
             }
         }
 
-        DB::transaction(function () use ($user, $selectedByRound, $selectedIds) {
+        $changes = [];
+
+        DB::transaction(function () use ($user, $selectedByRound, $selectedIds, &$changes) {
             $existingBookings = Bookings::with('workshopMoments')
                 ->where('student_id', $user->id)
                 ->lockForUpdate()
@@ -240,8 +244,19 @@ class UserController extends Controller
                 }
 
                 if ($existingBooking) {
-                    // Fokke: Er is een bestaande boeking. Werk deze bij als de selectie is gewijzigd.
+                    // Fokke: Er is een bestaande boeking. Werk deze bij als de selectie is gewijzigd en de verschillen meesturen.
                     if ((int) $existingBooking->wm_id !== (int) $selectedWmId) {
+                        $old = WorkshopMoment::with('workshop')->find($existingBooking->wm_id);
+                        $new = WorkshopMoment::with('workshop')->find($selectedWmId);
+
+                        $changes[$round] = [
+                            'round' => $round,
+                            'old_workshop_name' => $old?->workshop?->name ?? 'Onbekend',
+                            'old_workshop_location' => $old?->workshop?->location ?? 'Onbekend',
+                            'new_workshop_name' => $new?->workshop?->name ?? 'Onbekend',
+                            'new_workshop_location' => $new?->workshop?->location ?? 'Onbekend',
+                        ];
+
                         $existingBooking->wm_id = $selectedWmId;
                         $existingBooking->save();
                     }
@@ -255,6 +270,29 @@ class UserController extends Controller
                 ]);
             }
         });
+
+        $currentBookings = [];
+        $allBookings = Bookings::with(['workshopMoments.workshop', 'workshopMoments.moment'])
+            ->where('student_id', $user->id)
+            ->get();
+
+        foreach ($allBookings as $booking) {
+            $workshopMoment = $booking->workshopMoments;
+            if ($workshopMoment && $workshopMoment->moment) {
+                $round = (int) $workshopMoment->moment_id;
+                if ($round >= 1 && $round <= 3) {
+                    $currentBookings[$round] = [
+                        'workshop_name' => $workshopMoment->workshop?->name ?? 'Onbekend',
+                        'workshop_location' => $workshopMoment->workshop?->location ?? 'Onbekend',
+                        'time' => $workshopMoment->moment?->time ?? 'Onbekend',
+                    ];
+                }
+            }
+        }
+
+        if (!empty($changes)) {
+            Mail::to($user->email)->send(new ChoiceChangedMail($user->name, $changes, $currentBookings));
+        }
 
         // Fokke: Redirect terug naar de edit-pagina met een succesbericht.
         return redirect()
