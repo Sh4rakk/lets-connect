@@ -7,6 +7,7 @@ use App\Http\Controllers\WorkshopDashboardController;
 use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\UserExportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InformationController;
 use App\Http\Middleware\Success;
 use App\Http\Controllers\MailController;
 use App\Mail\SendMail;
@@ -67,7 +68,16 @@ Route::get('/workshop', function () {
 });
 
 Route::get('/admin-dashboard', function () {
-    return view('dashboard.selection');
+    $informationController = new InformationController();
+    return view('dashboard.selection', [
+        'latestUser' => $informationController->latestRecord(),
+        'popularWorkshop' => $informationController->popularWorkshop(),
+        'totalStudents' => $informationController->totalStudents(),
+        'totalBookings' => $informationController->totalBookings(),
+        'totalGhosts' => $informationController->totalGhosts(),
+        'noWorkshops' => $informationController->noWorkshops(),
+        'studentsWithoutWorkshops' => $informationController->studentsWithoutWorkshops()
+    ]);
 })->middleware(['role:admin'])->name('selectionDashboard');
 
 Route::post('/toggle-signups', [WorkshopDashboardController::class, 'toggleSignups'])->middleware(['role:admin']);
