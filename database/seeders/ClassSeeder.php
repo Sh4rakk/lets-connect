@@ -24,8 +24,9 @@ class ClassSeeder extends Seeder
             ['name' => 'BOW3C', 'class_group' => 'Interieuradviseur', 'LOB' => 'Lineke Benjamins',                                                     'total_amount' => 1,  'shared_total' => null],
             ['name' => 'BOW3D', 'class_group' => 'Interieuradviseur', 'LOB' => 'Eduard Dijkhuizen',                                                    'total_amount' => 1,  'shared_total' => null],
             ['name' => 'BOW2A', 'class_group' => 'Interieuradviseur', 'LOB' => 'Ilse Kroon, Mirjam Verweij',                                           'total_amount' => 24, 'shared_total' => null],
-            ['name' => 'BOW2B', 'class_group' => 'Interieuradviseur', 'LOB' => 'Lineke Benjamins, Cornalijn Overweg, Iteke de Jong, Diana Dunnink',    'total_amount' => 43, 'shared_total' => null],
+            ['name' => 'BOW2B', 'class_group' => 'Interieuradviseur', 'LOB' => 'Lineke Benjamins, Cornalijn Overweg',                                  'total_amount' => 20, 'shared_total' => null],
             ['name' => 'BOW2V', 'class_group' => 'Interieuradviseur', 'LOB' => 'Ilse Kroon',                                                           'total_amount' => 1,  'shared_total' => null],
+            ['name' => 'BOW2C', 'class_group' => 'Interieuradviseur', 'LOB' => 'Iteke de Jong, Diana Dunnink',                                         'total_amount' => 23,  'shared_total' => null],
 
             // Podium- en Evenemententechniek
             ['name' => 'P2.1', 'class_group' => 'Podium- en Evenemententechniek', 'LOB' => 'Aurelia de Vries, Henk Mekkring', 'total_amount' => 33, 'shared_total' => 'podium'],

@@ -60,18 +60,18 @@
             $workshopsByName = $workshopmoments->groupBy('workshop.name');
         @endphp
 
-    @foreach ($workshopsByName as $workshopName => $workshopMoments)
+     @foreach ($workshopsByName as $workshopName => $workshopMoments)
         <div class="border border-black-300 rounded-lg mb-2 {{ $shouldLock ? 'relative opacity-75' : '' }}" style="{{ $shouldLock ? 'position: relative;' : '' }}">
             {!! $shouldLock ? '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; z-index: 10;"><div style="background: white; padding: 20px 40px; border-radius: 8px; text-align: center;"><div style="font-size: 48px; margin-bottom: 8px;" draggable="false">🔒</div><p style="font-weight: 600; color: #374151;">Registraties zijn gesloten</p></div></div>' : '' !!}
 
-            <button class="w-full text-left p-6 {{ $shouldLock ? 'bg-gray-400' : 'bg-deltion-blue-900' }} text-white font-semibold flex justify-between items-center rounded-lg transition-all duration-300 {{ $shouldLock ? 'cursor-not-allowed' : '' }}"
+            <button class="w-full text-left p-6 accordion-btn {{ $shouldLock ? 'bg-gray-400' : 'bg-deltion-blue-900' }} text-white font-semibold flex justify-between items-center transition-all duration-300 {{ $shouldLock ? 'cursor-not-allowed' : '' }}"
                     onclick="{{ !$shouldLock ? 'toggleAccordion(this)' : '' }}"
                     {{ $shouldLock ? 'disabled' : '' }}>
                 <span>{{ $workshopName }}</span>
                 <span class="transition-transform transform">+</span>
             </button>
 
-            <div class="hidden p-6 border-t border-black-300 bg-white accordion-content">
+            <div class="p-6 border-t border-black-300 bg-white accordion-content" style="display: block;">
                 <div class="mb-4">
                         <a href="{{ route('export-workshop', ['workshopName' => urlencode($workshopName)]) }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-green-600">{{ "Exporteren naar excel" }}</a>
                 </div>
@@ -116,59 +116,72 @@
 <script src="{{ asset('js/accordion.js') }}"></script>
     <!-- Javascript voor de accordion toggle -->
     <script>
-        function toggleAccordion(button) {
-            let content = button.nextElementSibling;
-            if (content.style.display === "block") {
-                content.style.display = "none";
-                button.classList.remove('open');  // Verwijder de "open" class van de knop
-                button.querySelector("span:last-child").textContent = "+";  // Zet het teken terug naar "+"
-            } else {
-                content.style.display = "block";
-                button.classList.add('open');  // Voeg de "open" class toe aan de knop
-                button.querySelector("span:last-child").textContent = "−";  // Zet het teken naar "-"
-            }
-        }
+         function toggleAccordion(button) {
+             let content = button.nextElementSibling;
+             console.log('Toggle clicked', { button, content, display: content.style.display, hasHidden: content.classList.contains('hidden') });
 
-        // Deze code zorgt ervoor dat alle accordion-content standaard zichtbaar zijn
-        document.addEventListener("DOMContentLoaded", function () {
-            let accordionContents = document.querySelectorAll(".accordion-content");
-            accordionContents.forEach(function (content) {
-                content.style.display = "block";  // Zorg ervoor dat alle accordion-secties open zijn
-            });
+             if (content.style.display === "none" || content.classList.contains('hidden')) {
+                 content.classList.remove('hidden');
+                 content.classList.add('open');
+                 content.style.setProperty('display', 'block', 'important');
+                 button.classList.remove('open');
+                 button.querySelector("span:last-child").textContent = "+";
+             } else {
+                 content.classList.add('hidden');
+                 content.classList.remove('open');
+                 content.style.setProperty('display', 'none', 'important');
+                 button.classList.add('open');
+                 button.querySelector("span:last-child").textContent = "−";
+             }
+             console.log('After toggle', { display: content.style.display, hasHidden: content.classList.contains('hidden'), hasOpen: content.classList.contains('open') });
+         }
 
-            // Ook de "+" naar "−" veranderen voor de visuele indicatie
-            let accordionButtons = document.querySelectorAll(".accordion-btn");
-            accordionButtons.forEach(function (button) {
-                button.querySelector("span:last-child").textContent = "−";  // Zet de teken om naar "-"
-            });
-        });
+         // Deze code zorgt ervoor dat alle accordion-content standaard zichtbaar zijn
+         document.addEventListener("DOMContentLoaded", function () {
+             console.log('DOMContentLoaded - initializing accordions');
+             let accordionContents = document.querySelectorAll(".accordion-content");
+             console.log('Found', accordionContents.length, 'accordion contents');
 
-        // Nieuwe functie om alles open of dicht te klappen
-        function toggleAllAccordions() {
-            let accordionContents = document.querySelectorAll(".accordion-content");
-            let accordionButtons = document.querySelectorAll(".accordion-btn");
-            let toggleButton = document.getElementById("toggleAllBtn");
-            let isAnyOpen = Array.from(accordionContents).some(content => content.style.display === "block");
+             accordionContents.forEach(function (content) {
+                 content.classList.remove('hidden');
+                 content.classList.add('open');
+                 content.style.setProperty('display', 'block', 'important');
+             });
 
-            if (isAnyOpen) {
-                // Als een van de accordion-secties open is, sluit dan alles
-                accordionContents.forEach(function (content) {
-                    content.style.display = "none";
-                });
-                accordionButtons.forEach(function (button) {
-                    button.querySelector("span:last-child").textContent = "+";  // Zet de teken om naar "+"
-                });
-                toggleButton.textContent = "Alles uitklappen"; // Zet de knoptekst naar 'Alles uitklappen'
-            } else {
-                // Als geen enkele accordion-sectie open is, open dan alles
-                accordionContents.forEach(function (content) {
-                    content.style.display = "block";
-                });
-                accordionButtons.forEach(function (button) {
-                    button.querySelector("span:last-child").textContent = "−";  // Zet de teken om naar "−"
-                });
-                toggleButton.textContent = "Alles inklappen"; // Zet de knoptekst naar 'Alles inklappen'
-            }
-        }
+             let accordionButtons = document.querySelectorAll(".accordion-btn");
+             accordionButtons.forEach(function (button) {
+                 button.querySelector("span:last-child").textContent = "−";
+             });
+         });
+
+         // Nieuwe functie om alles open of dicht te klappen
+         function toggleAllAccordions() {
+             let accordionContents = document.querySelectorAll(".accordion-content");
+             let accordionButtons = document.querySelectorAll(".accordion-btn");
+             let toggleButton = document.getElementById("toggleAllBtn");
+             let isAnyOpen = Array.from(accordionContents).some(content => content.classList.contains('open'));
+
+             if (isAnyOpen) {
+                 accordionContents.forEach(function (content) {
+                     content.classList.add('hidden');
+                     content.classList.remove('open');
+                     content.style.setProperty('display', 'none', 'important');
+                 });
+                 accordionButtons.forEach(function (button) {
+                     button.querySelector("span:last-child").textContent = "+";
+                 });
+                 toggleButton.textContent = "Alles uitklappen";
+             } else {
+                 accordionContents.forEach(function (content) {
+                     content.classList.remove('hidden');
+                     content.classList.add('open');
+                     content.style.setProperty('display', 'block', 'important');
+                 });
+                 accordionButtons.forEach(function (button) {
+                     button.querySelector("span:last-child").textContent = "−";
+                 });
+                 toggleButton.textContent = "Alles inklappen";
+             }
+         }
     </script>
 </x-app-layout>

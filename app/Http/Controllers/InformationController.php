@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Workshop;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 
 class InformationController extends Controller
 {
@@ -47,9 +48,9 @@ class InformationController extends Controller
         return User::whereDoesntHave('bookings')->count()-2;
     }
 
-    public function studentsWithoutWorkshops(): Collection
+    public function studentsWithoutWorkshops(): SupportCollection
     {
-        return User::whereDoesntHave('bookings')->orderBy('created_at')->get(['name', 'class', 'email'])->slice(2)->values();
+        return User::whereDoesntHave('bookings')->orderBy('created_at')->get(['id', 'name', 'class', 'email'])->slice(2)->values();
     }
 }
 
