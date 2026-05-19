@@ -10,6 +10,7 @@ use App\Http\Controllers\UserExportController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClassDashboardController;
+use App\Http\Controllers\InformationController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Auth\LoginCodeController;
 use App\Models\Workshop;
@@ -69,7 +70,16 @@ Route::get('/workshop', function () {
 });
 
 Route::get('/admin-dashboard', function () {
-    return view('dashboard.selection');
+    $informationController = new InformationController();
+    return view('dashboard.selection', [
+        'latestUser' => $informationController->latestRecord(),
+        'popularWorkshop' => $informationController->popularWorkshop(),
+        'totalStudents' => $informationController->totalStudents(),
+        'totalBookings' => $informationController->totalBookings(),
+        'totalGhosts' => $informationController->totalGhosts(),
+        'noWorkshops' => $informationController->noWorkshops(),
+        'studentsWithoutWorkshops' => $informationController->studentsWithoutWorkshops()
+    ]);
 })->middleware(['role:admin'])->name('selectionDashboard');
 
 Route::post('/toggle-signups', [WorkshopDashboardController::class, 'toggleSignups'])->middleware(['role:admin']);
