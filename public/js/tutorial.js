@@ -317,7 +317,7 @@ function thirdStep() {
         workshop.setAttribute('aria-label', 'Sleep dit workshopkaartje naar een ronde');
     }
 
-    // Highlight round 1 — bring it above the overlay and outline the drop zone card
+    // Highlight round 1 bring it above the overlay and outline the drop zone card
     if (roundOne) {
         roundOne.style.zIndex = '1003';
         roundOne.style.pointerEvents = 'auto';
@@ -377,7 +377,7 @@ function fourthStep() {
             nextStep();
         });
     } else {
-        // No workshop in any round yet — enable next as fallback
+        // No workshop in any round yet enable next as fallback
         nextButton.disabled = false;
         nextButton.classList.remove('disabledStyle');
     }

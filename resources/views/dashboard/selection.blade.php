@@ -29,7 +29,7 @@
             <div class="bg-deltion-orange-900 px-6 py-4">
                 <h2 class="text-lg font-semibold text-white">Dashboard Overzicht</h2>
             </div>
-            <div class="p-6 space-y-3">
+            <div class="p-6 space-y-3 bg-white">
                 <div class="flex justify-between items-center py-2 border-b border-deltion-orange-200">
                     <span class="text-gray-700">Laatst ingeschreven student:</span>
                     <span class="font-semibold text-deltion-orange-900">{{ $latestUser->name ?? 'N/A' }} ({{ $latestUser->created_at->format('d-m-Y') ?? 'N/A' }})</span>
@@ -62,7 +62,7 @@
                 <div class="bg-red-600 px-6 py-4">
                     <h2 class="text-lg font-semibold text-white">Studenten zonder workshop inschrijvingen</h2>
                 </div>
-                <div class="p-6">
+                <div class="p-6 bg-white    ">
                     <div class="space-y-2">
                         @foreach($studentsWithoutWorkshops as $student)
                             <a href="{{route('edit-student', $student->id)}}" class="p-1">

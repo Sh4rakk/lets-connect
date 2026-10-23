@@ -35,7 +35,7 @@
 
             <div class="ew-alert">
                 <span style="font-size:18px;">⚠️</span>
-                <span>Ronde 3 bestaat helaas niet voor deze workshop. Dat is een fout aan onze kant — daar bieden wij onze excuses voor aan.</span>
+                <span>Ronde 3 bestaat helaas niet voor deze workshop. Dat is een fout aan onze kant daar bieden wij onze excuses voor aan.</span>
             </div>
 
             <p>Wat we vragen is om even een kijkje te nemen in het programma en een andere workshop te kiezen voor ronde 3. Stuur ons daarna je keuze door, dan regelen wij de aanpassing voor je.</p>

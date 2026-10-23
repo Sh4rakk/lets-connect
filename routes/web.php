@@ -1,6 +1,5 @@
 <?php
 use App\Http\Middleware\Success;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\WorkshopDashboardController;
@@ -44,12 +43,6 @@ Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->middlew
 Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->middleware(['auth', 'verified'])->name('Capacity');
 
 Route::get('/send-mail', [MailController::class, 'store'])->middleware(['auth', 'verified']);
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 // 2FA / OTP (allow both guests and already-authenticated users)
 Route::get('/auth/verify-otp', [LoginCodeController::class, 'showVerifyForm'])->name('auth.verify-otp');
