@@ -1,31 +1,18 @@
 <?php
-use App\Http\Middleware\Success;
-use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\BookingController;
 use App\Http\Controllers\WorkshopDashboardController;
-use App\Http\Controllers\TwoFactorAuthController;
 use App\Http\Controllers\ExportController;
-use App\Http\Controllers\UserExportController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClassDashboardController;
-use App\Http\Controllers\InformationController;
-use App\Http\Controllers\MailController;
 use App\Http\Controllers\Auth\LoginCodeController;
 use App\Models\Workshop;
-use App\Models\Bookings;
 use App\Models\Setting;
-use App\Models\Moment;
-use App\Mail\SendMail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $signupsOpen = Setting::where('key', 'signups_open')->first();
-    $registrationsClosed = !$signupsOpen || $signupsOpen->value === '0';
-
-    return $registrationsClosed
-        ? redirect()->route('login')
-        : redirect()->route('register');
+    return Setting::signupsOpen()
+        ? redirect()->route('register')
+        : redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -38,11 +25,7 @@ Route::get('/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified', 'checkSignupsOpen'])->name('dashboard');
 
-Route::post('/save', [BookingController::class, 'bookWorkshop'])->middleware(['auth', 'verified']);
-Route::get('/viewCapacity', [BookingController::class, 'viewCapacity'])->middleware(['auth', 'verified'])->name('viewCapacity');
-Route::get('/Capacity', [BookingController::class, 'viewRoundCapacity'])->middleware(['auth', 'verified'])->name('Capacity');
-
-Route::get('/send-mail', [MailController::class, 'store'])->middleware(['auth', 'verified']);
+// Het opslaan van de workshopkeuze en de capaciteit gaan via de api, zie routes/api.php
 
 // 2FA / OTP (allow both guests and already-authenticated users)
 Route::get('/auth/verify-otp', [LoginCodeController::class, 'showVerifyForm'])->name('auth.verify-otp');
@@ -50,36 +33,15 @@ Route::post('/auth/login-code/request', [LoginCodeController::class, 'requestCod
 Route::post('/auth/login-code/verify', [LoginCodeController::class, 'verify'])->name('auth.login-code.verify');
 
 
-Route::get('/overzicht', function () {
-    return view('overzicht');
-});
+Route::view('/success', 'success');
 
-Route::middleware([Success::class])->get('/success', function () {
-    return view('success');
-});
+// de cijfers haalt de pagina zelf op via /api/statistics
+Route::view('/admin-dashboard', 'dashboard.selection')->middleware(['role:admin'])->name('selectionDashboard');
 
-Route::get('/workshop', function () {
-    return json_encode(Workshop::all());
-});
-
-Route::get('/admin-dashboard', function () {
-    $informationController = new InformationController();
-    return view('dashboard.selection', [
-        'latestUser' => $informationController->latestRecord(),
-        'popularWorkshop' => $informationController->popularWorkshop(),
-        'totalStudents' => $informationController->totalStudents(),
-        'totalBookings' => $informationController->totalBookings(),
-        'totalGhosts' => $informationController->totalGhosts(),
-        'noWorkshops' => $informationController->noWorkshops(),
-        'studentsWithoutWorkshops' => $informationController->studentsWithoutWorkshops()
-    ]);
-})->middleware(['role:admin'])->name('selectionDashboard');
-
-Route::post('/toggle-signups', [WorkshopDashboardController::class, 'toggleSignups'])->middleware(['role:admin']);
+// inschrijvingen open/dicht zetten gaat via de api (POST /api/settings/toggle-signups)
 
 Route::get('/students-overview', [UserController::class, 'index'])->middleware(['role:admin'])->name('students-overview');
 Route::get('/edit-student/{id}', [UserController::class, 'edit'])->middleware(['role:admin'])->name('edit-student');
-Route::patch('/edit-student/{id}/bookings', [UserController::class, 'updateBookings'])->middleware(['role:admin'])->name('edit-student.bookings.update');
 
 
 Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('workshop-dashboard');
@@ -87,35 +49,13 @@ Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showb
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->middleware(['role:admin'])->name('workshop-moment.showfilteredbookings');
 
 Route::get('/class-dashboard', [ClassDashboardController::class, 'index'])->middleware(['role:admin'])->name('class-dashboard');
-/*Route::get('/bookings', function () {
-
-    //return Bookings::with('student','workshopMoment')->get();
-    return json_encode(Bookings::with(['student', 'workshopMoment.workshop', 'workshopMoment.moment'])->get());
-});*/
-
-Route::get('/moments', function () {
-    //return Bookings::with('student','workshopMoment')->get();
-    return json_encode(Moment::get());
-});
 
 Route::get('/export/all-users', [ExportController::class, 'exportAll'])->middleware(['role:admin'])->name('export-all-users');
 Route::get('/export/classes/{class}', [ExportController::class, 'exportClass'])->middleware(['role:admin'])->name('export-class');
 Route::get('/export/all-classes', [ExportController::class, 'exportAllClasses'])->middleware(['role:admin'])->name('export-all-classes');
 Route::get('/export/{workshopName}', [ExportController::class, 'exportWorkshop'])->middleware(['role:admin'])->name('export-workshop');
 
-Route::get('/files/download/{file}', [FileController::class, 'download'])->middleware(['role:admin'])->name('download-export')->where('file', '.*');
-Route::delete('/files/delete/{file}', [FileController::class, 'delete'])->middleware(['role:admin'])->name('delete-export')->where('file', '.*');
-
-// Two-factor authentication routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/two-factor/challenge', [TwoFactorAuthController::class, 'showChallenge'])
-        ->name('two-factor.challenge');
-
-    Route::post('/two-factor/verify', [TwoFactorAuthController::class, 'verify'])
-        ->name('two-factor.verify');
-
-    Route::post('/two-factor/resend', [TwoFactorAuthController::class, 'resend'])
-        ->name('two-factor.resend');
-});
+Route::get('/files/download/{file}', [FileController::class, 'download'])->middleware(['role:admin'])->name('download-export')->where('file', '[^/]+');
+Route::delete('/files/delete/{file}', [FileController::class, 'delete'])->middleware(['role:admin'])->name('delete-export')->where('file', '[^/]+');
 
 require __DIR__.'/auth.php';

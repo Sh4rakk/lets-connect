@@ -439,11 +439,6 @@ body {
 #mobileTutorial .mobile-tutorial-box .skip-button:hover {
     background-color: #c2410c;
 }
-    text-align: center;
-    width: 300px;
-    z-index: 1001;
-    pointer-events: auto;
-}
 
 .tutorial-box {
     background-color: white;
@@ -855,40 +850,9 @@ body {
         padding: 12px 14px;
         font-size: 15px;
     }
-
-.hidden {
-    display: none;
 }
 
-.capacityText {
-    width: 100%;
-    text-align: left;
-    display: none !important;
-}
-
-.showText {
-    display: flex !important;
-    flex-direction: column;
-    padding: 0;
-    align-items: flex-start;
-    text-align: left;
-    gap: 4px;
-}
-
-.locationWorkshop {
-    display: flex;
-    font-size: 12px;
-    position: absolute;
-    bottom: 0;
-    gap: 3px;
-    color: #cbcbcb;
-    width: 100%;
-    justify-content: flex-start;
-    padding: 0 14px 8px;
-    box-sizing: border-box;
-    flex-wrap: wrap;
-}
-
+/* Alleen gebruikt in de desktop weergave (tutorial knop en de opslaan popup). */
 .disabledStyle {
     background: grey !important;
     cursor: not-allowed !important;
@@ -933,6 +897,46 @@ body {
 .no-button:hover {
     background-color: white;
 
+}
+
+/*
+ * Let op: deze regels stonden per ongeluk binnen de 420px media query hierboven (er miste een '}').
+ * Ze golden dus altijd alleen op kleine schermen en zo is het gebleven: als ze overal gelden
+ * verbergt .hidden de hele desktop weergave (gaat boven Tailwind's md:block) en verdwijnt de
+ * capaciteit uit de workshop kaartjes. Wil je er iets van op desktop gebruiken, test dat dan in de browser.
+ */
+@media (max-width: 420px) {
+.hidden {
+    display: none;
+}
+
+.capacityText {
+    width: 100%;
+    text-align: left;
+    display: none !important;
+}
+
+.showText {
+    display: flex !important;
+    flex-direction: column;
+    padding: 0;
+    align-items: flex-start;
+    text-align: left;
+    gap: 4px;
+}
+
+.locationWorkshop {
+    display: flex;
+    font-size: 12px;
+    position: absolute;
+    bottom: 0;
+    gap: 3px;
+    color: #cbcbcb;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0 14px 8px;
+    box-sizing: border-box;
+    flex-wrap: wrap;
 }
 
 .ghost {
@@ -1110,4 +1114,19 @@ body {
     .flex.col.round.placeholder {
         pointer-events: none;
     }
-}}
+}
+}
+
+/* tutorial: het element waar de stap over gaat boven de donkere overlay tillen */
+.tutorial-focus {
+    position: relative;
+    z-index: 1003 !important;
+    outline: 2px solid rgb(245, 130, 32);
+    outline-offset: 2px;
+}
+
+/* het kruisje moet rechtsboven in de workshop blijven staan */
+.close-button.tutorial-focus {
+    position: absolute;
+    box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.8);
+}

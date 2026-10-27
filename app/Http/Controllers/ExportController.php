@@ -129,7 +129,9 @@ class ExportController extends Controller
             }
         }
 
-        $fileName = 'Workshop_' . str_replace(' ', '_', urldecode($workshopName)) . '_' . date('Y-m-d_H-i-s') . '.xlsx';
+        // alleen veilige tekens in de bestandsnaam, een naam met bv. een enter of " erin maakt de header kapot
+        $safeName = trim(preg_replace('/[^A-Za-z0-9\-]+/', '_', urldecode($workshopName)), '_');
+        $fileName = 'Workshop_' . $safeName . '_' . date('Y-m-d_H-i-s') . '.xlsx';
 
         $writer = new Xlsx($spreadsheet);
 
@@ -144,5 +146,20 @@ class ExportController extends Controller
                 'Cache-Control' => 'max-age=0',
             ]
         );
+    }
+
+    // opmaak van een data rij in de workshop export (stond eerst alleen in WorkshopDashboardController)
+    private function styleDataRow($sheet, $row)
+    {
+        for ($col = 1; $col <= 5; $col++) {
+            $cell = $sheet->getCellByColumnAndRow($col, $row);
+            $cell->getStyle()->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)->setWrapText(true);
+
+            if ($row % 2 === 0) {
+                $cell->getStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->setStartColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFF2F2F2'));
+            }
+        }
+
+        $sheet->getRowDimension($row)->setRowHeight(25);
     }
 }

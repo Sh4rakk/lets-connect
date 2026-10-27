@@ -1,30 +1,31 @@
 <x-app-layout>
 
     <x-slot name="leftHeader">
-        <x-secondary-anchor :href="route('selectionDashboard')" wire:navigate>Terug naar admin dashboard</x-secondary-anchor>
+        <x-secondary-anchor :href="route('selectionDashboard')">Terug naar admin dashboard</x-secondary-anchor>
     </x-slot>
 
     <x-slot name="header">
         <h1 class="text-2xl font-bold text-center text-gray-800">Klassen Overzicht</h1>
     </x-slot>
 
-    <div class="container mx-auto p-6 max-w-5xl">
+    {{-- Klassen en studenten komen uit de api, zie resources/js/admin/classesOverview.js --}}
+    <div class="container mx-auto p-6 max-w-5xl" x-data="classesOverview">
         <div class="overflow-hidden max-w-5xl m-auto mb-6 rounded-xl border border-gray-200 bg-white shadow-sm">
             <div class="p-6 flex-row flex">
-                <form method="GET" action="{{ route('class-dashboard') }}" class="space-y-4">
+                <form @submit.prevent="loadClass()" class="space-y-4">
                     <div class="">
                         <div>
                             <label for="filterClass" class="block text-sm font-bold text-deltion-blue-900 mb-2">Klas</label>
-                            <select id="filterClass" name="class" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <select id="filterClass" x-model="selectedName" @change="loadClass()" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
                                 <option value="">Kies een klas</option>
 
-                                @foreach($classes as $groupName => $groupClasses)
-                                    <optgroup label="{{ $groupName }}">
-                                        @foreach($groupClasses as $class)
-                                            <option value="{{$class->name}}" {{ $selectedClass === $class->name ? 'selected' : '' }}>{{$class->name}}</option>
-                                        @endforeach
+                                <template x-for="(groupClasses, groupName) in groups" :key="groupName">
+                                    <optgroup :label="groupName">
+                                        <template x-for="schoolClass in groupClasses" :key="schoolClass.id">
+                                            <option :value="schoolClass.name" x-text="schoolClass.name" :selected="schoolClass.name === selectedName"></option>
+                                        </template>
                                     </optgroup>
-                                @endforeach
+                                </template>
 
                             </select>
                         </div>
@@ -33,7 +34,7 @@
                         <button type="submit" class="px-4 py-2 bg-deltion-blue-900 text-white rounded-md text-sm font-medium hover:bg-blue-800 transition-colors">
                             Klas ophalen
                         </button>
-                        <a href="{{ route('export-all-classes') }}" onclick="showExportLoading(event)" class="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors" aria-label="Klas exporteren naar excel">
+                        <a href="{{ route('export-all-classes') }}" @click.prevent="startExport($el.href)" class="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors" aria-label="Klas exporteren naar excel">
                             Alle klassen exporteren naar excel
                         </a>
                     </div>
@@ -71,54 +72,44 @@
 
         </div>
 
-        @if(request('class') !== null)
+        <template x-if="selectedClass">
+            <div>
             <div class="overflow-hidden max-w-5xl m-auto mb-6 rounded-xl border border-gray-200 bg-white shadow-sm">
                 <div class="p-6">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                         <div class="flex items-center gap-3">
-                            <div class="px-4 py-2 bg-deltion-blue-50 text-deltion-blue-900 font-bold rounded-lg text-lg">
-                                {{ request('class') }}
-                            </div>
+                            <div class="px-4 py-2 bg-deltion-blue-50 text-deltion-blue-900 font-bold rounded-lg text-lg" x-text="selectedClass.name"></div>
 
-                            <a href="{{ route('export-class', request('class'))}}" class="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors" aria-label="Klas exporteren naar excel">
+                            <a :href="'{{ url('/export/classes') }}/' + encodeURIComponent(selectedClass.name)" class="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors" aria-label="Klas exporteren naar excel">
                                 Klas exporteren naar excel
                             </a>
                         </div>
 
                         <div class="text-sm text-gray-700">
-                            <div>
-                                @if(isset($selectedClass->LOB))
-                                    <span class="font-semibold text-deltion-blue-900">LOB'er(s)</span>: {{$selectedClass->LOB}}
-                                @endif
+                            <div x-show="selectedClass.LOB">
+                                <span class="font-semibold text-deltion-blue-900">LOB'er(s)</span>: <span x-text="selectedClass.LOB"></span>
                             </div>
-                            @if(isset($selectedClass->total_amount))
-                                <div class="mt-2">
-                                    @if(isset($selectedClass) && isset($registeredStudents) && $selectedClass->total_amount == $registeredStudents)
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-sm bg-green-100 text-green-800 font-semibold">Klas is compleet</span>
-                                    @else
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-sm bg-red-100 text-red-800 font-semibold">Klas is niet compleet</span>
-                                    @endif
-                                </div>
-                            @endif
+                            <div class="mt-2" x-show="!loadingClass">
+                                <span x-show="isComplete" class="inline-flex items-center px-2 py-1 rounded-full text-sm bg-green-100 text-green-800 font-semibold">Klas is compleet</span>
+                                <span x-show="!isComplete" class="inline-flex items-center px-2 py-1 rounded-full text-sm bg-red-100 text-red-800 font-semibold">Klas is niet compleet</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row justify-center items-stretch gap-6">
                         <div class="flex-1 border-2 border-deltion-blue-900 rounded-lg p-4 flex flex-col items-center">
                             <span class="text-deltion-blue-900 font-bold text-center mb-3">Aantal verwachte Studenten</span>
-                            @if(isset($selectedClass->total_amount))
-                            <span class="text-deltion-blue-900 font-bold text-center text-xl">{{$selectedClass->total_amount}}</span>
-                            @endif
+                            <span class="text-deltion-blue-900 font-bold text-center text-xl" x-text="selectedClass.total_amount"></span>
                         </div>
 
                         <div class="flex-1 border-2 border-deltion-blue-900 rounded-lg p-4 flex flex-col items-center">
                             <span class="text-deltion-blue-900 font-bold text-center mb-3">Aantal Studenten Accounts Aangemaakt</span>
-                            <span class="text-deltion-blue-900 font-bold text-center text-xl">{{count($users)}}</span>
+                            <span class="text-deltion-blue-900 font-bold text-center text-xl" x-text="loadingClass ? '...' : users.length"></span>
                         </div>
 
                         <div class="flex-1 border-2 border-deltion-blue-900 rounded-lg p-4 flex flex-col items-center">
                             <span class="text-deltion-blue-900 font-bold text-center mb-3">Aantal Ingeschreven Studenten</span>
-                            <span class="text-deltion-blue-900 font-bold text-center text-xl">{{$registeredStudents}}</span>
+                            <span class="text-deltion-blue-900 font-bold text-center text-xl" x-text="loadingClass ? '...' : registeredStudents"></span>
                         </div>
                     </div>
                 </div>
@@ -134,46 +125,31 @@
                 </thead>
 
                 <tbody class="divide-y divide-gray-200 bg-white">
-                @foreach ($users as $user)
+                <template x-for="user in users" :key="user.id">
                     <tr class="hover:bg-deltion-orange-100 transition-colors">
                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            <a href="{{ route('edit-student', $user->id) }}" class="block">{{ $user->name }}</a>
+                            <a :href="'{{ url('/edit-student') }}/' + user.id" class="block" x-text="user.name"></a>
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-700">
-                            <a href="{{ route('edit-student', $user->id) }}" class="block">{{ $user->email }}</a>
+                            <a :href="'{{ url('/edit-student') }}/' + user.id" class="block" x-text="user.email"></a>
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-700">
-                            <a href="{{ route('edit-student', $user->id) }}" class="block">{{ $user->class }}</a>
+                            <a :href="'{{ url('/edit-student') }}/' + user.id" class="block" x-text="user.class"></a>
                         </td>
                     </tr>
-                @endforeach
+                </template>
                 </tbody>
             </table>
-        @endif
-    </div>
+            </div>
+        </template>
 
-    <!-- Export Loading Modal -->
-    <div id="exportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl p-8 flex flex-col items-center gap-4">
-            <!-- Loading Spinner -->
-            <div class="w-12 h-12 border-4 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
-            <p class="text-gray-800 font-semibold text-lg">Uw export word gegenereerd</p>
+        <!-- Export Loading Modal -->
+        <div id="exportModal" x-show="exporting" x-cloak class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 flex flex-col items-center gap-4">
+                <!-- Loading Spinner -->
+                <div class="w-12 h-12 border-4 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
+                <p class="text-gray-800 font-semibold text-lg">Uw export word gegenereerd</p>
+            </div>
         </div>
     </div>
-
-    <script>
-        function showExportLoading(event) {
-            event.preventDefault();
-
-            // Show the modal
-            document.getElementById('exportModal').classList.remove('hidden');
-
-            // Navigate to the export route
-            setTimeout(() => {
-                window.location.href = event.target.href;
-            }, 100);
-        }
-    </script>
 </x-app-layout>
-
-

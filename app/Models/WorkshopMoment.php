@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Workshop;
+use SingleQuote\LaravelApiResource\Traits\HasApi;
 
 class WorkshopMoment extends Model
 {
-    public $guarded = [
-        'id'
+    use HasApi;
+
+    protected $fillable = [
+        'workshop_id',
+        'moment_id',
     ];
 
     public function bookings(): HasMany
@@ -17,12 +21,12 @@ class WorkshopMoment extends Model
         return $this->hasMany(Bookings::class, 'wm_id');
     }
 
-    public function workshop()
+    public function workshop(): BelongsTo
     {
         return $this->belongsTo(Workshop::class, "workshop_id");
     }
 
-    public function moment()
+    public function moment(): BelongsTo
     {
         return $this->belongsTo(Moment::class, "moment_id");
     }

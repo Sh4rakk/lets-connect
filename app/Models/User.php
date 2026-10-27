@@ -10,11 +10,12 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use SingleQuote\LaravelApiResource\Traits\HasApi;
 
 class User extends Authenticatable implements LaratrustUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRolesAndPermissions, HasUuids;
+    use HasFactory, Notifiable, HasRolesAndPermissions, HasUuids, HasApi;
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +42,9 @@ class User extends Authenticatable implements LaratrustUser
     protected $hidden = [
         // 'password',
         'remember_token',
+        // OTP kolommen nooit via de api laten zien of laten filteren
+        'login_code_hash',
+        'login_code_expires_at',
     ];
 
     /**

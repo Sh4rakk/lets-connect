@@ -17,8 +17,10 @@
     </div>
 
     <!-- Registratieformulier -->
-    <div class="register-container" style="max-width: 400px; margin: 0 auto; padding: 20px;">
-        <form method="POST" action="{{ route('register') }}" class="register-form">
+    {{-- De klassen per opleiding en de bevestig popup staan in resources/js/auth/registerForm.js --}}
+    <div class="register-container" style="max-width: 400px; margin: 0 auto; padding: 20px;"
+         x-data="registerForm({ opleiding: @js(old('opleiding', '')), klas: @js(old('klas', '')) })">
+        <form method="POST" action="{{ route('register') }}" class="register-form" x-ref="form" @submit="submit($event)">
             @csrf
 
             <div class="logo-container" style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px; text-align: center;">
@@ -33,14 +35,14 @@
                 <!-- Naam invoeren -->
                 <div class="form-group" style="margin-bottom: 10px;">
                     <x-input-label for="name" :value="__('Naam')" />
-                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" placeholder="Voer je volledige naam in" required autofocus autocomplete="name" style="width: 100%; max-width: 550px;" />
+                    <x-text-input id="name" x-ref="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" placeholder="Voer je volledige naam in" required autofocus autocomplete="name" style="width: 100%; max-width: 550px;" />
                     <x-input-error :messages="$errors->get('name')" class="mt-1" />
                 </div>
 
                 <!-- E-mailadres invoeren -->
                 <div class="form-group" style="margin-bottom: 10px;">
                     <x-input-label for="email" :value="__('Email')" />
-                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" placeholder="Voer je studentenemail in" required autocomplete="username" style="width: 100%; max-width: 550px;" />
+                    <x-text-input id="email" x-ref="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" placeholder="Voer je studentenemail in" required autocomplete="username" style="width: 100%; max-width: 550px;" />
                     <x-input-error :messages="$errors->get('email')" class="mt-1" />
                 </div>
 
@@ -48,7 +50,7 @@
                 <label for="opleiding" style="margin-bottom: 5px;">Opleiding:</label>
                 <div class="form-group-row" style="margin-bottom: 10px; display: flex; gap: 10px;">
                     <div class="form-group" style="flex: 1;">
-                        <select id="opleiding" name="opleiding" style="width: 100%; max-width: 280px;">
+                        <select id="opleiding" name="opleiding" style="width: 100%; max-width: 280px;" x-ref="opleiding" x-model="opleiding" @change="opleidingChanged()">
                             <option value="">Kies een opleiding</option>
                             <option value="opleiding1">Media vormgeving</option>
                             <option value="opleiding2">Interieuradviseur</option>
@@ -64,8 +66,11 @@
                         </select>
                     </div>
                     <div class="form-group" style="flex: 1;">
-                        <select id="klas" name="klas">
+                        <select id="klas" name="klas" x-model="klas">
                             <option value="">Kies een klas</option>
+                            <template x-for="option in klassen" :key="option">
+                                <option :value="option" x-text="option" :selected="option === klas"></option>
+                            </template>
                         </select>
                         <x-input-error :messages="$errors->get('klas')" class="mt-2" />
                     </div>
@@ -73,8 +78,8 @@
 
                 <!-- Registreren Button -->
                 <div class="form-actions flex items-center justify-end mt-2">
-                    <button id="register-btn" type="submit" class="w-80 m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
-                        {{ __('Registreren') }}
+                    <button id="register-btn" type="submit" :disabled="submitting" class="w-80 m-auto items-center px-4 py-2 bg-deltion-orange-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-deltion-blue-900 focus:bg-deltion-orange-900 active:bg-deltion-orange-900 focus:outline-none focus:ring-2 focus:ring-deltion-blue-900 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <span x-text="submitting ? 'Laden...' : @js(__('Registreren'))">{{ __('Registreren') }}</span>
                     </button>
                 </div>
                 <div class="flex items-center mt-3 justify-center">
@@ -91,27 +96,24 @@
             </div>
         </form>
 
-        <div id="dataPopup" style="display: none">
+        <div id="dataPopup" style="display: none" :style="confirmOpen ? 'display: flex;' : 'display: none;'">
             <div class="dataWrapperPopup">
                 <div class="innerDataTitel">
                     Weet je zeker dat deze gegevens kloppen?
                 </div>
                 <div class="innerDataWrapper">
-                    <div id="userData"></div>
+                    <div id="userData" style="white-space: pre-line;" x-text="summary"></div>
                 </div>
                 <div class="buttonWrapper">
-                    <x-secondary-button class="popupButtonNo">
+                    <x-secondary-button class="popupButtonNo" @click="confirmOpen = false" ::disabled="confirmed">
                         Nee
                     </x-secondary-button>
-                    <x-primary-button class="popupButtonYes">
+                    <x-primary-button type="button" class="popupButtonYes" @click="confirm()" ::disabled="confirmed">
                         Ja
                     </x-primary-button>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="{{ asset('/js/register.js') }}"></script>
-    <script src="{{ asset('/js/registerConfirm.js') }}"></script>
     @endif
 </x-guest-layout>
