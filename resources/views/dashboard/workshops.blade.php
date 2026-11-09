@@ -62,8 +62,11 @@
 
             {{-- wdashboard.css klapt open/dicht met de class "open" (met animatie) --}}
             <div class="p-6 border-t border-black-300 bg-white accordion-content" :class="{ 'open': open[@js($workshopName)] }">
-                <div class="mb-4">
+                <div class="mb-4 flex flex-wrap gap-2">
                         <a href="{{ route('export-workshop', ['workshopName' => urlencode($workshopName)]) }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-green-600">{{ "Exporteren naar excel" }}</a>
+                        @if ($workshopMoments->first()?->workshop)
+                            <a href="{{ route('workshop.qr', $workshopMoments->first()->workshop) }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-deltion-blue-900">QR-code tonen</a>
+                        @endif
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full table-auto">

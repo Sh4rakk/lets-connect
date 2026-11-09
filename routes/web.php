@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\WorkshopDashboardController;
+use App\Http\Controllers\WorkshopQrController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
@@ -47,6 +48,10 @@ Route::get('/edit-student/{id}', [UserController::class, 'edit'])->middleware(['
 Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('workshop-dashboard');
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->middleware(['role:admin'])->name('workshop-moment.showbookings');
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->middleware(['role:admin'])->name('workshop-moment.showfilteredbookings');
+
+Route::get('/workshops/{workshop}/qr', [WorkshopQrController::class, 'show'])->middleware(['role:admin'])->name('workshop.qr');
+Route::post('/workshops/{workshop}/qr/regenerate', [WorkshopQrController::class, 'regenerate'])->middleware(['role:admin'])->name('workshop.qr.regenerate');
+Route::get('/qr/{token}', [WorkshopQrController::class, 'scan'])->middleware('throttle:60,1')->where('token', '[A-Za-z0-9]{40}')->name('workshop.scan');
 
 Route::get('/class-dashboard', [ClassDashboardController::class, 'index'])->middleware(['role:admin'])->name('class-dashboard');
 

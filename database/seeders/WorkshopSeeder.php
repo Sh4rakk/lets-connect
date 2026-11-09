@@ -33,10 +33,14 @@ class WorkshopSeeder extends Seeder
             // Generate a UUID for the workshop
             $workshopId = Str::uuid()->toString();
             // Insert workshop into the 'workshops' table
-            $stmt = $pdo->prepare("INSERT INTO workshops (id, name, created_at, updated_at) VALUES (:id, :name, NOW(), NOW())");
+            $stmt = $pdo->prepare("INSERT INTO workshops (id, name, qr_token, created_at, updated_at) VALUES (:id, :name, :qr_token, :created_at, :updated_at)");
+            $now = now()->toDateTimeString();
             $stmt->execute([
                 'id' => $workshopId,
-                'name' => $workshop
+                'name' => $workshop,
+                'qr_token' => \App\Models\Workshop::newQrToken(),
+                'created_at' => $now,
+                'updated_at' => $now,
 
             ]);
             array_push($arrayIds, $workshopId);
