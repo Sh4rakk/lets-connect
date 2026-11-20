@@ -7,6 +7,7 @@ use App\Exports\UsersExport;
 use App\Exports\ClassExport;
 use App\Models\Classes;
 use App\Models\User;
+use App\Models\Workshop;
 use App\Models\WorkshopMoment;
 use Illuminate\Filesystem\Filesystem;
 use Maatwebsite\Excel\Facades\Excel;
@@ -71,6 +72,11 @@ class ExportController extends Controller
     ## Workshop export functie gemaakt door Kofmel (verplaatst door Fokke)
     public function exportWorkshop($workshopName)
     {
+        // onbekende workshop: 404 in plaats van een lege excel
+        if (!Workshop::where('name', urldecode($workshopName))->exists()) {
+            abort(404, 'Workshop niet gevonden.');
+        }
+
         $workshopMoments = WorkshopMoment::whereHas('workshop', function ($query) use ($workshopName) {
             $query->where('name', urldecode($workshopName));
         })

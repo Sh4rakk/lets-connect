@@ -14,12 +14,19 @@ class SendMail extends Mailable
     public $body;
 
     /**
+     * De ontvanger. Wordt meegegeven zodat de mail ook werkt buiten een web
+     * request, waar geen ingelogde gebruiker is.
+     */
+    public $user;
+
+    /**
      * Create a new message instance.
      */
-    public function __construct($subject = "Default Subject", $body = "Default email body")
+    public function __construct($subject = "Default Subject", $body = "Default email body", $user = null)
     {
         $this->subject = $subject;
         $this->body = $body;
+        $this->user = $user;
     }
 
     /**
@@ -29,6 +36,9 @@ class SendMail extends Mailable
     {
         return $this->subject($this->subject)
                     ->view('emailstemplate')  // View for the email body
-                    ->with(['body' => $this->body]);  // Data passed to the view
+                    ->with([
+                        'body' => $this->body,
+                        'user' => $this->user,
+                    ]);  // Data passed to the view
     }
 }

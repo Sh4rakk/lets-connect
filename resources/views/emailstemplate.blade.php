@@ -227,7 +227,12 @@
 
         <!-- Content -->
         <div class="content">
-            <p class="greeting">Beste {{ auth()->user()->name }},</p>
+            @php
+                // eerst de ontvanger die de mail meekrijgt: vanuit een command is
+                // er geen ingelogde gebruiker
+                $mailUser = $user ?? auth()->user();
+            @endphp
+            <p class="greeting">Beste {{ $mailUser?->name }},</p>
 
             <div class="content-section">
                 <p>
@@ -257,7 +262,7 @@
                     ->join('workshop_moments AS wm', 'ws.id', '=', 'wm.workshop_id')
                     ->join('bookings AS bk', 'wm.id', '=', 'bk.wm_id')
                     ->select('ws.name')
-                    ->where('bk.student_id', '=', auth()->user()->id)
+                    ->where('bk.student_id', '=', $mailUser?->id)
                     ->where('wm.moment_id', '=', '1')
                     ->get()->toArray();
 
@@ -273,7 +278,7 @@
                     ->join('workshop_moments AS wm', 'ws.id', '=', 'wm.workshop_id')
                     ->join('bookings AS bk', 'wm.id', '=', 'bk.wm_id')
                     ->select('ws.location')
-                    ->where('bk.student_id', '=', auth()->user()->id)
+                    ->where('bk.student_id', '=', $mailUser?->id)
                     ->where('wm.moment_id', '=', '1')
                     ->get()->toArray();
 
@@ -293,7 +298,7 @@
                     ->join('workshop_moments AS wm', 'ws.id', '=', 'wm.workshop_id')
                     ->join('bookings AS bk', 'wm.id', '=', 'bk.wm_id')
                     ->select('ws.name')
-                    ->where('bk.student_id', '=', auth()->user()->id)
+                    ->where('bk.student_id', '=', $mailUser?->id)
                     ->where('wm.moment_id', '=', '2')
                     ->get()->toArray();
 
@@ -309,7 +314,7 @@
                     ->join('workshop_moments AS wm', 'ws.id', '=', 'wm.workshop_id')
                     ->join('bookings AS bk', 'wm.id', '=', 'bk.wm_id')
                     ->select('ws.location')
-                    ->where('bk.student_id', '=', auth()->user()->id)
+                    ->where('bk.student_id', '=', $mailUser?->id)
                     ->where('wm.moment_id', '=', '2')
                     ->get()->toArray();
 
@@ -329,7 +334,7 @@
                     ->join('workshop_moments AS wm', 'ws.id', '=', 'wm.workshop_id')
                     ->join('bookings AS bk', 'wm.id', '=', 'bk.wm_id')
                     ->select('ws.name')
-                    ->where('bk.student_id', '=', auth()->user()->id)
+                    ->where('bk.student_id', '=', $mailUser?->id)
                     ->where('wm.moment_id', '=', '3')
                     ->get()->toArray();
 
@@ -345,7 +350,7 @@
                     ->join('workshop_moments AS wm', 'ws.id', '=', 'wm.workshop_id')
                     ->join('bookings AS bk', 'wm.id', '=', 'bk.wm_id')
                     ->select('ws.location')
-                    ->where('bk.student_id', '=', auth()->user()->id)
+                    ->where('bk.student_id', '=', $mailUser?->id)
                     ->where('wm.moment_id', '=', '3')
                     ->get()->toArray();
 

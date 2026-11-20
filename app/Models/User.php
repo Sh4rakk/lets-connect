@@ -45,6 +45,7 @@ class User extends Authenticatable implements LaratrustUser
         // OTP kolommen nooit via de api laten zien of laten filteren
         'login_code_hash',
         'login_code_expires_at',
+        'confirmation_key',
     ];
 
     /**
@@ -58,6 +59,7 @@ class User extends Authenticatable implements LaratrustUser
             'email_verified_at' => 'datetime',
             'login_code_expires_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'confirmation_sent_at' => 'datetime',
             // 'password' => 'hashed',
         ];
     }

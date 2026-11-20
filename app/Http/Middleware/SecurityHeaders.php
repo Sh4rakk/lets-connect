@@ -15,10 +15,7 @@ class SecurityHeaders
 
         $scriptSrc = ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'blob:'];
         $styleSrc = ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://fonts.bunny.net'];
-        $connectSrc = [
-            "'self'",
-            'https://o4511341734395904.ingest.de.sentry.io',
-        ];
+        $connectSrc = ["'self'"];
 
         if ($isLocal) {
             // Allow Vite dev server + HMR websocket during local development.

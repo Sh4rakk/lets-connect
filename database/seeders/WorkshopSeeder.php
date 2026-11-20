@@ -2,30 +2,92 @@
 
 namespace Database\Seeders;
 
-use Error;
-use Exception;
+use App\Models\Workshop;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class WorkshopSeeder extends Seeder
 {
+    /**
+     * Placeholder workshops voor als de scraper niet draait, zodat een verse
+     * installatie en db:migrate gewoon werken.
+     * Vervang deze door de echte Let's Connect workshops zodra die er zijn.
+     */
+    protected function workshopTemplates(): array
+    {
+        $workshops = [];
+
+        for ($i = 1; $i <= 6; $i++) {
+            $workshops[] = [
+                'name' => 'Placeholder workshop ' . $i,
+                'full_description' => 'Dit is een placeholder. De echte workshop komt hier zodra de inhoud bekend is.',
+                'capacity' => 20,
+                'location' => 'Lokaal ' . $i,
+                'image_url' => null,
+            ];
+        }
+
+        return $workshops;
+    }
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $pdo = DB::connection()->getPdo();
-        $jsonData = "";
-        // Read JSON file
-        $jsonFile = 'http://localhost:4001/getData';
-        try {
-            $jsonData = file_get_contents($jsonFile);
-        } catch(Exception $e) {
-            throw new Error("JSON data not found. Are you sure the scraper is running?");
+        $workshops = $this->scraperData();
+
+        if ($workshops === null) {
+            $this->command?->warn('Scraper niet bereikbaar, placeholder workshops worden gebruikt.');
+            $this->seedTemplates();
+
+            return;
         }
-        $workshops = json_decode($jsonData, true);
+
+        $this->seedFromScraper($workshops);
+    }
+
+    // haalt de workshops op bij de scraper, null als die niet draait of rare data geeft
+    private function scraperData(): ?array
+    {
+        try {
+            $jsonData = file_get_contents('http://localhost:4001/getData');
+        } catch (Throwable) {
+            return null;
+        }
+
+        $workshops = json_decode((string) $jsonData, true);
+
+        if (!is_array($workshops) || !isset($workshops['Titles'], $workshops['Descriptions'], $workshops['Images'])) {
+            return null;
+        }
+
+        return $workshops;
+    }
+
+    private function seedTemplates(): void
+    {
+        foreach ($this->workshopTemplates() as $workshop) {
+            DB::table('workshops')->insert([
+                'id' => (string) Str::uuid(),
+                'name' => $workshop['name'],
+                'full_description' => $workshop['full_description'],
+                'capacity' => $workshop['capacity'],
+                'location' => $workshop['location'],
+                'image_url' => $workshop['image_url'],
+                'qr_token' => Workshop::newQrToken(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+    }
+
+    private function seedFromScraper(array $workshops): void
+    {
+        $pdo = DB::connection()->getPdo();
 
         $arrayIds = [];
         // Insert data into the database
@@ -38,7 +100,7 @@ class WorkshopSeeder extends Seeder
             $stmt->execute([
                 'id' => $workshopId,
                 'name' => $workshop,
-                'qr_token' => \App\Models\Workshop::newQrToken(),
+                'qr_token' => Workshop::newQrToken(),
                 'created_at' => $now,
                 'updated_at' => $now,
 
