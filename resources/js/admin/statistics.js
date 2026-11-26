@@ -14,24 +14,34 @@ export default () => ({
         }
     },
 
-    get latestUser() {
-        const user = this.stats?.latest_user;
+    get latestUserDate() {
+        const createdAt = this.stats?.latest_user?.created_at;
 
-        if (!user?.name) {
-            return 'N/A';
+        if (!createdAt) {
+            return '';
         }
 
-        return `${user.name} (${new Date(user.created_at).toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: 'numeric' })})`;
+        return new Date(createdAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
     },
 
-    get popularWorkshop() {
-        const workshop = this.stats?.popular_workshop;
+    // hoeveel procent van de studenten minstens 1 workshop heeft
+    get signedUpPercentage() {
+        const total = this.stats?.total_students ?? 0;
 
-        if (!workshop?.name) {
-            return 'N/A (0 bookings)';
-        }
+        return total > 0 ? Math.min(100, Math.round((this.stats.total_bookings / total) * 100)) : 0;
+    },
 
-        return `${workshop.name} (${workshop.bookings_count ?? 0} bookings)`;
+    get workshopsTotal() {
+        return (this.stats?.rounds ?? []).reduce((sum, round) => sum + round.workshops, 0);
+    },
+
+    get fullTotal() {
+        return (this.stats?.rounds ?? []).reduce((sum, round) => sum + round.full, 0);
+    },
+
+    // hoe vol een ronde zit, in procenten
+    fill(round) {
+        return round.capacity > 0 ? Math.min(100, Math.round((round.booked / round.capacity) * 100)) : 0;
     },
 
     // laat '...' zien zolang de cijfers nog laden

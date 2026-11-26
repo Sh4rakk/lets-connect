@@ -17,32 +17,22 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link href="{{ asset('/css/dashboard.css') }}" rel="stylesheet">
+        {{-- ?v= zodat browsers na een wijziging niet de oude versie uit de cache pakken --}}
+        <link href="{{ asset('/css/dashboard.css') }}?v={{ filemtime(public_path('css/dashboard.css')) }}" rel="stylesheet">
     </head>
     <body>
         @if(isset($bookings) && $bookings->count() >= 3)
-            <div class="w-full min-h-full bg-gray-50 flex flex-col items-center p-4">
-                <div class="bg-white p-6 rounded-lg shadow-md max-w-lg w-full text-center my-auto">
-                    <h2 class="text-2xl font-bold text-deltion-blue-900 mb-4">Je hebt jouw keuze voor de workshops al doorgegeven.</h2>
-                    <p class="text-gray-600 mb-6">In je mailbox vind je een bevestiging hiervan.</p>
+            <div class="flex min-h-full items-start justify-center px-4 py-10 sm:py-16">
+                <div class="w-full max-w-lg rounded-xl border border-gray-200 bg-white p-6 text-center sm:p-8">
+                    <h1 class="text-2xl font-bold text-deltion-blue-900">Je hebt je workshops al gekozen</h1>
+                    <p class="mt-2 text-gray-600">De bevestiging staat in je mail. Dit zijn je workshops:</p>
 
-                    <div class="space-y-4 mb-8 text-left">
-                        @foreach($bookings->sortBy('workshopMoments.moment_id') as $booking)
-                            <div class="bg-gray-50 border-l-4 border-deltion-orange-500 p-4 rounded shadow-sm">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="font-bold text-gray-800">Ronde {{ $booking->workshopMoments->moment_id }}</span>
-                                    <span class="text-xs text-gray-500 bg-white px-2 py-1 rounded border">{{ $booking->workshopMoments->moment->time }}</span>
-                                </div>
-                                <h3 class="font-semibold text-deltion-blue-900">{{ $booking->workshopMoments->workshop->name }}</h3>
-                                <p class="text-sm text-gray-500 mt-1">Locatie: {{ $booking->workshopMoments->workshop->location ?? 'Nader te bepalen' }}</p>
-                            </div>
-                        @endforeach
-                    </div>
+                    <x-booking-summary :bookings="$bookings" class="mt-6" />
 
-                    <div class="bg-blue-50 p-4 rounded-lg text-sm text-gray-700">
-                        <p class="font-semibold mb-1">Wil je je keuze wijzigen?</p>
-                        <p>Stuur dan een mail naar <a href="mailto:{{ config('mail.from.address') }}" class="text-deltion-blue-600 underline font-bold">{{ config('mail.from.address') }}</a></p>
-                    </div>
+                    <p class="mt-6 text-sm text-gray-500">
+                        Wil je iets wijzigen? Mail naar
+                        <a href="mailto:{{ config('mail.from.address') }}" class="font-semibold text-deltion-blue-900 underline">{{ config('mail.from.address') }}</a>.
+                    </p>
                 </div>
             </div>
         @else
@@ -52,76 +42,9 @@
         @endphp
 
         {{-- Alle logica staat in resources/js/dashboard/workshopPicker.js --}}
-        <div x-data="workshopPicker({ workshops: @js($workshopData), registrationsClosed: @js($registrationsClosed) })"
-             @click.window="closeInfoOnOutsideClick($event)">
+        <div x-data="workshopPicker({ workshops: @js($workshopData), registrationsClosed: @js($registrationsClosed) })">
 
-        <!-- PC View -->
-        <div class="hidden md:block">
-            <div class="tutorial-overlay" id="tutorial-overlay" x-show="$store.tutorial.active" x-cloak>
-                <div class="tutorial-step" id="tutorial-step" :style="$store.tutorial.step > 0 ? 'position: relative; top: 25%;' : ''">
-                    <button @click="$store.tutorial.skip()" class="absolute top-2 right-2 text-2xl">×</button>
-                    <p id="tutorial-text" x-text="$store.tutorial.texts[$store.tutorial.step]"></p>
-                    <div class="tutorial-buttons" :style="{ justifyContent: $store.tutorial.step === 0 ? 'center' : 'space-between' }">
-                        <button id="prevButton" x-show="$store.tutorial.step > 0 && !$store.tutorial.isLastStep" @click="$store.tutorial.prev()">Terug</button>
-                        <button id="nextButton" :disabled="$store.tutorial.nextDisabled" :class="{ 'disabledStyle': $store.tutorial.nextDisabled }" @click="$store.tutorial.next()" x-text="$store.tutorial.nextLabel"></button>
-                        <button x-show="!$store.tutorial.isLastStep" @click="$store.tutorial.skip()" class="skip-button">Overslaan</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Foutmelding bij workshop ongeldige ronde -->
-            <div id="error-popup" class="error-overlay" :style="error ? 'display: flex;' : ''">
-                <div class="error-box">
-                    <h3 id="error-title" x-text="error?.title"></h3>
-                    <p id="error-message" x-text="error?.message"></p>
-                    <button @click="error = null">Sluiten</button>
-                </div>
-            </div>
-            @if (session('status') == 'success')
-            <x-success-msg message="{{ session('message') }}" color="green" />
-            @elseif (session('status') == 'failed')
-            <x-success-msg message="{{ session('message') }}" color="red" />
-            @endif
-            <!-- Main Content -->
-            <div class="main">
-                <div class="rounds">
-                    <template x-for="round in [1, 2, 3]" :key="round">
-                        <div class="flex" :id="'round' + round" :class="{ 'tutorial-focus': ($store.tutorial.is(3) && round === 1) || ($store.tutorial.is(4) && selected[round]) }">
-                            <div class="flex col round placeholder" :style="selected[round] ? 'visibility: hidden;' : ''">
-                                <p x-text="'Ronde ' + round"></p>
-                                <p x-text="roundTimes[round]"></p>
-                            </div>
-                            <div class="round" :id="round" @dragover.prevent @drop.prevent="dropOnRound(round)">
-                                <template x-for="card in (selected[round] ? [workshop(selected[round])] : [])" :key="card.id">
-                                    @include('dashboard.partials.workshop-card', ['inRound' => true])
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <div class="workshops" id="4" @dragover.prevent @drop.prevent="dropOnList()">
-                    <template x-for="(card, index) in availableWorkshops" :key="card.id">
-                        @include('dashboard.partials.workshop-card', ['inRound' => false])
-                    </template>
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <div id="confirmation-popup" class="confpopup" :style="confirmOpen ? 'display: flex;' : ''">
-                    <div class="popup-content">
-                        <p>Wil je dit opslaan?</p>
-                        <form id="confirmForm" @submit.prevent="save()">
-                            <div class="button-container">
-                                <button id="confirm-yes-button" type="submit" class="yes-button" :disabled="saving">Ja</button>
-                                <span id="save-spinner" x-show="saving" x-cloak>Opslaan...</span>
-                                <button type="button" class="no-button" @click="confirmOpen = false">Nee</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="flex">
-                <button id="save-button" x-show="allRoundsSelected" x-cloak @click="confirmOpen = true">Opslaan</button>
-            </div>
-        </div>
+        @include('dashboard.partials.desktop-picker')
 
         <!-- Mobile View -->
         <div class="md:hidden p-4 pb-24 bg-gray-50 min-h-full">
@@ -266,8 +189,8 @@
                     <h2 class="text-2xl font-bold mb-4">Opslaan?</h2>
                     <p class="text-gray-600 mb-6">Wil je je workshop selectie opslaan?</p>
                     <form @submit.prevent="save()" class="space-y-2">
-                        <button type="submit" :disabled="saving" class="w-full px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700">
-                            Ja, opslaan
+                        <button type="submit" :disabled="saving" class="w-full px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700 disabled:opacity-60"
+                                x-text="saving ? 'Bezig met opslaan...' : 'Ja, opslaan'">
                         </button>
                         <button type="button" @click="mobileConfirmOpen = false" class="w-full px-4 py-2 bg-gray-300 text-gray-800 font-bold rounded hover:bg-gray-400">
                             Nee, annuleren

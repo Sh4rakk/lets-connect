@@ -22,11 +22,12 @@ class WorkshopMomentResource extends JsonResource
             'updated_at' => $this->whenHas('updated_at'),
             'workshop_id' => $this->whenHas('workshop_id'),
             'moment_id' => $this->whenHas('moment_id'),
+            'capacity' => $this->whenHas('capacity'),
             'bookings_count' => $this->whenCounted('bookings'),
             // alleen als de workshop en het aantal boekingen geladen zijn
             'spots_left' => $this->when(
                 $this->relationLoaded('workshop') && $this->workshop && isset($this->bookings_count),
-                fn () => max(0, $this->workshop->capacity - $this->bookings_count)
+                fn () => max(0, $this->resource->effectiveCapacity() - $this->bookings_count)
             ),
             ... $this->getRelations(),
             ... $this->getSearch($request),

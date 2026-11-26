@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Moment;
 use App\Models\WorkshopMoment;
 
 class WorkshopDashboardController extends Controller
@@ -12,7 +13,17 @@ class WorkshopDashboardController extends Controller
         // withCount in plaats van count($wm->bookings) in de view, anders 1 query per rij
         $workshopMoments = WorkshopMoment::with(['workshop', 'moment'])->withCount('bookings')->get();
 
-        return view('dashboard.workshops')->with('workshopmoments', $workshopMoments);
+        // per ronde een tab, workshops op naam
+        $rounds = Moment::orderBy('id')->get()->map(fn (Moment $moment) => [
+            'moment' => $moment,
+            'workshopMoments' => $workshopMoments
+                ->where('moment_id', $moment->id)
+                ->filter(fn ($wm) => $wm->workshop)
+                ->sortBy(fn ($wm) => mb_strtolower((string) $wm->workshop->name))
+                ->values(),
+        ]);
+
+        return view('dashboard.workshops')->with('rounds', $rounds);
     }
 
     // de studenten zelf worden door Alpine opgehaald via /api/workshop-moments/{id}

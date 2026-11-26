@@ -1,8 +1,7 @@
-import Alpine from 'alpinejs';
 import { fetchWorkshopCapacities, saveWorkshopChoice } from './api';
 
 // Het student dashboard: workshops kiezen voor ronde 1, 2 en 3.
-// Desktop (slepen) en mobiel (klikken) gebruiken dezelfde state.
+// Desktop en mobiel gebruiken dezelfde state.
 export default ({ workshops, registrationsClosed }) => ({
     workshops: workshops,
     registrationsClosed: registrationsClosed,
@@ -16,9 +15,6 @@ export default ({ workshops, registrationsClosed }) => ({
     roundTimes: { 1: '13:00 - 13:45', 2: '13:45 - 14:30', 3: '15:00 - 15:45' },
 
     // desktop
-    draggingId: null,
-    hoverId: null,
-    openInfoId: null,
     confirmOpen: false,
 
     // mobiel
@@ -116,96 +112,88 @@ export default ({ workshops, registrationsClosed }) => ({
         this.showError(result.message);
     },
 
-    // ---------- desktop: slepen ----------
+    // ---------- desktop: eerst een ronde, dan een workshop aanklikken ----------
 
-    startDrag(event, id) {
-        if (this.registrationsClosed) {
-            event.preventDefault();
-            return;
+    // in welke ronde de workshop gezet wordt als je erop klikt
+    activeRound: 1,
+    infoCard: null,
+
+    // de tekst onder een kaartje voor de actieve ronde
+    spotsText(id) {
+        if (!this.capacitiesLoaded) {
+            return '';
         }
 
-        this.draggingId = id;
-        this.openInfoId = null;
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('text', id);
+        const spots = this.spotsLeft(id, this.activeRound);
+
+        if (spots === undefined) {
+            return 'Niet in deze ronde';
+        }
+
+        return spots > 0 ? `${spots} plek${spots === 1 ? '' : 'ken'} over` : 'Vol';
     },
 
-    dropOnRound(round) {
-        const id = this.draggingId;
-        this.draggingId = null;
+    // de regel onderaan een kaartje
+    cardStatus(id) {
+        if (this.selected[this.activeRound] === id) {
+            return { text: '✓ Gekozen', class: 'text-deltion-blue-900' };
+        }
 
-        if (!id || this.selected[round] === id) {
+        const round = this.roundOf(id);
+        if (round) {
+            return { text: `Gekozen voor ronde ${round}`, class: 'text-gray-500' };
+        }
+
+        const text = this.spotsText(id);
+        return { text: text, class: text === 'Vol' ? 'text-red-700' : 'text-gray-600' };
+    },
+
+    // kan deze workshop nu in de actieve ronde? (al gekozen in een andere ronde telt als nee)
+    canChoose(id) {
+        const round = this.roundOf(id);
+
+        return !this.registrationsClosed
+            && (round === null || round === this.activeRound)
+            && this.roundProblem(id, this.activeRound) === null;
+    },
+
+    choose(id) {
+        if (this.registrationsClosed) {
             return;
         }
 
-        const problem = this.roundProblem(id, round);
+        // nog een keer klikken op de gekozen workshop haalt hem weer weg
+        if (this.selected[this.activeRound] === id) {
+            this.selected[this.activeRound] = null;
+            return;
+        }
+
+        const otherRound = this.roundOf(id);
+        if (otherRound) {
+            this.showError(`Deze workshop heb je al gekozen voor ronde ${otherRound}.`);
+            return;
+        }
+
+        const problem = this.roundProblem(id, this.activeRound);
         if (problem) {
             this.showError(problem);
             return;
         }
 
-        const fromRound = this.roundOf(id);
-        const current = this.selected[round];
+        this.selected[this.activeRound] = id;
+        this.infoCard = null;
 
-        // van ronde naar ronde slepen: de workshops wisselen van plek
-        if (fromRound) {
-            const swapProblem = current ? this.roundProblem(current, fromRound) : null;
-            if (swapProblem) {
-                this.showError(swapProblem);
-                return;
-            }
-
-            this.selected[fromRound] = current;
-        }
-
-        // een workshop die al in deze ronde stond gaat vanzelf terug naar de lijst
-        this.selected[round] = id;
-
-        Alpine.store('tutorial').event('dropped');
-
-        if (this.allRoundsSelected) {
-            this.confirmOpen = true;
-        }
-    },
-
-    // een workshop uit een ronde terug naar de lijst slepen
-    dropOnList() {
-        const round = this.roundOf(this.draggingId);
-        this.draggingId = null;
-
-        if (round) {
-            this.removeFromRound(round);
+        // door naar de eerstvolgende ronde die nog leeg is
+        const next = [1, 2, 3].find((round) => !this.selected[round]);
+        if (next) {
+            this.activeRound = next;
         }
     },
 
     removeFromRound(round) {
         this.selected[round] = null;
+        this.activeRound = round;
         this.confirmOpen = false;
-
-        Alpine.store('tutorial').event('removed');
-    },
-
-    // ---------- desktop: info popup ----------
-
-    toggleInfo(id) {
-        this.openInfoId = this.openInfoId === id ? null : id;
-
-        if (this.openInfoId) {
-            Alpine.store('tutorial').event('info-opened');
-        }
-    },
-
-    closeInfo() {
-        this.openInfoId = null;
-
-        Alpine.store('tutorial').event('info-closed');
-    },
-
-    // klikken naast een info popup sluit hem (telt ook voor de tutorial, anders zit je vast)
-    closeInfoOnOutsideClick(event) {
-        if (this.openInfoId && !event.target.closest('.info, .popup')) {
-            this.closeInfo();
-        }
     },
 
     // ---------- mobiel ----------

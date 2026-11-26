@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\WorkshopDashboardController;
 use App\Http\Controllers\WorkshopQrController;
+use App\Http\Controllers\WorkshopManageController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
@@ -34,7 +35,16 @@ Route::post('/auth/login-code/request', [LoginCodeController::class, 'requestCod
 Route::post('/auth/login-code/verify', [LoginCodeController::class, 'verify'])->name('auth.login-code.verify');
 
 
-Route::view('/success', 'success');
+// na het opslaan, laat de gekozen workshops zien
+Route::get('/success', function () {
+    $bookings = Auth::user()->bookings()->with('workshopMoments.workshop', 'workshopMoments.moment')->get();
+
+    if ($bookings->isEmpty()) {
+        return redirect()->route('dashboard');
+    }
+
+    return view('success', ['bookings' => $bookings]);
+})->middleware('auth')->name('success');
 
 // de cijfers haalt de pagina zelf op via /api/statistics
 Route::view('/admin-dashboard', 'dashboard.selection')->middleware(['role:admin'])->name('selectionDashboard');
@@ -49,7 +59,15 @@ Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->middleware(['role:admin'])->name('workshop-moment.showbookings');
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->middleware(['role:admin'])->name('workshop-moment.showfilteredbookings');
 
-Route::get('/workshops/{workshop}/qr', [WorkshopQrController::class, 'show'])->middleware(['role:admin'])->name('workshop.qr');
+Route::middleware(['role:admin'])->group(function () {
+    Route::get('/workshops/create', [WorkshopManageController::class, 'create'])->name('workshops.create');
+    Route::post('/workshops', [WorkshopManageController::class, 'store'])->name('workshops.store');
+    Route::get('/workshops/{workshop}/edit', [WorkshopManageController::class, 'edit'])->name('workshops.edit');
+    Route::put('/workshops/{workshop}', [WorkshopManageController::class, 'update'])->name('workshops.update');
+    Route::delete('/workshops/{workshop}', [WorkshopManageController::class, 'destroy'])->name('workshops.destroy');
+});
+
+Route::get('/workshops/{workshop}/qr',[WorkshopQrController::class, 'show'])->middleware(['role:admin'])->name('workshop.qr');
 Route::post('/workshops/{workshop}/qr/regenerate', [WorkshopQrController::class, 'regenerate'])->middleware(['role:admin'])->name('workshop.qr.regenerate');
 Route::get('/qr/{token}', [WorkshopQrController::class, 'scan'])->middleware('throttle:60,1')->where('token', '[A-Za-z0-9]{40}')->name('workshop.scan');
 

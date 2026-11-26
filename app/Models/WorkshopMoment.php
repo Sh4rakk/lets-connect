@@ -14,7 +14,18 @@ class WorkshopMoment extends Model
     protected $fillable = [
         'workshop_id',
         'moment_id',
+        'capacity',
     ];
+
+    protected $casts = [
+        'capacity' => 'integer',
+    ];
+
+    // capaciteit van deze ronde, valt terug op de capaciteit van de workshop
+    public function effectiveCapacity(): int
+    {
+        return (int) ($this->capacity ?? $this->workshop?->capacity ?? 0);
+    }
 
     public function bookings(): HasMany
     {

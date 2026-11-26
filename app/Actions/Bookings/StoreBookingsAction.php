@@ -44,13 +44,16 @@ final class StoreBookingsAction extends Action
         try {
             Cache::lock('booking:' . $student->id, 10)->block(5, function () use ($student, $workshopIdsByRound) {
                 $this->saveRounds($student, $workshopIdsByRound);
-
-                // stuurt alleen een mail als de keuzes anders zijn dan de vorige bevestiging
-                $this->mailer->send($student);
             });
         } catch (LockTimeoutException) {
             return $this->statusCode(409)->withData(['message' => 'Je keuzes worden al opgeslagen, probeer het zo nog eens.'])->result(false);
         }
+
+        // de mail pas versturen nadat de student het antwoord heeft, SMTP kan seconden duren
+        // en dan leek de site te bevriezen. Stuurt alleen een mail als de keuzes anders zijn
+        // dan de vorige bevestiging, dus dubbel opslaan geeft geen tweede mail.
+        $mailer = $this->mailer;
+        app()->terminating(fn () => $mailer->send($student));
 
         $bookings = $student->bookings()->with('workshopMoments.workshop', 'workshopMoments.moment')->get();
 
@@ -84,7 +87,7 @@ final class StoreBookingsAction extends Action
                     ->where('student_id', '!=', $student->id)
                     ->count();
 
-                if ($otherBookings >= $workshopMoment->workshop->capacity) {
+                if ($otherBookings >= $workshopMoment->effectiveCapacity()) {
                     throw ValidationException::withMessages([
                         "rounds.$round" => "Workshop {$workshopMoment->workshop->name} zit vol in ronde $round.",
                     ]);

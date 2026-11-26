@@ -1,7 +1,6 @@
 import Alpine from 'alpinejs';
 
 import workshopPicker from './dashboard/workshopPicker';
-import tutorial from './dashboard/tutorial';
 import mobileTutorial from './dashboard/mobileTutorial';
 import statistics from './admin/statistics';
 import studentsOverview from './admin/studentsOverview';
@@ -16,7 +15,6 @@ window.Alpine = Alpine;
 // student dashboard
 Alpine.data('workshopPicker', workshopPicker);
 Alpine.data('mobileTutorial', mobileTutorial);
-Alpine.store('tutorial', tutorial);
 
 // admin
 Alpine.data('statistics', statistics);

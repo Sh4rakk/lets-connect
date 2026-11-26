@@ -1,93 +1,51 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geen Toegang</title>
-    <link rel="stylesheet" href="{{ asset('/css/error.css') }}">
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('title') · Let's Connect</title>
 
-        .background-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("{{ asset('/images/24213_SAVETHEDATE_LETS_CONNECT_01.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: -1;
-        }
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
 
-        .message-box {
-            background-color: rgba(1, 1, 116, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            z-index: 10;
-            max-width: 80%;
-            font-size: 1.5rem;
-        }
-
-        .countdown {
-            font-weight: bold;
-            font-size: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .message-box {
-                font-size: 1.2rem;
-            }
-
-            .countdown {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .message-box {
-                font-size: 1rem;
-                max-width: 95%;
-            }
-        }
-    </style>
+    @vite(['resources/css/app.css'])
 </head>
-<body>
-    <div class="message-box">
-        <h1>Geen Toegang</h1>
-        <p>Je hebt geen toegang tot deze pagina.</p>
-        <div id="timer" class="countdown">5</div>
-    </div>
+<body class="flex min-h-screen flex-col bg-gray-100 font-sans text-gray-900 antialiased">
 
-    <div class="background-container"></div>
+    <header class="border-b border-gray-200 bg-white">
+        <div class="mx-auto flex h-14 max-w-5xl items-center px-4 sm:px-6">
+            <a href="{{ url('/') }}" class="text-lg font-bold text-deltion-blue-900">Let's <span class="text-deltion-orange-900">Connect</span></a>
+        </div>
+    </header>
 
-    <script>
-        let countdown = 5;
-        const timerElement = document.getElementById('timer');
+    <main class="flex flex-1 items-center justify-center px-4 py-10">
+        <div class="grid w-full max-w-4xl overflow-hidden rounded-xl border border-gray-200 bg-white md:grid-cols-[1fr_1.1fr]">
 
-        if (timerElement) {
-            const interval = setInterval(() => {
-                countdown--;
-                timerElement.textContent = countdown;
+            <div class="flex flex-col justify-center p-8 sm:p-10">
+                <p class="text-6xl font-extrabold leading-none tracking-tight text-deltion-orange-900">@yield('code')</p>
+                <h1 class="mt-5 text-2xl font-bold text-deltion-blue-900">@yield('title')</h1>
+                <p class="mt-3 text-gray-600">@yield('message')</p>
 
-                if (countdown === 0) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        window.location.href = "{{ url('/dashboard') }}";
-                    }, 1000);
-                }
-            }, 1000);
-        }
-    </script>
+                @hasSection('tips')
+                    <ul class="mt-5 space-y-2 border-l-2 border-deltion-orange-200 pl-4 text-sm text-gray-600">
+                        @yield('tips')
+                    </ul>
+                @endif
+
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="{{ route('dashboard') }}" class="rounded-md bg-deltion-blue-900 px-4 py-2 text-sm font-semibold text-white hover:bg-deltion-blue-950">Naar mijn workshops</a>
+                    <button type="button" onclick="history.length > 1 ? history.back() : location.assign('{{ url('/') }}')" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-deltion-blue-900 hover:bg-gray-50">Vorige pagina</button>
+                </div>
+            </div>
+
+            {{-- de puzzel uit de Let's Connect huisstijl, de tekst onderaan valt weg door de crop --}}
+            <div class="order-first flex items-end justify-center bg-deltion-orange-50 px-6 pt-8 md:order-none md:px-8 md:pt-12">
+                <div class="aspect-[910/560] w-full max-w-sm overflow-hidden md:max-w-none">
+                    <img src="{{ asset('images/Lets-connect-logo.png') }}" alt="" class="w-full mix-blend-multiply">
+                </div>
+            </div>
+        </div>
+    </main>
+
 </body>
 </html>

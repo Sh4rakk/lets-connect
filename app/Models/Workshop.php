@@ -19,6 +19,11 @@ class Workshop extends Model
         'image_url',
         'capacity',
         'location',
+        'is_manual',
+    ];
+
+    protected $casts = [
+        'is_manual' => 'boolean',
     ];
 
     protected $hidden = [

@@ -522,14 +522,8 @@ body {
     background-color: orange; /* Donkerder blauw bij hover */
 }
 
-.flex {
-    display: flex;
-    justify-content: center;
-}
-
-.col {
-    flex-direction: column;
-}
+/* .flex en .col zijn weggehaald: die hoorden bij de oude sleep-weergave en
+   overschreven Tailwind's flex/justify classes op het dashboard */
 
 .placeholder {
     position: relative;
