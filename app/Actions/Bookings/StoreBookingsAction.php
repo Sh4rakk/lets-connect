@@ -84,7 +84,7 @@ final class StoreBookingsAction extends Action
                     ->where('student_id', '!=', $student->id)
                     ->count();
 
-                if ($otherBookings >= $workshopMoment->workshop->capacity) {
+                if ($otherBookings >= $workshopMoment->maxSpots()) {
                     throw ValidationException::withMessages([
                         "rounds.$round" => "Workshop {$workshopMoment->workshop->name} zit vol in ronde $round.",
                     ]);

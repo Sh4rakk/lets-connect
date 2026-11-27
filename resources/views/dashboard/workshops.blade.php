@@ -1,111 +1,84 @@
-<x-app-layout>
+<x-workshop-layout title="Workshop overzicht" :back-url="route('selectionDashboard')" back-label="Admin dashboard">
+    <div x-data="workshopsOverview({ signupsOpen: @js($signupsOpen), firstRound: @js($moments->first()?->id) })">
+        @if (session('status'))
+            <p class="mb-4 p-3 rounded-md bg-green-100 text-green-800 text-sm">{{ session('status') }}</p>
+        @endif
 
-    <x-slot name="leftHeader">
-        <x-secondary-anchor :href="route('selectionDashboard')">Terug naar admin dashboard</x-secondary-anchor>
-    </x-slot>
+        <p x-show="message" x-cloak x-text="message?.text" class="mb-4 p-3 rounded-md text-sm"
+           :class="message?.color === 'green' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"></p>
 
-    <x-slot name="header">
-        <h1 class="text-2xl font-bold text-center text-gray-800">Workshop Overzicht</h1>
-    </x-slot>
+        <div class="flex flex-wrap items-end justify-between gap-x-3 mb-4 border-b border-gray-300">
+            <div class="flex flex-wrap gap-x-5 text-sm" role="tablist">
+                @foreach ($moments as $moment)
+                    <button type="button" role="tab" @click="round = {{ $moment->id }}"
+                            :aria-selected="round === {{ $moment->id }}"
+                            class="pt-2 pb-3 -mb-px border-b-2 whitespace-nowrap"
+                            :class="round === {{ $moment->id }} ? 'border-deltion-blue-900 text-deltion-blue-900 font-bold' : 'border-transparent text-gray-500'">
+                        Ronde {{ $moment->id }}
+                        <span class="ml-1 text-[11px] font-normal text-gray-500">{{ Str::before($moment->time, ' ') }} &middot; {{ $workshopMoments->get($moment->id)?->count() ?? 0 }} workshops</span>
+                    </button>
+                @endforeach
+            </div>
 
-    <link rel="stylesheet" href="{{ asset('/css/wdashboard.css') }}">
-
-    @php
-        $workshopsByName = $workshopmoments->groupBy('workshop.name');
-    @endphp
-
-    {{-- Inschrijvingen open/dicht gaat via de api, zie resources/js/admin/workshopsOverview.js --}}
-    <div class="container mx-auto p-6 max-w-5xl"
-         x-data="workshopsOverview({ signupsOpen: @js(\App\Models\Setting::signupsOpen()), workshopNames: @js($workshopsByName->keys()) })">
-    <div class="flex justify-between items-center mb-6">
-
-        <button type="button"
-                @click="toggleSignups()"
-                :disabled="toggling"
-                class="px-6 py-2 text-white font-semibold rounded-lg transition-colors"
-                :class="signupsOpen ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'"
-                x-text="signupsOpen ? '✓ Inschrijvingen Open' : '✗ Inschrijvingen Gesloten'">
-        </button>
-        <form>
-            <a href="{{ route('export-all-users') }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-green-600">
-                Alle gebruikers exporteren
-            </a>
-        </form>
-    </div>
-
-    <template x-if="message">
-        <div class="mb-4 p-4 rounded-lg relative flex items-start" :class="message.color === 'green' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
-            <div class="flex-1" x-text="message.text"></div>
-
-            <button
-                type="button"
-                @click="message = null"
-                class="ml-3 -mt-1 -mr-1 focus:outline-none transition-colors"
-                aria-label="Sluit bericht"
-            >
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-    </template>
-
-        <button id="toggleAllBtn" class="px-6 py-2 mb-2 text-white font-semibold rounded-lg bg-deltion-blue-900" @click="toggleAll()" x-text="anyOpen ? 'Alles inklappen' : 'Alles uitklappen'"></button>
-
-     @foreach ($workshopsByName as $workshopName => $workshopMoments)
-        <div class="border border-black-300 rounded-lg mb-2">
-            <button class="w-full text-left p-6 accordion-btn bg-deltion-blue-900 text-white font-semibold flex justify-between items-center transition-all duration-300"
-                    @click="toggle(@js($workshopName))">
-                <span>{{ $workshopName }}</span>
-                <span class="transition-transform transform" x-text="open[@js($workshopName)] ? '−' : '+'"></span>
-            </button>
-
-            {{-- wdashboard.css klapt open/dicht met de class "open" (met animatie) --}}
-            <div class="p-6 border-t border-black-300 bg-white accordion-content" :class="{ 'open': open[@js($workshopName)] }">
-                <div class="mb-4 flex flex-wrap gap-2">
-                        <a href="{{ route('export-workshop', ['workshopName' => urlencode($workshopName)]) }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-green-600">{{ "Exporteren naar excel" }}</a>
-                        @if ($workshopMoments->first()?->workshop)
-                            <a href="{{ route('workshop.qr', $workshopMoments->first()->workshop) }}" class="px-6 py-2 text-white font-semibold rounded-lg bg-deltion-blue-900">QR-code tonen</a>
-                        @endif
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full table-auto">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="px-6 py-4 text-left border-b text-sm font-semibold text-gray-600"> Tijd</th>
-                                <th class="px-6 py-4 text-left border-b text-sm font-semibold text-gray-600"> Locatie</th>
-                                <th class="px-6 py-4 text-left border-b text-sm font-semibold text-gray-600"> Capaciteit</th>
-                                <th class="px-6 py-4 text-left border-b text-sm font-semibold text-gray-600"> Boekingen</th>
-                                <th class="px-6 py-4 text-left border-b text-sm font-semibold text-gray-600">Status</th>
-                                <th class="px-6 py-4 text-left border-b text-sm font-semibold text-gray-600">Actie</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($workshopMoments as $wm)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 border-b text-sm">{{ $wm->moment->time }}</td>
-                                    <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->location }}</td>
-                                    <td class="px-6 py-4 border-b text-sm">{{ $wm->workshop->capacity }}</td>
-                                    <td class="px-6 py-4 border-b text-sm">{{ $wm->bookings_count }}</td>
-
-                                    <td class="px-6 py-4 border-b text-sm">
-                                        @if ($wm->bookings_count < $wm->workshop->capacity)
-                                            <span class="text-green-600 font-semibold">✅ Nog plek</span>
-                                        @else
-                                            <span class="text-red-600 font-semibold">❌ Vol</span>
-                                        @endif
-                                    </td>
-
-                                    <td class="px-6 py-4 border-b text-sm">
-                                        <a href="{{ route('workshop-moment.showbookings', ['wsm' => $wm]) }}" class="text-deltion-blue-600 font-semibold hover:underline">🔗 Bekijk</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+            <div class="flex flex-wrap items-center gap-3 pb-2">
+                <label class="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                    <x-round-switch data-signups x-bind:checked="signupsOpen" x-bind:disabled="toggling" x-on:change="toggleSignups()" />
+                    <span x-text="signupsOpen ? 'Inschrijvingen open' : 'Inschrijvingen gesloten'"></span>
+                </label>
+                <a href="{{ route('export-all-users') }}" class="px-3 py-2 text-sm font-medium bg-white border border-gray-300 rounded-md hover:bg-gray-50">Exporteren</a>
+                <a href="{{ route('workshops.create') }}" class="px-3 py-2 text-sm font-semibold tracking-wider text-white bg-deltion-orange-900 rounded-md hover:bg-deltion-orange-700">+ WORKSHOP</a>
             </div>
         </div>
-    @endforeach
-</div>
-</x-app-layout>
+
+        @foreach ($moments as $moment)
+            <div x-show="round === {{ $moment->id }}" @if (! $loop->first) x-cloak @endif class="relative overflow-x-auto bg-white border border-gray-200 rounded-xl">
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr class="bg-gray-50 text-xs text-gray-600 border-b border-gray-200">
+                            <th class="px-4 py-3 font-medium">Workshop</th>
+                            <th class="px-4 py-3 font-medium">Lokaal</th>
+                            <th class="px-4 py-3 font-medium">Ingeschreven</th>
+                            <th class="px-4 py-3"><span class="sr-only">Acties</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @forelse ($workshopMoments->get($moment->id, collect()) as $wm)
+                            @php($full = $wm->bookings_count >= $wm->maxSpots())
+                            <tr>
+                                <td class="px-4 py-2">
+                                    <div class="flex items-center gap-3">
+                                        @if ($wm->workshop->image_url)
+                                            <img src="{{ $wm->workshop->image_url }}" alt="" loading="lazy" class="h-9 w-14 shrink-0 rounded-md object-cover bg-gray-200">
+                                        @else
+                                            <span class="h-9 w-14 shrink-0 rounded-md bg-gray-200 border border-dashed border-gray-300"></span>
+                                        @endif
+                                        <span class="font-semibold">{{ $wm->workshop->name }}</span>
+                                        @if ($wm->workshop->is_manual)
+                                            <span class="px-1.5 py-0.5 text-xs text-gray-500 border border-gray-300 rounded">handmatig</span>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-4 py-2 text-gray-500">{{ $wm->workshop->location }}</td>
+                                <td class="px-4 py-2 whitespace-nowrap {{ $full ? 'text-red-700' : '' }}">
+                                    {{ $wm->bookings_count }} / {{ $wm->maxSpots() }}
+                                    @if ($full)
+                                        <span class="ml-1 text-xs">vol</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-2">
+                                    <div class="flex justify-end gap-2 whitespace-nowrap text-xs font-medium">
+                                        <a href="{{ route('workshop-moment.showbookings', $wm) }}" class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-50">Inschrijvingen</a>
+                                        <a href="{{ route('workshop-moment.qr', $wm) }}" class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-50">QR-code</a>
+                                        <a href="{{ route('workshops.edit', $wm->workshop) }}" class="px-3 py-1.5 text-white bg-deltion-blue-900 border border-deltion-blue-900 rounded hover:bg-deltion-blue-800">Bewerken</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="4" class="px-4 py-6 text-center text-gray-500">Geen workshops in deze ronde.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        @endforeach
+    </div>
+</x-workshop-layout>

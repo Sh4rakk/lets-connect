@@ -123,7 +123,7 @@ final class UpdateUserBookingsAction extends Action
                     $currentCount = (int) ($currentCounts[(int) $selectedWmId] ?? 0);
                     // Fokke: Berekent het verwachte aantal boekingen. Als de boeking niet verandert, telt deze niet als nieuw.
                     $projectedCount = $currentCount + ($isSameBooking ? 0 : 1);
-                    $capacity = (int) $workshopMoment->workshop->capacity;
+                    $capacity = $workshopMoment->maxSpots();
 
                     if ($projectedCount > $capacity) {
                         // Fokke: Gooit een exception als de capaciteit wordt overschreden.

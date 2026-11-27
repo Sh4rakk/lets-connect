@@ -7,6 +7,10 @@
         <h1 class="text-2xl font-bold text-center text-gray-800">{{$wsm->workshop->name}} {{$wsm->moment->time}}</h1>
     </x-slot>
 
+    <div class="max-w-5xl m-auto mt-6 px-4 flex justify-end">
+        <a href="{{ route('export-workshop', ['workshopName' => urlencode($wsm->workshop->name)]) }}" class="px-4 py-2 text-sm text-white font-semibold rounded-lg bg-green-600">Exporteren naar excel</a>
+    </div>
+
     {{-- De studenten komen uit /api/workshop-moments/{id}, zie resources/js/admin/workshopMomentBookings.js --}}
     <div class="overflow-hidden max-w-5xl m-auto mt-6 mb-6 rounded-xl border border-gray-200 bg-white shadow-sm"
          x-data="workshopMomentBookings({ workshopMomentId: @js($wsm->id), className: @js($class) })">

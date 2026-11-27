@@ -9,7 +9,7 @@
     </x-slot>
 
     <div class="container mx-auto p-6 max-w-5xl">
-        <div class="flex flex-row justify-center gap-8 mb-12">
+        <div class="flex flex-row flex-wrap justify-center gap-8 mb-12">
 
             <a href="{{ route('students-overview') }}" class="p-12 bg-deltion-blue-900 text-white font-medium text-lg rounded-xl transition-transform hover:scale-105 shadow-lg" >
                 Studenten overzicht
@@ -21,6 +21,10 @@
 
             <a href="{{ route('class-dashboard') }}" class="p-12 bg-deltion-blue-900 text-white font-medium text-lg rounded-xl transition-transform hover:scale-105 shadow-lg" >
                 Klas overzicht
+            </a>
+
+            <a href="{{ route('leader.dashboard') }}" class="p-12 bg-deltion-blue-900 text-white font-medium text-lg rounded-xl transition-transform hover:scale-105 shadow-lg" >
+                Workshopleider dashboard
             </a>
 
         </div>

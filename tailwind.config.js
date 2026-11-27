@@ -27,6 +27,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                jakarta: ['"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
             },
             width: {
                 '10': '10%',

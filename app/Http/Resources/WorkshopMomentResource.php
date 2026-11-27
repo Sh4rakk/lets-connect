@@ -26,7 +26,7 @@ class WorkshopMomentResource extends JsonResource
             // alleen als de workshop en het aantal boekingen geladen zijn
             'spots_left' => $this->when(
                 $this->relationLoaded('workshop') && $this->workshop && isset($this->bookings_count),
-                fn () => max(0, $this->workshop->capacity - $this->bookings_count)
+                fn () => max(0, $this->maxSpots() - $this->bookings_count)
             ),
             ... $this->getRelations(),
             ... $this->getSearch($request),

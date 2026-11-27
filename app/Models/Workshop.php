@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasQrToken;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Support\Str;
 use SingleQuote\LaravelApiResource\Traits\HasApi;
 
 class Workshop extends Model
 {
-    use HasUuids, HasApi;
+    use HasUuids, HasApi, HasQrToken;
 
     protected $fillable = [
         'name',
@@ -23,34 +24,12 @@ class Workshop extends Model
 
     protected $hidden = [
         'qr_token',
+        'leader_id',
     ];
 
-    protected static function booted(): void
-    {
-        static::creating(function (Workshop $workshop) {
-            $workshop->qr_token ??= static::newQrToken();
-        });
-    }
-
-    public static function newQrToken(): string
-    {
-        do {
-            $token = Str::random(40);
-        } while (static::where('qr_token', $token)->exists());
-
-        return $token;
-    }
-
-    public function regenerateQrToken(): void
-    {
-        $this->qr_token = static::newQrToken();
-        $this->save();
-    }
-
-    public function qrUrl(): string
-    {
-        return route('workshop.scan', ['token' => $this->qr_token]);
-    }
+    protected $casts = [
+        'is_manual' => 'boolean',
+    ];
 
     public function workshopMoments(): HasMany
     {
@@ -60,5 +39,10 @@ class Workshop extends Model
     public function bookings(): HasManyThrough
     {
         return $this->hasManyThrough(Bookings::class, WorkshopMoment::class, 'workshop_id', 'wm_id');
+    }
+
+    public function leader(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'leader_id');
     }
 }

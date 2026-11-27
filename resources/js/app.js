@@ -7,6 +7,7 @@ import statistics from './admin/statistics';
 import studentsOverview from './admin/studentsOverview';
 import studentEdit from './admin/studentEdit';
 import workshopsOverview from './admin/workshopsOverview';
+import workshopForm from './admin/workshopForm';
 import workshopMomentBookings from './admin/workshopMomentBookings';
 import classesOverview from './admin/classesOverview';
 import registerForm from './auth/registerForm';
@@ -23,6 +24,7 @@ Alpine.data('statistics', statistics);
 Alpine.data('studentsOverview', studentsOverview);
 Alpine.data('studentEdit', studentEdit);
 Alpine.data('workshopsOverview', workshopsOverview);
+Alpine.data('workshopForm', workshopForm);
 Alpine.data('workshopMomentBookings', workshopMomentBookings);
 Alpine.data('classesOverview', classesOverview);
 

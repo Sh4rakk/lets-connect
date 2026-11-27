@@ -18,4 +18,9 @@ class WorkshopMomentPolicy
     {
         return $user->hasRole('admin');
     }
+
+    public function manage(User $user, WorkshopMoment $workshopMoment): bool
+    {
+        return $user->hasRole('admin') || $workshopMoment->workshop?->leader_id === $user->id;
+    }
 }

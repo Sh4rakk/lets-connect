@@ -1,7 +1,11 @@
 <?php
+use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\WorkshopDashboardController;
+use App\Http\Controllers\WorkshopLeaderController;
 use App\Http\Controllers\WorkshopQrController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\FeedbackTestController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClassDashboardController;
@@ -47,11 +51,35 @@ Route::get('/edit-student/{id}', [UserController::class, 'edit'])->middleware(['
 
 Route::get('/workshop-dashboard', [WorkshopDashboardController::class, 'index'])->middleware(['role:admin'])->name('workshop-dashboard');
 Route::get('/workshop-moment/{wsm}', [WorkshopDashboardController::class, 'showbookings'])->middleware(['role:admin'])->name('workshop-moment.showbookings');
+Route::middleware('auth')->group(function () {
+    Route::get('/workshopleider', [WorkshopLeaderController::class, 'index'])->name('leader.dashboard');
+    Route::get('/workshopleider/verwachting/{wsm}', [WorkshopLeaderController::class, 'expected'])->name('leader.expected');
+    Route::get('/workshopleider/feedback/{wsm}', [WorkshopLeaderController::class, 'feedback'])->name('leader.feedback');
+    Route::get('/workshop-moment/{wsm}/qr', [WorkshopQrController::class, 'showRound'])->name('workshop-moment.qr');
+    Route::post('/workshop-moment/{wsm}/qr/regenerate', [WorkshopQrController::class, 'regenerateRound'])->name('workshop-moment.qr.regenerate');
+});
+
 Route::get('/workshop-moment/{wsm}/{class}', [WorkshopDashboardController::class, 'showfilteredbookings'])->middleware(['role:admin'])->name('workshop-moment.showfilteredbookings');
+
+Route::middleware('role:admin')->group(function () {
+    Route::get('/workshops/create', [WorkshopController::class, 'create'])->name('workshops.create');
+    Route::post('/workshops', [WorkshopController::class, 'store'])->name('workshops.store');
+    Route::get('/workshops/{workshop}/edit', [WorkshopController::class, 'edit'])->name('workshops.edit');
+    Route::put('/workshops/{workshop}', [WorkshopController::class, 'update'])->name('workshops.update');
+    Route::delete('/workshops/{workshop}', [WorkshopController::class, 'destroy'])->name('workshops.destroy');
+    Route::get('/feedback-test', [FeedbackTestController::class, 'index'])->name('feedback.test');
+    Route::post('/feedback-test/{wsm}', [FeedbackTestController::class, 'start'])->name('feedback.test.start');
+});
 
 Route::get('/workshops/{workshop}/qr', [WorkshopQrController::class, 'show'])->middleware(['role:admin'])->name('workshop.qr');
 Route::post('/workshops/{workshop}/qr/regenerate', [WorkshopQrController::class, 'regenerate'])->middleware(['role:admin'])->name('workshop.qr.regenerate');
-Route::get('/qr/{token}', [WorkshopQrController::class, 'scan'])->middleware('throttle:60,1')->where('token', '[A-Za-z0-9]{40}')->name('workshop.scan');
+Route::get('/qr/{token}', [WorkshopQrController::class, 'scan'])->middleware('throttle:600,1')->where('token', '[A-Za-z0-9]{40}')->name('workshop.scan');
+
+Route::middleware('throttle:600,1')->where(['token' => '[A-Za-z0-9]{40}'])->group(function () {
+    Route::get('/qr/{token}/feedback', [FeedbackController::class, 'show'])->name('feedback.show');
+    Route::post('/qr/{token}/feedback', [FeedbackController::class, 'storeRating'])->name('feedback.rating');
+    Route::post('/qr/{token}/feedback/vragen', [FeedbackController::class, 'storeQuestions'])->name('feedback.questions');
+});
 
 Route::get('/class-dashboard', [ClassDashboardController::class, 'index'])->middleware(['role:admin'])->name('class-dashboard');
 

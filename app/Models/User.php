@@ -64,6 +64,18 @@ class User extends Authenticatable implements LaratrustUser
         ];
     }
 
+    public const LEADER_CLASS = 'docent';
+
+    public function ledWorkshops(): HasMany
+    {
+        return $this->hasMany(Workshop::class, 'leader_id');
+    }
+
+    public function isWorkshopLeader(): bool
+    {
+        return $this->ledWorkshops()->exists();
+    }
+
     public function bookings(): HasMany
     {
         return $this->hasMany(Bookings::class, 'student_id');

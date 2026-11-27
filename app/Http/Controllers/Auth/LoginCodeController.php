@@ -29,6 +29,9 @@ class LoginCodeController extends Controller
             if (method_exists($authUser, 'hasRole') && $authUser->hasRole('admin')) {
                 return redirect()->route('selectionDashboard');
             }
+            if ($authUser->isWorkshopLeader()) {
+                return redirect()->route('leader.dashboard');
+            }
             return redirect()->route('dashboard');
         }
 
@@ -206,6 +209,6 @@ class LoginCodeController extends Controller
             return redirect()->route('selectionDashboard');
         }
 
-        return redirect()->intended('/dashboard');
+        return redirect()->intended($user->isWorkshopLeader() ? route('leader.dashboard') : '/dashboard');
     }
 }

@@ -34,9 +34,20 @@
                 @endif
                 <p class="text-sm text-gray-500">Ingelogd als {{ auth()->user()->name }}</p>
             @else
-                <p>Log in om je aanwezigheid te registreren.</p>
+                <p>Log in om je inschrijving te zien.</p>
                 <a href="{{ route('login') }}" class="mt-2 inline-block px-4 py-2 text-white rounded bg-deltion-blue-900">Inloggen</a>
             @endauth
+
+            @if ($workshop->workshopMoments->isNotEmpty())
+                <hr class="my-4">
+
+                <p class="font-semibold">Feedback geven</p>
+                <div class="mt-2 flex flex-wrap gap-2 text-sm">
+                    @foreach ($workshop->workshopMoments as $wm)
+                        <a href="{{ route('feedback.show', $wm->qr_token) }}" class="px-4 py-2 rounded border border-deltion-blue-900 text-deltion-blue-900">Ronde {{ $wm->moment_id }}</a>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </main>
 </body>
